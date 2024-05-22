@@ -39,7 +39,6 @@ jobs:
         run: |
           echo "Github: Listing all installed fonts..."
           fc-list
-          typst fonts
       - name: Compile Typst document
         uses: lvignoli/typst-action@main
         with:
