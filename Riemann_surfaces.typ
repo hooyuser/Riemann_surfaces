@@ -495,10 +495,12 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   define a partial order on $"Div" lr((X))$ by $ D_1 lt.eq D_2 arrow.l.r.double n_x lt.eq m_x , quad forall x in X . $
    
 ]
-#block[
-  Canonical Divisor Let $X$ be a Riemann surface and let $omega$ be a meromorphic 1-form on $X$ which is not identically
-  zero. The divisor of $omega$ is defined as $ "div" lr((omega)) = sum_(x in X) "ord"_x lr((omega)) x . $ Any divisor of
-  this form is called a #strong[canonical divisor] on $X$. The set of canonical divisors on $X$ is denoted by $"KDiv" lr((X))$.
+#definition(
+  [Canonical Divisor],
+)[
+  Let $X$ be a Riemann surface and let $omega$ be a meromorphic 1-form on $X$ which is not identically zero. The divisor
+  of $omega$ is defined as $ "div" lr((omega)) = sum_(x in X) "ord"_x lr((omega)) x . $ Any divisor of this form is called
+  a #strong[canonical divisor] on $X$. The set of canonical divisors on $X$ is denoted by $"KDiv" lr((X))$.
    
 ]
 #block[

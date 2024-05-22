@@ -17,6 +17,12 @@ jobs:
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v3
+      - name: Install Computer Modern Fonts
+        run: |
+          wget -O computer-modern.zip https://www.fontsquirrel.com/fonts/download/computer-modern
+          unzip -d computer-modern/ computer-modern.zip
+          mv computer-modern /usr/share/fonts/
+          fc-cache -fv
       - name: Compile Typst document
         uses: lvignoli/typst-action@main
         with:
