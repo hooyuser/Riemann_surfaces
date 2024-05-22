@@ -35,16 +35,6 @@ jobs:
           echo "Github: Rebuild font cache"
           sudo fc-cache -f -v
           echo "Github: Download complete."
-      - name: Unzip and Install Fonts
-        run: |
-          echo "Github: Unzipping the font package..."
-          unzip -d cm_sans/ cm_sans.zip
-          echo "Github: Moving fonts to the system fonts directory..."
-          sudo mv cm_sans /usr/share/fonts/
-          echo "Github: Fonts moved successfully."
-          echo "Github: Refreshing the font cache..."
-          sudo fc-cache -fv
-          echo "Github: Font cache refreshed."
       - name: List Installed Fonts
         run: |
           echo "Github: Listing all installed fonts..."

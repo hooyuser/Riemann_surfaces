@@ -408,9 +408,11 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
    
 ]
 == Holomorphic Function Sheaf <holomorphic-function-sheaf>
-#block[
-  Holomorphic Function Sheaf Let $X$ be a Riemann surface. The #strong[holomorphic function sheaf] $cal(O)_X$ is the sheaf
-  of holomorphic functions on $X$. That is, for any open set $U subset.eq X$, $ cal(O)_X lr((U)) = lr({f : U arrow.r bb(C) thin | thin f upright(" is holomorphic")}) . $
+#definition(
+  [Holomorphic Function Sheaf],
+)[
+  Let $X$ be a Riemann surface. The #strong[holomorphic function sheaf] $cal(O)_X$ is the sheaf of holomorphic functions
+  on $X$. That is, for any open set $U subset.eq X$, $ cal(O)_X lr((U)) = lr({f : U arrow.r bb(C) thin | thin f upright(" is holomorphic")}) . $
    
 ]
 #block[
