@@ -388,7 +388,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
               & = deg lr((f)) chi lr((Y)) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) . $
    
 ]
-#block[
+#corollary[
   Suppose that $f : X arrow.r Y$ is a non-constant holomorphic map of compact Riemann surfaces. Then we have
    
   #block[

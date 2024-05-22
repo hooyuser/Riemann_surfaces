@@ -19,23 +19,35 @@ jobs:
         uses: actions/checkout@v3
       - name: Download Computer Modern Sans Serif Fonts
         run: |
-          echo "Downloading Computer Modern Sans Serif font family..."
-          wget -O cm_sans.zip https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf
-          echo "Download complete."
-
+          echo "Github: Downloading Computer Modern Sans Serif font family..."
+          run: |
+          sudo mkdir -p /usr/share/fonts/opentype/newcomputermodern
+          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans08-Book.otf -P /usr/share/fonts/opentype/newcomputermodern
+          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans08-BookOblique.otf -P /usr/share/fonts/opentype/newcomputermodern
+          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans08-Oblique.otf -P /usr/share/fonts/opentype/newcomputermodern
+          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans08-Regular.otf -P /usr/share/fonts/opentype/newcomputermodern
+          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans10-Bold.otf -P /usr/share/fonts/opentype/newcomputermodern
+          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans10-BoldOblique.otf -P /usr/share/fonts/opentype/newcomputermodern
+          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans10-Book.otf -P /usr/share/fonts/opentype/newcomputermodern
+          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans10-BookOblique.otf -P /usr/share/fonts/opentype/newcomputermodern
+          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans10-Oblique.otf -P /usr/share/fonts/opentype/newcomputermodern
+          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans10-Regular.otf -P /usr/share/fonts/opentype/newcomputermodern
+          echo "Github: Rebuild font cache"
+          sudo fc-cache -f -v
+          echo "Github: Download complete."
       - name: Unzip and Install Fonts
         run: |
-          echo "Unzipping the font package..."
+          echo "Github: Unzipping the font package..."
           unzip -d cm_sans/ cm_sans.zip
-          echo "Moving fonts to the system fonts directory..."
+          echo "Github: Moving fonts to the system fonts directory..."
           sudo mv cm_sans /usr/share/fonts/
-          echo "Fonts moved successfully."
-          echo "Refreshing the font cache..."
+          echo "Github: Fonts moved successfully."
+          echo "Github: Refreshing the font cache..."
           sudo fc-cache -fv
-          echo "Font cache refreshed."
+          echo "Github: Font cache refreshed."
       - name: List Installed Fonts
         run: |
-          echo "Listing all installed fonts..."
+          echo "Github: Listing all installed fonts..."
           fc-list
           typst fonts
       - name: Compile Typst document
