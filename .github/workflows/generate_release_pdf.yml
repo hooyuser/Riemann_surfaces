@@ -9,6 +9,7 @@ on:
       - '**.md'
 env:
   TYPST_FILE_NAME: Riemann_surfaces
+  TYPST_FONT_PATHS: /usr/share/fonts
 jobs:
   build_typst:
     runs-on: ubuntu-latest
@@ -17,23 +18,36 @@ jobs:
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v4
-      - name: Set up fontist
-        uses: fontist/setup-fontist@v2
-      - name: Install Fonts
-        run: |
-          fontist install "New Computer Modern Sans"
-          fontist install "New Computer Modern"
-          fontist install "Noto Serif"
-      - name: List Installed Fonts
-        run: |
-          echo "Github: Listing all installed fonts..."
-          fc-list
       - name: Prepare Typst environment
         uses: typst-community/setup-typst@v3
         with:
           cache-dependency-path: requirements.typ
+      - name: Download Computer Modern Sans Serif Fonts
+        run: |
+          ls
+          echo "Github: Downloading Computer Modern Sans Serif font family..."
+          # Create target directory
+          sudo mkdir -p /usr/share/fonts/opentype/newcomputermodern
+          # Download and extract font archive
+          wget https://mirrors.ctan.org/fonts/newcomputermodern.zip
+          unzip newcomputermodern.zip
+          # Copy font files to target directory
+          sudo cp newcomputermodern/otf/*.otf /usr/share/fonts/opentype/newcomputermodern/
+          # Copy font files to current directory
+          cp newcomputermodern/otf/*.otf ./
+          # Cleanup
+          rm -rf newcomputermodern.zip newcomputermodern
+          echo "Github: Rebuild font cache"
+          sudo fc-cache -f -v
+          echo "Github: Download complete."
+      - name: List Installed Fonts
+        run: |
+          echo "Github: Listing all installed fonts..."
+          fc-list
       - name: Compile Typst document
-        run: typst compile ${{ env.TYPST_FILE_NAME }}.typ ${{ env.TYPST_FILE_NAME }}.pdf --font-path ~/.fontist/fonts
+        run: |
+          typst fonts
+          typst compile ${{ env.TYPST_FILE_NAME }}.typ ${{ env.TYPST_FILE_NAME }}.pdf 
       - name: Delete old Release
         uses: actions/github-script@v5
         with:

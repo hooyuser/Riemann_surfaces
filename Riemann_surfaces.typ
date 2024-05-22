@@ -564,9 +564,10 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
 
 = Classification of Riemann Surfaces <classification-of-riemann-surfaces>
 == Simply Connected Riemann Surfaces <simply-connected-riemann-surfaces>
-#block[
-  Uniformization Theorem Every simply connected Riemann surface is isomorphic to open disk $bb(D)$, complex plane $bb(C)$ or
-  Riemann sphere $hat(bb(C))$.
+#theorem(
+  [Uniformization Theorem],
+)[
+  Every simply connected Riemann surface is isomorphic to open disk $bb(D)$, complex plane $bb(C)$ or Riemann sphere $hat(bb(C))$.
    
 ]
 === Complex Plane $bb(C)$ <complex-plane-mathbb-c>
