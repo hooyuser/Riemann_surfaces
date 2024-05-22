@@ -402,9 +402,11 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
    
 ]
 == Meromorphic Functions <meromorphic-functions-1>
-#block[
-  Meromorphic Function Field Let $X$ be a Riemann surface and $U$ be an open set of $X$. The #strong[meromorphic function field] on $U$ is
-  the field of meromorphic functions on $U$, denoted by $cal(M)_X lr((U))$ or simply $cal(M) lr((U))$.
+#definition(
+  [Meromorphic Function Field],
+)[
+  Let $X$ be a Riemann surface and $U$ be an open set of $X$. The #strong[meromorphic function field] on $U$ is the field
+  of meromorphic functions on $U$, denoted by $cal(M)_X lr((U))$ or simply $cal(M) lr((U))$.
    
 ]
 #block[
