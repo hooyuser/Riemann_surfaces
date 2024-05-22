@@ -10,6 +10,7 @@
 #show par: set block(spacing: 0.55em)
 #show heading: set block(above: 1.4em, below: 1em)
 
+#set text(fallback: false)
 
 #let outline_color = rgb("#4682b4")
 #show outline.entry: it => {
@@ -55,9 +56,7 @@
     ]
   }
 }
-#block(inset: (left: -0.5em, right: -0.5em))[
-  #outline(title: text(font: "New Computer Modern Sans", size: 23pt)[Contents #v(1em)])
-]
+
 
 #let thm_env_sans(name, color) = [#text(font: "New Computer Modern Sans", fill: color)[#name]]
 
@@ -103,6 +102,20 @@
 
 #let proof = thmproof("proof", "Proof")
 
+// Title Page
+#v(1fr)
+#align(center)[
+  #text(font: "Noto Serif", size: 45pt)[Riemann Surfaces]
+  #v(1.5fr)
+  #text(font: "Noto Serif", size: 15pt, datetime.today().display())
+]
+#v(1.2fr)
+
+#pagebreak()
+
+#block(inset: (left: -0.5em, right: -0.5em))[
+  #outline(title: text(font: "New Computer Modern Sans", size: 23pt)[Contents #v(1em)])
+]
 
 #pagebreak()
 
@@ -332,12 +345,12 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   branch locus of $f$, then $lr(|f^(- 1) lr((y_0))|) = lr(|f^(- 1) lr((y_1))|)$.
    
 ]
-#block[
-  Degree of Holomorphic Map of Compact Riemann surfaces Let $f : X arrow.r Y$ be a holomorphic map of compact Riemann
-  surfaces. If $f$ is non-constant, for any $y in Y - f lr((upright(R a m) lr((f))))$ that is not a branch point, the
-  number $lr(|f^(- 1) lr((y))|)$ is constant and called the #strong[degree] of $f$ at $y$ and is denoted by $upright(d e g) lr((f))$.
-  If $f$ is constant, we define $upright(d e g) lr((f)) = 0$.
-   
+#definition(
+  [Degree of Holomorphic Map of Compact Riemann surfaces],
+)[
+  Let $f : X arrow.r Y$ be a holomorphic map of compact Riemann surfaces. If $f$ is non-constant, for any $y in Y - f lr((upright(R a m) lr((f))))$ that
+  is not a branch point, the number $lr(|f^(- 1) lr((y))|)$ is constant and called the #strong[degree] of $f$ at $y$ and
+  is denoted by $upright(d e g) lr((f))$. If $f$ is constant, we define $upright(d e g) lr((f)) = 0$.
 ]
 #block[
   Let $f : X arrow.r Y$ be a non-constant holomorphic map of compact Riemann surfaces. Then for any $y in Y$, $ upright(d e g) lr((f)) = sum_(x in f^(- 1) lr((y))) k_x $
@@ -346,7 +359,6 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 #block[
   Let $f : X arrow.r hat(bb(C))$ be a non-zero meromorphic function on a compact Riemann surface $X$. Counting
   multiplicities, the number of poles of $f$ is equal to the number of zeros of $f$.
-   
 ]
 #block[
   Since $ sum_(x in f^(- 1) lr((0))) k_x = sum_(x in f^(- 1) lr((oo))) k_x , $ we have $ sum_(x upright(" is a zero")) upright("multiplicity of ") x = sum_(x upright(" is a pole")) upright("multiplicity of ") x . $
@@ -503,9 +515,10 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   a #strong[canonical divisor] on $X$. The set of canonical divisors on $X$ is denoted by $"KDiv" lr((X))$.
    
 ]
-#block[
-  Complex Vector Space $L lr((D))$ Let $X$ be a Riemann surface and $D$ be a divisor on $X$. The #strong[complex vector space $L lr((D))$] is
-  defined as $ L lr((D)) = lr({f in cal(M) lr((X)) thin | thin f equiv 0 upright(" or ") "div" lr((f)) gt.eq - D}) , $ called
+#definition(
+  [Complex Vector Space $L lr((D))$],
+)[
+  Let $X$ be a Riemann surface and $D$ be a divisor on $X$. The #strong[complex vector space $L lr((D))$] is defined as $ L lr((D)) = lr({f in cal(M) lr((X)) thin | thin f equiv 0 upright(" or ") "div" lr((f)) gt.eq - D}) , $ called
   the space of meromorphic functions with poles bounded by $D$. The dimension of $L lr((D))$ is denoted as $ell lr((D)) = dim_(bb(C)) L lr((D))$.
    
 ]

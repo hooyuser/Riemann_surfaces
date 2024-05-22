@@ -23,6 +23,7 @@ jobs:
           unzip -d computer-modern/ computer-modern.zip
           mv computer-modern /usr/share/fonts/
           fc-cache -fv
+          fc-list
       - name: Compile Typst document
         uses: lvignoli/typst-action@main
         with:
