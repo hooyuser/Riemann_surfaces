@@ -20,7 +20,7 @@ jobs:
       - name: Download Computer Modern Sans Serif Fonts
         run: |
           echo "Downloading Computer Modern Sans Serif font family..."
-          wget -O cm_sans.zip https://www.fontsquirrel.com/fonts/download/computer-modern
+          wget -O cm_sans.zip https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf
           echo "Download complete."
 
       - name: Unzip and Install Fonts
@@ -37,8 +37,7 @@ jobs:
         run: |
           echo "Listing all installed fonts..."
           fc-list
-          echo "List Computer Modern Sans Serif fonts..."
-          fc-list | grep "Computer Modern"
+          typst fonts
       - name: Compile Typst document
         uses: lvignoli/typst-action@main
         with:

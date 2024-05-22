@@ -363,7 +363,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   Let $f : X arrow.r hat(bb(C))$ be a non-zero meromorphic function on a compact Riemann surface $X$. Counting
   multiplicities, the number of poles of $f$ is equal to the number of zeros of $f$.
 ]
-#block[
+#corollary[
   Since $ sum_(x in f^(- 1) lr((0))) k_x = sum_(x in f^(- 1) lr((oo))) k_x , $ we have $ sum_(x upright(" is a zero")) upright("multiplicity of ") x = sum_(x upright(" is a pole")) upright("multiplicity of ") x . $
    
 ]
@@ -375,7 +375,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   the ramification index of $f$ at $x$.
    
 ]
-#block[
+#proof[
   Let $Gamma_Y$ be a good graph on $Y$ with $f lr((upright(R a m)_X lr((f)))) subset.eq V_(Gamma_Y)$: the branch locus of $f$ is
   contained in the vertex set of $Gamma_Y$. Define $Gamma_X$ to be the “lift\" of $Gamma_Y$ via the map $f$ : the support
   of $Gamma_X$ is $f^(- 1) lr((Gamma_Y))$ and the vertices, edges and faces of $Gamma_X$ are the connected components of
