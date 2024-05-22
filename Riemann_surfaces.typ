@@ -10,7 +10,7 @@
 #show par: set block(spacing: 0.55em)
 #show heading: set block(above: 1.4em, below: 1em)
 
-#set text(fallback: false)
+#set text(fallback: true)
 
 #let outline_color = rgb("#4682b4")
 #show outline.entry: it => {
