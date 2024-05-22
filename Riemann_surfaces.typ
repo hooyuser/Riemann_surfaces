@@ -478,13 +478,15 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   divisor of this form is called a #strong[principal divisor] on $X$. The set of principal divisors on $X$ is denoted by $"PDiv" lr((X))$.
    
 ]
-#block[
-  Degree of Principal Divisors on Compact Riemann Surfaces Let $X$ be a compact Riemann surface and $f$ be a meromorphic
-  function on $X$. Then $deg lr((upright(d i v) lr((f)))) = 0$ and $ "PDiv" lr((X)) subset.eq "Div"^0 lr((X)) . $
-   
+#definition(
+  [Degree of Principal Divisors on Compact Riemann Surfaces ],
+)[
+  Let $X$ be a compact Riemann surface and $f$ be a meromorphic function on $X$. Then $deg lr((upright(d i v) lr((f)))) = 0$ and $ "PDiv" lr((X)) subset.eq "Div"^0 lr((X)) . $
 ]
-#block[
-  Picard group Let $X$ be a Riemann surface. The #strong[Picard group] of $X$ is defined as $ "Pic" lr((X)) = "Div" lr((X)) \/ "PDiv" lr((X)) . $ The #strong[restricted Picard group] of $X$ is
+#definition(
+  [Picard group],
+)[
+  Let $X$ be a Riemann surface. The #strong[Picard group] of $X$ is defined as $ "Pic" lr((X)) = "Div" lr((X)) \/ "PDiv" lr((X)) . $ The #strong[restricted Picard group] of $X$ is
   defined as $ "Pic"^0 lr((X)) = "Div"^0 lr((X)) \/ "PDiv" lr((X)) . $
    
 ]

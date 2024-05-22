@@ -10,7 +10,7 @@ on:
 env:
   TYPST_FILE_NAME: Riemann_surfaces
 jobs:
-  build_latex:
+  build_typst:
     runs-on: ubuntu-latest
     permissions:
       contents: write
