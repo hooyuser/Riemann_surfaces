@@ -20,7 +20,7 @@ jobs:
       - name: Compile Typst document
         uses: lvignoli/typst-action@main
         with:
-          source_file: ${{ env.TYPST_FILE_NAME }}.tex
+          source_file: ${{ env.TYPST_FILE_NAME }}.typ
       - name: Delete old Release
         uses: actions/github-script@v5
         with:
