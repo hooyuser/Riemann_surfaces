@@ -127,14 +127,13 @@
 )[
   Holomorphic Chart A #strong[holomorphic chart] on a topological manifold $X$ is a homeomorphism $phi : U arrow.r V subset.eq bb(C)^n$ where $U$ is
   an open subset of $X$, denoted by $lr((U , phi))$.
-   
 ]
 We say that a chart $lr((U , phi))$ for a Riemann surface $X$ is #strong[centered at $x$] if $phi lr((x)) = 0$.
 
 #definition(
   "Holomorphic Atlas",
 )[
-  A #strong[\(compatible) holomorphic atlas] on a topological manifold $X$ is a collection of holomorphic charts $lr((U_i , phi_i))$ such
+  A #strong[\(compatible\) holomorphic atlas] on a topological manifold $X$ is a collection of holomorphic charts $lr((U_i , phi_i))$ such
   that $union.big_i U_i = X$ and for any $i , j$, the transition function $ phi_i circle.stroked.tiny phi_j^(- 1) : phi_j lr((U_i sect U_j)) arrow.r phi_i lr((U_i sect U_j)) $ is
   holomorphic, whenever $U_i sect U_j$ is nonempty,
    
@@ -205,8 +204,10 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
     & V_2 = lr({lr([z_0 : z_1]) divides z_1 eq.not 0}) , quad psi_2 lr((z_0 , z_1)) = z_0 \/ z_1 $
    
 ]
-#proposition[
-  $hat(bb(C))$ is isomorphic to $bb(P)^1 lr((bb(C)))$ The map $f : hat(bb(C)) arrow.r bb(P)^1 lr((bb(C)))$ $ f lr((x)) = cases(delim: "{", lr([1 : x]) & upright("if ") x eq.not oo, lr([0 : 1]) & upright("if ") x = oo) $ is
+#proposition(
+  [$hat(bb(C))$ is isomorphic to $bb(P)^1 lr((bb(C)))$],
+)[
+  The map $f : hat(bb(C)) arrow.r bb(P)^1 lr((bb(C)))$ $ f lr((x)) = cases(delim: "{", lr([1 : x]) & upright("if ") x eq.not oo, lr([0 : 1]) & upright("if ") x = oo) $ is
   a biholomorphism.
    
 ]
@@ -222,8 +223,9 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 #example(
   "Affine Hyperelliptic Curves",
 )[
-  Consider first the algebraic equation $y^2 = product_(k = 1)^(2 g + 1) lr((x - a_k))$, where $lr({a_k})_(k = 1)^(2 g + 1)$ is
-  a collection of $2 g + 1$ distinct complex numbers, and let $ S^circle.stroked.tiny = lr({lr((x , y)) in bb(C)^2 thin | thin y^2 = product_(k = 1)^(2 g + 1) lr((x - a_k))}) . $ $S^circle.stroked.tiny$ is
+  Consider first the algebraic equation 
+  $ y^2 = product_(k = 1)^(2 g + 1) lr((x - a_k)), $ 
+  where $lr({a_k})_(k = 1)^(2 g + 1)$ is a collection of $2 g + 1$ distinct complex numbers, and let $ S^circle.stroked.tiny = lr({lr((x , y)) in bb(C)^2 thin | thin y^2 = product_(k = 1)^(2 g + 1) lr((x - a_k))}) . $ $S^circle.stroked.tiny$ is
   called an #strong[affine hyperelliptic curve]. It is a Riemann surface with the following charts
    
   - If $P_alpha = lr((x_alpha , y_alpha)) in S^circle.stroked.tiny$ satisfies $y_alpha eq.not 0$, there exists $epsilon.alt_alpha > 0$ such
@@ -335,15 +337,16 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
    
 ]
 == Holomorphic Maps of Compact Riemann Surfaces <holomorphic-maps-of-compact-riemann-surfaces>
-#block[
-  Surjectivity of Holomorphic Maps of Compact Riemann Surfaces Let $f : X arrow.r Y$ be a holomorphic map of Riemann
-  surfaces with $X$ compact. If $f$ is non-constant, then $f$ is surjective and $Y$ is compact.
+#theorem(
+  [Surjectivity of Holomorphic Maps of Compact Riemann Surfaces],
+)[
+  Let $f : X arrow.r Y$ be a holomorphic map of Riemann surfaces with $X$ compact. If $f$ is non-constant, then $f$ is
+  surjective and $Y$ is compact.
    
 ]
-#block[
+#proof[
   Let $f : X arrow.r Y$ be a non-constant holomorphic map of compact Riemann surfaces. If $y_0 , y_1 in Y$ are not in the
   branch locus of $f$, then $lr(|f^(- 1) lr((y_0))|) = lr(|f^(- 1) lr((y_1))|)$.
-   
 ]
 #definition(
   [Degree of Holomorphic Map of Compact Riemann surfaces],
@@ -364,9 +367,11 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   Since $ sum_(x in f^(- 1) lr((0))) k_x = sum_(x in f^(- 1) lr((oo))) k_x , $ we have $ sum_(x upright(" is a zero")) upright("multiplicity of ") x = sum_(x upright(" is a pole")) upright("multiplicity of ") x . $
    
 ]
-#block[
-  Riemann-Hurwitz Formula Let $f : X arrow.r Y$ be a nonconstant, degree d, holomorphic map of compact Riemann surfaces.
-  Denote the genus of $X$ by $g_X$ and the genus of $g_Y$. Then $ 2 g_X - 2 = lr((2 g_Y - 2)) deg lr((f)) + sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) , $ where $k_x$ is
+#theorem(
+  [Riemann-Hurwitz Formula],
+)[
+  Let $f : X arrow.r Y$ be a nonconstant, degree d, holomorphic map of compact Riemann surfaces. Denote the genus of $X$ by $g_X$ and
+  the genus of $g_Y$. Then $ 2 g_X - 2 = lr((2 g_Y - 2)) deg lr((f)) + sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) , $ where $k_x$ is
   the ramification index of $f$ at $x$.
    
 ]

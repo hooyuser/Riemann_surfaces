@@ -17,13 +17,28 @@ jobs:
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v3
-      - name: Install Computer Modern Fonts
+      - name: Download Computer Modern Sans Serif Fonts
         run: |
-          wget -O computer-modern.zip https://www.fontsquirrel.com/fonts/download/computer-modern
-          unzip -d computer-modern/ computer-modern.zip
-          mv computer-modern /usr/share/fonts/
-          fc-cache -fv
+          echo "Downloading Computer Modern Sans Serif font family..."
+          wget -O cm_sans.zip https://www.fontsquirrel.com/fonts/download/computer-modern
+          echo "Download complete."
+
+      - name: Unzip and Install Fonts
+        run: |
+          echo "Unzipping the font package..."
+          unzip -d cm_sans/ cm_sans.zip
+          echo "Moving fonts to the system fonts directory..."
+          sudo mv cm_sans /usr/share/fonts/
+          echo "Fonts moved successfully."
+          echo "Refreshing the font cache..."
+          sudo fc-cache -fv
+          echo "Font cache refreshed."
+      - name: List Installed Fonts
+        run: |
+          echo "Listing all installed fonts..."
           fc-list
+          echo "List Computer Modern Sans Serif fonts..."
+          fc-list | grep "Computer Modern"
       - name: Compile Typst document
         uses: lvignoli/typst-action@main
         with:
