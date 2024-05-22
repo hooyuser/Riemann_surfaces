@@ -25,9 +25,11 @@ jobs:
           sudo mkdir -p /usr/share/fonts/opentype/newcomputermodern
           # Download and extract font archive
           wget https://mirrors.ctan.org/fonts/newcomputermodern.zip
-          unzip newcomputermodern.zi
+          unzip newcomputermodern.zip
           # Copy font files to target directory
           sudo cp newcomputermodern/otf/*.otf /usr/share/fonts/opentype/newcomputermodern/
+          # Copy font files to current directory
+          cp newcomputermodern/otf/*.otf ./
           # Cleanup
           rm -rf newcomputermodern.zip newcomputermodern
           echo "Github: Rebuild font cache"
