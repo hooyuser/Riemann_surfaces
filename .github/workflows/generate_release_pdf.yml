@@ -19,19 +19,17 @@ jobs:
         uses: actions/checkout@v3
       - name: Download Computer Modern Sans Serif Fonts
         run: |
+          ls
           echo "Github: Downloading Computer Modern Sans Serif font family..."
-          run: |
+          # Create target directory
           sudo mkdir -p /usr/share/fonts/opentype/newcomputermodern
-          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans08-Book.otf -P /usr/share/fonts/opentype/newcomputermodern
-          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans08-BookOblique.otf -P /usr/share/fonts/opentype/newcomputermodern
-          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans08-Oblique.otf -P /usr/share/fonts/opentype/newcomputermodern
-          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans08-Regular.otf -P /usr/share/fonts/opentype/newcomputermodern
-          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans10-Bold.otf -P /usr/share/fonts/opentype/newcomputermodern
-          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans10-BoldOblique.otf -P /usr/share/fonts/opentype/newcomputermodern
-          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans10-Book.otf -P /usr/share/fonts/opentype/newcomputermodern
-          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans10-BookOblique.otf -P /usr/share/fonts/opentype/newcomputermodern
-          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans10-Oblique.otf -P /usr/share/fonts/opentype/newcomputermodern
-          sudo wget https://www.ctan.org/tex-archive/fonts/newcomputermodern/otf/NewCMSans10-Regular.otf -P /usr/share/fonts/opentype/newcomputermodern
+          # Download and extract font archive
+          wget https://mirrors.ctan.org/fonts/newcomputermodern.zip
+          unzip newcomputermodern.zi
+          # Copy font files to target directory
+          sudo cp newcomputermodern/otf/*.otf /usr/share/fonts/opentype/newcomputermodern/
+          # Cleanup
+          rm -rf newcomputermodern.zip newcomputermodern
           echo "Github: Rebuild font cache"
           sudo fc-cache -f -v
           echo "Github: Download complete."

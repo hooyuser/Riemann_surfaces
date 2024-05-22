@@ -533,8 +533,10 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 ]
 If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) lt.eq ell lr((D_2))$.
 
-#block[
-  Riemann-Roch Theorem Let $X$ be a compact Riemann surface and $D$ be a divisor on $X$. Then $ ell lr((D)) - ell lr((K_X - D)) = deg lr((D)) + 1 - g_X . $
+#theorem(
+  [Riemann-Roch Theorem],
+)[
+  Let $X$ be a compact Riemann surface and $D$ be a divisor on $X$. Then $ ell lr((D)) - ell lr((K_X - D)) = deg lr((D)) + 1 - g_X . $
    
 ]
 #block[
