@@ -37,6 +37,10 @@ jobs:
           cp newcomputermodern/otf/*.otf ./
           # Cleanup
           rm -rf newcomputermodern.zip newcomputermodern
+          wget -O cm_sans.zip https://www.fontsquirrel.com/fonts/download/noto-serif
+          unzip -d noto-serif/ noto-serif.zip
+          echo "Moving fonts to the system fonts directory..."
+          sudo mv noto-serif /usr/share/fonts/truetype
           echo "Github: Rebuild font cache"
           sudo fc-cache -f -v
           echo "Github: Download complete."

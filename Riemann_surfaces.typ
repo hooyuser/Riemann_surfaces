@@ -482,8 +482,10 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   be written as $ D = sum_(x in X) n_x x , $
    
 ]
-#block[
-  Degree of a Divisor Let $X$ be a Riemann surface. The degree homomorphism is defined as $ deg : "Div" lr((X))    & arrow.r bb(Z)\
+#definition(
+  [Degree of a Divisor],
+)[
+  Let $X$ be a Riemann surface. The degree homomorphism is defined as $ deg : "Div" lr((X))    & arrow.r bb(Z)\
   D = sum_(x in X) n_x x & arrow.r.bar sum_(x in X) n_x . $ It can be defined by the universal property of free abelian
   Group \$\$\\begin{tikzcd}\[ampersand replacement\=\\&\] \\operatorname{Div}\(X) \\arrow\[r, \"\\deg\", dashed\] \\&
   \\mathbb{Z} \\\\\[+10pt\] X \\arrow\[u, \"\\iota\"\] \\arrow\[ru, \"c\_1\"\'\] \\& \\end{tikzcd}\$\$ where $c_1 : x arrow.r.bar 1$ is
