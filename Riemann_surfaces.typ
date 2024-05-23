@@ -58,7 +58,7 @@
 }
 
 
-#let thm_env_sans(name, color) = [#text(font: "New Computer Modern Sans", fill: color)[#name]]
+#let thm_env_sans(name, color, weight: 400) = [#text(font: "Latin Modern Sans", weight: weight, fill: color)[#name]]
 
 #let theorem_color = rgb("#f19000")
 #let theorem_color_bg = rgb("#fdf8ea")
@@ -72,19 +72,24 @@
 
 #let theorem = thmbox(
   "theorem",
-  thm_env_sans("Theorem", theorem_color),
+  thm_env_sans("Theorem", theorem_color, weight: 700),
   separator: [ \ ],
   namefmt: x => thm_env_sans(x, theorem_color),
   fill: theorem_color_bg,
 )
 
-#let proposition = thmbox("proposition", thm_env_sans("Proposition", rgb("#30773c")), separator: [ \ ], fill: rgb("#eeffee"))
+#let proposition = thmbox(
+  "proposition",
+  thm_env_sans("Proposition", rgb("#30773c"), weight: 700),
+  separator: [ \ ],
+  fill: rgb("#eeffee"),
+)
 
-#let lemma = thmbox("lemma", thm_env_sans("Lemma", rgb("#907a6b")), separator: [ \ ], fill: rgb("#f6f4f2"))
+#let lemma = thmbox("lemma", thm_env_sans("Lemma", rgb("#907a6b"), weight: 700), separator: [ \ ], fill: rgb("#f6f4f2"))
 
 #let corollary = thmbox(
   "corollary",
-  thm_env_sans("Corollary", rgb("#a74eb4")),
+  thm_env_sans("Corollary", rgb("#a74eb4"), weight: 700),
   base: "theorem",
   separator: [ \ ],
   fill: rgb("#f9effb"),
@@ -92,13 +97,18 @@
 
 #let definition = thmbox(
   "definition",
-  thm_env_sans("Definition", rgb("#000069")),
+  thm_env_sans("Definition", rgb("#000069"), weight: 700),
   separator: [ \ ],
   namefmt: x => thm_env_sans(x, rgb("#000069")),
   fill: rgb("#f2f2f9"),
 )
 
-#let example = thmbox("example", thm_env_sans("Example", rgb("#2a7f7f")), fill: rgb("#f2fbf8"), stroke: rgb("#88d6d1") + 1pt)
+#let example = thmbox(
+  "example",
+  thm_env_sans("Example", rgb("#2a7f7f"), weight: 700),
+  fill: rgb("#f2fbf8"),
+  stroke: rgb("#88d6d1") + 1pt,
+)
 
 #let proof = thmproof("proof", "Proof")
 
