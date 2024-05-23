@@ -70,47 +70,90 @@
   theorem: (front: rgb("#f19000"), background: rgb("#fdf8ea")),
   proposition: (front: rgb("#30773c"), background: rgb("#eeffee")),
   lemma: (front: rgb("#907a6b"), background: rgb("#f6f4f2")),
+  corollary: (front: rgb("#a74eb4"), background: rgb("#f9effb")),
+  definition: (front: rgb("#000069"), background: rgb("#f2f2f9")),
 )
 
 
-#let theorem = thmbox(
-  "theorem",
-  thm_env_sans("Theorem", theorem_color, weight: 700),
+#let custom_thmbox(
+  identifier,
+  head,
+  ..blockargs,
+  supplement: auto,
+  padding: (left: 0.3em),
+  namefmt: x => [(#x)],
+  numberfmt: x => x,
+  titlefmt: strong,
+  bodyfmt: x => x,
+  separator: [#h(0.1em):#h(0.2em)],
+  base: "heading",
+  base_level: none,
+  front_color: luma(230),
+) = {
+  if supplement == auto {
+    supplement = head
+  }
+  let boxfmt(name, number, body, title: auto, ..blockargs_individual) = {
+    if not name == none {
+      name = [ #namefmt(name) ]
+    } else {
+      name = []
+    }
+    if title == auto {
+      title = head
+    }
+    if not number == none {
+      title += " " + numberfmt(number)
+    }
+    title = titlefmt(title)
+    body = bodyfmt(body)
+    block(fill: front_color, radius: 0.3em, pad(..padding, block(
+      width: 100%,
+      inset: 1.2em,
+      radius: 0em, //0.3em
+      breakable: false,
+      ..blockargs.named(),
+      ..blockargs_individual.named(),
+      [#title#name#separator#body],
+    )))
+  }
+  return thmenv(identifier, base, base_level, boxfmt).with(supplement: supplement)
+}
+
+#let thmbox_style_1(identifier, head, front_color, background_color) = custom_thmbox(
+  identifier,
+  thm_env_sans(head, front_color, weight: 700),
   separator: [ \ ],
-  namefmt: x => thm_env_sans(x, theorem_color),
-  fill: theorem_color_bg,
+  namefmt: x => thm_env_sans(x, front_color),
+  numberfmt: x => thm_env_sans(x, front_color, weight: 700),
+  fill: background_color,
+  breakable: true,
+  front_color: front_color,
 )
 
-#let proposition = thmbox(
-  "proposition",
-  thm_env_sans("Proposition", rgb("#30773c"), weight: 700),
-  separator: [ \ ],
-  fill: rgb("#eeffee"),
-)
 
-#let lemma = thmbox("lemma", thm_env_sans("Lemma", rgb("#907a6b"), weight: 700), separator: [ \ ], fill: rgb("#f6f4f2"))
 
-#let corollary = thmbox(
-  "corollary",
-  thm_env_sans("Corollary", rgb("#a74eb4"), weight: 700),
-  base: "theorem",
-  separator: [ \ ],
-  fill: rgb("#f9effb"),
-)
+#let theorem = thmbox_style_1("theorem", "Theorem", thm_env_color_dict.theorem.front, thm_env_color_dict.theorem.background)
 
-#let definition = thmbox(
-  "definition",
-  thm_env_sans("Definition", rgb("#000069"), weight: 700),
-  separator: [ \ ],
-  namefmt: x => thm_env_sans(x, rgb("#000069")),
-  fill: rgb("#f2f2f9"),
-)
+#let proposition = thmbox_style_1("proposition", "Proposition", thm_env_color_dict.proposition.front, thm_env_color_dict.proposition.background)
+
+#let lemma = thmbox_style_1("lemma", "Lemma", thm_env_color_dict.lemma.front, thm_env_color_dict.lemma.background)
+
+
+#let corollary = thmbox_style_1("corollary", "Corollary", thm_env_color_dict.corollary.front, thm_env_color_dict.corollary.background)
+
+
+#let definition = thmbox_style_1("definition", "Definition", thm_env_color_dict.definition.front, thm_env_color_dict.definition.background)
+
 
 #let example = thmbox(
   "example",
   thm_env_sans("Example", rgb("#2a7f7f"), weight: 700),
+  separator: [ \ ],
+  namefmt: x => thm_env_sans(x, rgb("#2a7f7f")),
   fill: rgb("#f2fbf8"),
   stroke: rgb("#88d6d1") + 1pt,
+  breakable: true,
 )
 
 #let proof = thmproof("proof", "Proof")
@@ -376,7 +419,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   multiplicities, the number of poles of $f$ is equal to the number of zeros of $f$.
 ]
 #corollary[
-  Since $ sum_(x in f^(- 1) lr((0))) k_x = sum_(x in f^(- 1) lr((oo))) k_x , $ we have $ sum_(x upright(" is a zero")) upright("multiplicity of ") x = sum_(x upright(" is a pole")) upright("multiplicity of ") x . $
+  Since $ sum_(x in f^(- 1) lr((0))) k_x = sum_(x in f^(- 1) lr((oo))) k_x , $ we have $ sum_(x upright("is a zero")) upright("multiplicity of ") x = sum_(x upright("is a pole")) upright("multiplicity of ") x . $
    
 ]
 #theorem(
