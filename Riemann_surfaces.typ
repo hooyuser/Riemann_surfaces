@@ -5,12 +5,15 @@
 #set page(margin: 2.0cm)
 #set heading(numbering: "1.1")
 #set par(leading: 0.55em, first-line-indent: 1.8em, justify: true)
-#set text(font: "New Computer Modern", fallback: false)
+#set text(font: "New Computer Modern", size: 11pt, fallback: false)
+#show math.equation: set text(weight: 400)
+#show math.equation: set block(below: 8pt, above: 9pt)
 //#show raw: set text(font: "New Computer Modern Mono")
 #show par: set block(spacing: 0.55em)
 #show heading: set block(above: 1.4em, below: 1em)
 
-
+#set enum(indent: 1em, body-indent: 0.5em)
+#set list(indent: 1em, body-indent: 0.5em)
 
 #let outline_color = rgb("#4682b4")
 #show outline.entry: it => {
@@ -235,20 +238,19 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 )[
   Consider first the algebraic equation 
   $ y^2 = product_(k = 1)^(2 g + 1) lr((x - a_k)), $ 
-  where $lr({a_k})_(k = 1)^(2 g + 1)$ is a collection of $2 g + 1$ distinct complex numbers, and let $ S^circle.stroked.tiny = lr({lr((x , y)) in bb(C)^2 thin | thin y^2 = product_(k = 1)^(2 g + 1) lr((x - a_k))}) . $ $S^circle.stroked.tiny$ is
+  where $lr({a_k})_(k = 1)^(2 g + 1)$ is a collection of $2 g + 1$ distinct complex numbers, and let $ accent(S, circle) = lr({lr((x , y)) in bb(C)^2 thin | thin y^2 = product_(k = 1)^(2 g + 1) lr((x - a_k))}) . $ $accent(S, circle)$ is
   called an #strong[affine hyperelliptic curve]. It is a Riemann surface with the following charts
    
-  - If $P_alpha = lr((x_alpha , y_alpha)) in S^circle.stroked.tiny$ satisfies $y_alpha eq.not 0$, there exists $epsilon.alt_alpha > 0$ such
-    that for any $k in { 1 , 2 , dots.h.c , 2 g + 1 }$, $ lr((a_k , 0)) in.not B_(S^circle.stroked.tiny) lr((P_alpha , epsilon.alt_alpha)) = lr(
-      {lr((x , y)) in S^circle.stroked.tiny thin | thin lr(|x - x_alpha|)^2 + lr(|y - y_alpha|)^2 < epsilon.alt_alpha^2}
-    ) $ Let $U_alpha = B_(S^circle.stroked.tiny) lr((P_alpha , epsilon.alt_alpha))$ and we can check that $ phi_alpha : U_alpha & arrow.r bb(C)\
+  - If $P_alpha = lr((x_alpha , y_alpha)) in accent(S, circle)$ satisfies $y_alpha eq.not 0$, there exists $epsilon.alt_alpha > 0$ such
+    that for any $k in { 1 , 2 , dots.h.c , 2 g + 1 }$, $ lr((a_k , 0)) in.not B_(accent(S, circle)) lr((P_alpha , epsilon.alt_alpha)) = lr({lr((x , y)) in accent(S, circle) thin | thin lr(|x - x_alpha|)^2 + lr(|y - y_alpha|)^2 < epsilon.alt_alpha^2}) $ Let $U_alpha = B_(accent(S, circle)) lr((P_alpha , epsilon.alt_alpha))$ and
+    we can check that $ phi_alpha : U_alpha & arrow.r bb(C)\
     lr((x , y))         & arrow.r.bar x . $ is holomorphic and has inverse $ phi_alpha^(- 1) lr((x)) = lr((x , sqrt(product_(k = 1)^(2 g + 1) lr((x - a_k))) #h(0em))) , $ where
     the branch of the square root is chosen so that its value at $x_alpha$ is $y_alpha$ instead of $- y_alpha$.
    
-  - If $lr((a_j , 0)) in S^circle.stroked.tiny$ for some integer $j in lr([1 , 2 g + 1])$, there exists $epsilon.alt_j > 0$ such
+  - If $lr((a_j , 0)) in accent(S, circle)$ for some integer $j in lr([1 , 2 g + 1])$, there exists $epsilon.alt_j > 0$ such
     that $ a_k in.not B_(bb(C)) lr((a_j , epsilon.alt_j^2)) = lr({x in bb(C) thin | thin lr(|x - a_j|) < epsilon.alt_j^2}) , quad forall k eq.not j , $ which
     implies for all $z in B_(bb(C)) lr((0 , epsilon.alt_j)) = lr({x in bb(C) thin | thin lr(|x|) < epsilon.alt_j})$, $ lr(|z^2 + a_j - a_k|) gt.eq lr(|a_j - a_k|) - lr(|z^2|) > epsilon.alt_j^2 - epsilon.alt_j^2 = 0 , quad forall k eq.not j . $ Let $V_j = B_(bb(C)) lr((0 , epsilon.alt_j))$ and
-    we can check that $ psi_j : V_j & arrow.r S^circle.stroked.tiny\
+    we can check that $ psi_j : V_j & arrow.r accent(S, circle)\
     z           & arrow.r.bar lr((a_j + z^2 , z sqrt(product_(k eq.not j) lr((z^2 + a_j - a_k))))) $ is holomorphic with any
     choice of the branch of the square root. Given $z_1 , z_2 in V_j$, if $psi_j lr((z_1)) = psi_j lr((z_2))$, then $a_j + z_1^2 = a_j + z_2^2$,
     which implies $z_1 = z_2$. Hence $psi_j$ is injective and is a biholomorphism onto its image. So we can take $U_j = psi_j lr((V_j))$ and $phi_j = psi_j^(- 1)$ as
@@ -257,7 +259,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
     (Note we cannot set the first coordinate simply as $a_j + z$, because it would enforce a branch cut from the square root
     to intrude into the disk $B_(bb(C)) lr((0 , epsilon.alt_j))$, thereby disrupting the holomorphicity of $psi$.)
    
-  we can check that $ phi_alpha circle.stroked.tiny phi_j^(- 1) lr((z)) = a_j + z^2 , $ which is holomorphic. Therefore, $S^circle.stroked.tiny$ is
+  we can check that $ phi_alpha circle.stroked.tiny phi_j^(- 1) lr((z)) = a_j + z^2 , $ which is holomorphic. Therefore, $accent(S, circle)$ is
   a Riemann surface.
 ]
 == Meromorphic Functions <meromorphic-functions>
