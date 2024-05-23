@@ -75,6 +75,8 @@
 )
 
 
+
+
 #let custom_thmbox(
   identifier,
   head,
@@ -131,19 +133,21 @@
   front_color: front_color,
 )
 
+#let dict_from_pairs(pairs) = {
+  let dict = (:)
+  for pair in pairs {
+    assert(pair.len() == 2, message: "`from_pairs` accepts an array of pairs")
+    dict.insert(..pair)
+  }
+  dict
+}
 
+#let theorem_envs = thm_env_color_dict.pairs().map(((env_name, env_colors)) => {
+  let header = upper(env_name.first()) + env_name.slice(1) 
+  (env_name, thmbox_style_1(env_name, header, env_colors.front, env_colors.background))
+})
 
-#let theorem = thmbox_style_1("theorem", "Theorem", thm_env_color_dict.theorem.front, thm_env_color_dict.theorem.background)
-
-#let proposition = thmbox_style_1("proposition", "Proposition", thm_env_color_dict.proposition.front, thm_env_color_dict.proposition.background)
-
-#let lemma = thmbox_style_1("lemma", "Lemma", thm_env_color_dict.lemma.front, thm_env_color_dict.lemma.background)
-
-
-#let corollary = thmbox_style_1("corollary", "Corollary", thm_env_color_dict.corollary.front, thm_env_color_dict.corollary.background)
-
-
-#let definition = thmbox_style_1("definition", "Definition", thm_env_color_dict.definition.front, thm_env_color_dict.definition.background)
+#let (definition, proposition, lemma, theorem, corollary) = dict_from_pairs(theorem_envs)
 
 
 #let example = thmbox(
