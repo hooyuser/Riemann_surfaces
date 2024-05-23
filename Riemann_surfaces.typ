@@ -5,22 +5,22 @@
 #set page(margin: 2.0cm)
 #set heading(numbering: "1.1")
 #set par(leading: 0.55em, first-line-indent: 1.8em, justify: true)
-#set text(font: "New Computer Modern")
-#show raw: set text(font: "New Computer Modern Mono")
+#set text(font: "New Computer Modern", fallback: false)
+//#show raw: set text(font: "New Computer Modern Mono")
 #show par: set block(spacing: 0.55em)
 #show heading: set block(above: 1.4em, below: 1em)
 
-#set text(fallback: true)
+
 
 #let outline_color = rgb("#4682b4")
 #show outline.entry: it => {
-  let outline_font = "Noto Sans"
+  set text(font: "Noto Sans")
   let fill_line_color = luma(70%)
   let indents = ("l1": 30pt, "l2": 28pt, "l3": 25pt)
    
   if it.level == 1 {
     v(26pt, weak: true)
-    text(font: outline_font, size: 15pt, weight: "semibold", fill: outline_color)[
+    text(size: 15pt, weight: 700, fill: outline_color)[
       #let (chapter_idx, _, text) = it.body.children
       #let page_number = it.page
       #let content_line(chapter_idx) = context { //let chapter_idx_width = measure(chapter_idx).width
@@ -31,7 +31,7 @@
     ]
   } else if it.level == 2 {
     v(10pt, weak: true)
-    text(font: outline_font, size: 10pt, weight: "semibold")[
+    text(size: 10pt, weight: 500)[
       #let (chapter_idx, _, text) = it.body.children
       #let page_number = it.page
       #box(stroke: none, width: indents.l1 + 2pt) // 2pt extra padding
@@ -44,7 +44,7 @@
     ]
   } else if it.level == 3 {
     v(8pt, weak: true)
-    text(font: outline_font, size: 9pt, weight: "regular", fill: luma(15%))[
+    text(size: 9pt, weight: 400, fill: luma(15%))[
       #let (chapter_idx, _, text, ..) = it.body.children
       #let page_number = it.page
       #box(stroke: none, width: indents.l1 + 2pt)
@@ -114,7 +114,7 @@
 #pagebreak()
 
 #block(inset: (left: -0.5em, right: -0.5em))[
-  #outline(title: text(font: "New Computer Modern Sans", size: 23pt)[Contents #v(1em)])
+  #outline(title: text(font: "Noto Sans", size: 23pt, weight:700, stretch: 150%)[Contents #v(1em)])
 ]
 
 #pagebreak()
