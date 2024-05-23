@@ -105,7 +105,7 @@
 // Title Page
 #v(1fr)
 #align(center)[
-  #text(font: "Noto Serif", size: 45pt)[Riemann Surfaces]
+  #text(font: "Noto Serif", size: 45pt, weight: 500)[Riemann Surfaces]
   #v(1.5fr)
   #text(font: "Noto Serif", size: 15pt, datetime.today().display())
 ]
@@ -114,7 +114,7 @@
 #pagebreak()
 
 #block(inset: (left: -0.5em, right: -0.5em))[
-  #outline(title: text(font: "Noto Sans", size: 23pt, weight:700, stretch: 150%)[Contents #v(1em)])
+  #outline(title: text(font: "Noto Sans", size: 23pt, weight: 700, stretch: 150%)[Contents #v(1em)])
 ]
 
 #pagebreak()
