@@ -2,7 +2,7 @@
 #show: thmrules.with(qed-symbol: $square$)
 
 //#set page(width: 16cm, height: auto, margin: 1.5cm)
-#set page(margin: 2.0cm)
+#set page(margin: 1.9cm)
 #set heading(numbering: "1.1")
 #set par(leading: 0.55em, first-line-indent: 1.8em, justify: true)
 #set text(font: "New Computer Modern", size: 11pt, fallback: false)
@@ -145,6 +145,7 @@
     supplement = head
   }
   let boxfmt(name, number, body, title: auto, ..blockargs_individual) = {
+    set par(first-line-indent: 0pt)
     if not name == none {
       name = [ #namefmt(name) ]
     } else {
@@ -165,7 +166,7 @@
       breakable: false,
       ..blockargs.named(),
       ..blockargs_individual.named(),
-      [#title#name#separator#body],
+      [#title#name#separator#v(3pt)#body],
     ))
   }
   return thmenv(identifier, base, base_level, boxfmt).with(supplement: supplement)
@@ -213,7 +214,7 @@
   breakable: true,
 )
 
-#let proof = thmproof("proof", "Proof")
+#let proof = thmproof("proof", "Proof", separator: [.])
 
 // Title Page
 #v(1fr)
@@ -445,12 +446,9 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
    
 ]
 == Holomorphic Maps of Compact Riemann Surfaces <holomorphic-maps-of-compact-riemann-surfaces>
-#theorem(
-  [Surjectivity of Holomorphic Maps of Compact Riemann Surfaces],
-)[
+#theorem[Surjectivity of Holomorphic Maps of Compact Riemann Surfaces][
   Let $f : X arrow.r Y$ be a holomorphic map of Riemann surfaces with $X$ compact. If $f$ is non-constant, then $f$ is
   surjective and $Y$ is compact.
-   
 ]
 #proof[
   Let $f : X arrow.r Y$ be a non-constant holomorphic map of compact Riemann surfaces. If $y_0 , y_1 in Y$ are not in the
