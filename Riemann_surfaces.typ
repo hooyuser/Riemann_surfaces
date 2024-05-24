@@ -15,8 +15,8 @@
 #show par: set block(spacing: 0.55em)
 #show heading: set block(above: 1.4em, below: 1em)
 
-#set enum(indent: 1em, body-indent: 0.5em, numbering: "(i)", start: 1)
-#set list(indent: 1em, body-indent: 0.5em)
+#set enum(indent: 0.45em, body-indent: 0.45em, numbering: "(i)", start: 1)
+#set list(indent: 0.45em, body-indent: 0.45em)
 
 #let outline_color = rgb("#4682b4")
 #show outline.entry: it => {
@@ -182,6 +182,7 @@
   breakable: true,
   front_color: front_color,
   background_color: background_color,
+  base_level: 2,
 )
 
 
@@ -197,7 +198,7 @@
 
 #let theorem_envs = thm_env_color_dict.pairs().map(((env_name, env_colors)) => {
   let header = upper(env_name.first()) + env_name.slice(1) 
-  (env_name, thmbox_quote_style(env_name, header, env_colors.front, env_colors.background))
+  (env_name, thmbox_quote_style("theorem", header, env_colors.front, env_colors.background))
 })
 
 #let (definition, proposition, lemma, theorem, corollary) = dict_from_pairs(theorem_envs)
@@ -211,6 +212,7 @@
   fill: rgb("#f2fbf8"),
   stroke: rgb("#88d6d1") + 1pt,
   breakable: true,
+  base_level: 2,
 )
 
 #let proof = thmproof("proof", "Proof", separator: [.])
@@ -597,7 +599,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   divisor of this form is called a #strong[principal divisor] on $X$. The set of principal divisors on $X$ is denoted by $op("PDiv") lr((X))$.
 ]
 
-#definition[Degree of Principal Divisors on Compact Riemann Surfaces][
+#proposition[Degree of Principal Divisors on Compact Riemann Surfaces][
   Let $X$ be a compact Riemann surface and $f$ be a meromorphic function on $X$. Then $deg lr((upright(d i v) lr((f)))) = 0$ and $ op("PDiv") lr((X)) subset.eq op("Div")^0 lr((X)) . $
 ]
 #definition[Picard group][
@@ -631,16 +633,13 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
    
   + $deg lr((K_X)) = 2 g_X - 2 = chi lr((X))$.
    
-  + $ l lr((D)) cases(
-      delim: "{",
-      #h(0em) = 0,
-        & upright(" if ") deg D < 0,
-      #h(0em) gt.eq 1 - g + deg D,
-        & upright(" if ") 0 lt.eq deg D lt.eq 2 g - 2,
-      #h(0em) = 1 - g + deg D,
-        & upright(" if ") deg D gt.eq 2 g - 1,
+  + 
+  $ ell lr((D)) cases(
+    "= 0" & " if " & deg D < 0,
+    gt.eq 1 - g + deg D & " if " & 0 lt.eq deg D lt.eq 2 g - 2,
+    = 1 - g + deg D & " if " & deg D gt.eq 2 g - 1,
 
-    ) $
+  ) $
 ]
 #proof[
   + Let $D = 0$. Since $upright(d i m)_(bb(C)) L (0) = 1$, we have
