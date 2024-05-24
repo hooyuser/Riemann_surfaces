@@ -71,22 +71,18 @@
 
 #let thm_env_color_dict = (
   theorem: (front: rgb("#f19000"), background: rgb("#fdf8ea")),
-  proposition: (front: rgb("#30773c"), background: rgb("#eeffee")),
+  proposition: (front: rgb("#30773c"), background: rgb("#ebf4ec")),
   lemma: (front: rgb("#907a6b"), background: rgb("#f6f4f2")),
   corollary: (front: rgb("#a74eb4"), background: rgb("#f9effb")),
   definition: (front: rgb("#000069"), background: rgb("#f2f2f9")),
 )
 
-#let quoteblock(background_color, front_color, bar_width: 0.25em, inset: 1em, contents) = table(
-  columns: 2,
-  stroke: none,
-  inset: (left: 0pt, top: 0pt, bottom: 0pt, right: bar_width),
-  gutter: 0.0em,
-  fill: (column_idx, y) =>
-  if column_idx == 0 { background_color } else { front_color },
-  [],
-  table.cell(inset: 1em, contents + h(1fr)),
-)
+#let quoteblock(background_color, front_color, bar_width: 0.25em, inset: 1em, contents) = pad(left: 0.5 * bar_width, block(
+  fill: none,
+  stroke: (left: bar_width + background_color),
+  pad(left: 0.5 * bar_width, block(fill: front_color, width: 100%, inset: inset, contents)),
+))
+
 
 #let thmbox_quote(
   identifier,
@@ -124,7 +120,7 @@
     }
     title = titlefmt(title)
     body = bodyfmt(body)
-    quoteblock(front_color, background_color)[#title#name#separator#v(3pt)#body#h(1fr)]
+    quoteblock(front_color, background_color)[#title#name#separator#v(3pt)#body]
   }
   return thmenv(identifier, base, base_level, boxfmt).with(supplement: supplement)
 }
@@ -418,6 +414,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   The ramification locus $upright(R a m)_X lr((f))$ is a discrete subset of $X$. In other words, there exist open sets $U_i subset.eq X$ such
   that each $U_i$ contains exactly one $x in upright(R a m)_X lr((f))$.
 ]
+
 #corollary[
   If $X$ is a compact Riemann surface and $f : X arrow.r Y$ is a nonconstant holomorphic map of Riemann surfaces, then the
   ramification locus is a finite set. Since the branch locus of $f$ is the image of $upright(R a m) lr((f))$ via $f$, the
@@ -449,10 +446,11 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 ][
   Let $f : X arrow.r Y$ be a holomorphic map of compact Riemann surfaces. If $f$ is non-constant, for any $y in Y - f lr((upright(R a m) lr((f))))$ that
   is not a branch point, the number $lr(|f^(- 1) lr((y))|)$ is constant and called the #strong[degree] of $f$ at $y$ and
-  is denoted by $upright(d e g) lr((f))$. If $f$ is constant, we define $upright(d e g) lr((f)) = 0$.
+  is denoted by $deg lr((f))$. If $f$ is constant, we define $deg lr((f)) = 0$.
 ]
 #proposition[
-  Let $f : X arrow.r Y$ be a non-constant holomorphic map of compact Riemann surfaces. Then for any $y in Y$, $ upright(d e g) lr((f)) = sum_(x in f^(- 1) lr((y))) k_x $
+  Let $f : X arrow.r Y$ be a non-constant holomorphic map of compact Riemann surfaces. Then for any $y in Y$, 
+  $ deg lr((f)) = sum_(x in f^(- 1) lr((y))) k_x. $
 ]
 #corollary[
   Let $f : X arrow.r hat(bb(C))$ be a non-zero meromorphic function on a compact Riemann surface $X$. Counting
@@ -472,10 +470,10 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   Let $Gamma_Y$ be a good graph on $Y$ with $f lr((upright(R a m)_X lr((f)))) subset.eq V_(Gamma_Y)$: the branch locus of $f$ is
   contained in the vertex set of $Gamma_Y$. Define $Gamma_X$ to be the “lift\" of $Gamma_Y$ via the map $f$ : the support
   of $Gamma_X$ is $f^(- 1) lr((Gamma_Y))$ and the vertices, edges and faces of $Gamma_X$ are the connected components of
-  the inverse images of vertices, edges and faces of $Gamma_Y$. Note $ upright(d e g) lr((f)) = sum_(x in f^(- 1) lr((y))) k_x = lr(|f^(- 1) lr((y))|) + sum_(x in f^(- 1) lr((y))) lr((k_x - 1)) . $ We
-  can obtain the following equations by counting the number of vertices, edges and faces of $Gamma_X$ and $Gamma_Y$: $ lr(|V_(Gamma_X)|) & = sum_(y in Gamma_Y) lr(|f^(- 1) lr((y))|) = sum_(y in V_(Gamma_Y)) upright(d e g) lr((f)) - sum_(y in V_(Gamma_Y)) sum_(x in f^(- 1) lr((y))) lr((k_x - 1)) = deg lr((f)) lr(|V_(Gamma_Y)|) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) ,\
-  lr(|E_(Gamma_X)|) & = upright(d e g) lr((f)) lr(|E_(Gamma_X)|) ,\
-  lr(|F_(Gamma_X)|) & = upright(d e g) lr((f)) lr(|F_(Gamma_X)|) . $ Thus we have $ chi lr((X)) & = lr(|V_(Gamma_X)|) - lr(|E_(Gamma_X)|) + lr(|F_(Gamma_X)|)\
+  the inverse images of vertices, edges and faces of $Gamma_Y$. Note $ deg lr((f)) = sum_(x in f^(- 1) lr((y))) k_x = lr(|f^(- 1) lr((y))|) + sum_(x in f^(- 1) lr((y))) lr((k_x - 1)) . $ We
+  can obtain the following equations by counting the number of vertices, edges and faces of $Gamma_X$ and $Gamma_Y$: $ lr(|V_(Gamma_X)|) & = sum_(y in Gamma_Y) lr(|f^(- 1) lr((y))|) = sum_(y in V_(Gamma_Y)) deg lr((f)) - sum_(y in V_(Gamma_Y)) sum_(x in f^(- 1) lr((y))) lr((k_x - 1)) = deg lr((f)) lr(|V_(Gamma_Y)|) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) ,\
+  lr(|E_(Gamma_X)|) & = deg lr((f)) lr(|E_(Gamma_X)|) ,\
+  lr(|F_(Gamma_X)|) & = deg lr((f)) lr(|F_(Gamma_X)|) . $ Thus we have $ chi lr((X)) & = lr(|V_(Gamma_X)|) - lr(|E_(Gamma_X)|) + lr(|F_(Gamma_X)|)\
               & = deg lr((f)) lr(|V_(Gamma_Y)|) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) - deg lr((f)) lr(|E_(Gamma_Y)|) + deg lr((f)) lr(|F_(Gamma_Y)|)\
               & = deg lr((f)) lr((lr(|V_(Gamma_Y)|) - lr(|E_(Gamma_Y)|) + lr(|F_(Gamma_Y)|))) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1))\
               & = deg lr((f)) chi lr((Y)) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) . $
