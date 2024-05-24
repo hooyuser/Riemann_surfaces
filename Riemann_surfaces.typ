@@ -79,13 +79,13 @@
   stroke: none,
   inset: (left: 0pt, top: 0pt, bottom: 0pt, right: bar_width),
   gutter: 0.0em,
-  fill: (x, y) =>
-  if x == 1 { front_color } else { background_color },
+  fill: (column_idx, y) =>
+  if column_idx == 0 { background_color } else { front_color },
   [],
   table.cell(inset: 1em, contents + h(1fr)),
 )
 
-#let custom_thmbox(
+#let thmbox_quote(
   identifier,
   head,
   ..blockargs,
@@ -126,7 +126,53 @@
   return thmenv(identifier, base, base_level, boxfmt).with(supplement: supplement)
 }
 
-#let thmbox_style_1(identifier, head, front_color, background_color) = custom_thmbox(
+
+#let thmbox_frame(
+  identifier,
+  head,
+  ..blockargs,
+  supplement: auto,
+  padding: (top: 0.5em, bottom: 0.5em),
+  namefmt: x => [(#x)],
+  numberfmt: x => x,
+  titlefmt: strong,
+  bodyfmt: x => x,
+  separator: [#h(0.1em):#h(0.2em)],
+  base: "heading",
+  base_level: none,
+) = {
+  if supplement == auto {
+    supplement = head
+  }
+  let boxfmt(name, number, body, title: auto, ..blockargs_individual) = {
+    if not name == none {
+      name = [ #namefmt(name) ]
+    } else {
+      name = []
+    }
+    if title == auto {
+      title = head
+    }
+    if not number == none {
+      title += " " + numberfmt(number)
+    }
+    title = titlefmt(title)
+    body = bodyfmt(body)
+    pad(..padding, block(
+      width: 100%,
+      inset: 1.2em,
+      radius: 0.3em,
+      breakable: false,
+      ..blockargs.named(),
+      ..blockargs_individual.named(),
+      [#title#name#separator#body],
+    ))
+  }
+  return thmenv(identifier, base, base_level, boxfmt).with(supplement: supplement)
+}
+
+
+#let thmbox_quote_style(identifier, head, front_color, background_color) = thmbox_quote(
   identifier,
   thm_env_sans(head, front_color, weight: 700),
   separator: [ \ ],
@@ -138,6 +184,9 @@
   background_color: background_color,
 )
 
+
+
+
 #let dict_from_pairs(pairs) = {
   for pair in pairs {
     assert(pair.len() == 2, message: "`from_pairs` accepts an array of pairs")
@@ -148,17 +197,17 @@
 
 #let theorem_envs = thm_env_color_dict.pairs().map(((env_name, env_colors)) => {
   let header = upper(env_name.first()) + env_name.slice(1) 
-  (env_name, thmbox_style_1(env_name, header, env_colors.front, env_colors.background))
+  (env_name, thmbox_quote_style(env_name, header, env_colors.front, env_colors.background))
 })
 
 #let (definition, proposition, lemma, theorem, corollary) = dict_from_pairs(theorem_envs)
 
-
-#let example = thmbox(
+#let example = thmbox_frame(
   "example",
   thm_env_sans("Example", rgb("#2a7f7f"), weight: 700),
   separator: [ \ ],
   namefmt: x => thm_env_sans(x, rgb("#2a7f7f")),
+  numberfmt: x => thm_env_sans(x, rgb("#2a7f7f")),
   fill: rgb("#f2fbf8"),
   stroke: rgb("#88d6d1") + 1pt,
   breakable: true,
@@ -186,17 +235,13 @@
 = Basic Concepts <basic-concepts>
 
 == Complex Manifold <complex-manifold>
-#definition(
-  "Holomorphic Chart",
-)[
-  Holomorphic Chart A #strong[holomorphic chart] on a topological manifold $X$ is a homeomorphism $phi : U arrow.r V subset.eq bb(C)^n$ where $U$ is
+#definition[Holomorphic Chart][
+  A #strong[holomorphic chart] on a topological manifold $X$ is a homeomorphism $phi : U arrow.r V subset.eq bb(C)^n$ where $U$ is
   an open subset of $X$, denoted by $lr((U , phi))$.
 ]
 We say that a chart $lr((U , phi))$ for a Riemann surface $X$ is #strong[centered at $x$] if $phi lr((x)) = 0$.
 
-#definition(
-  "Holomorphic Atlas",
-)[
+#definition[Holomorphic Atlas][
   A #strong[\(compatible\) holomorphic atlas] on a topological manifold $X$ is a collection of holomorphic charts $lr((U_i , phi_i))$ such
   that $union.big_i U_i = X$ and for any $i , j$, the transition function $ phi_i circle.stroked.tiny phi_j^(- 1) : phi_j lr((U_i sect U_j)) arrow.r phi_i lr((U_i sect U_j)) $ is
   holomorphic, whenever $U_i sect U_j$ is nonempty,
@@ -476,12 +521,9 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 )[
   Let $X$ be a Riemann surface. The #strong[holomorphic function sheaf] $cal(O)_X$ is the sheaf of holomorphic functions
   on $X$. That is, for any open set $U subset.eq X$, $ cal(O)_X lr((U)) = lr({f : U arrow.r bb(C) thin | thin f upright(" is holomorphic")}) . $
-   
 ]
-#block[
-  Holomorphic Function Sheaf on Compact Riemann surface Let $X$ be a compact Riemann surface. Then the only holomorphic
-  functions on $X$ are the constant functions, i.e. $cal(O)_X lr((X)) = bb(C)$.
-   
+#proposition[Holomorphic Function Sheaf on Compact Riemann Surface][
+  Let $X$ be a compact Riemann surface. Then the only holomorphic functions on $X$ are the constant functions, i.e. $cal(O)_X lr((X)) = bb(C)$.
 ]
 == Meromorphic Functions <meromorphic-functions-1>
 #definition(
@@ -491,29 +533,26 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   of meromorphic functions on $U$, denoted by $cal(M)_X lr((U))$ or simply $cal(M) lr((U))$.
    
 ]
-#block[
+#proposition[][
   Let us denote by $c_P in "Hom" lr((X , hat(bb(C))))$ the constant morphism $c_P : x arrow.r.bar P$. Then $ cal(M) lr((X)) equiv "Mor" lr((X , hat(bb(C)))) - lr({c_oo}) . $
    
 ]
-#block[
+#proposition[][
   Let $X$ be a Riemann surface and $U$ be an connected non-compact open set of $X$. Then $ cal(M) lr((U)) = upright(F r a c) lr((cal(O)_X lr((U)))) . $
+]
+#proposition[GAGA for Compact Riemann Surfaces][
+  Let $X$ be a compact Riemann surface. Then the meromorphic function field $cal(M) lr((X))$ is the field of rational
+  functions $K lr((X))$. $ cal(M) lr((X)) = K lr((X)) . $ Especially, we have $cal(M) lr((hat(bb(C)))) = bb(C) lr((z))$.
    
 ]
-#block[
-  GAGA for Compact Riemann Surfaces Let $X$ be a compact Riemann surface. Then the meromorphic function field $cal(M) lr((X))$ is
-  the field of rational functions $K lr((X))$. $ cal(M) lr((X)) = K lr((X)) . $ Especially, we have $cal(M) lr((hat(bb(C)))) = bb(C) lr((z))$.
-   
-]
-#block[
-  Order of Meromorphic Function Let $X$ be a Riemann surface and $f$ is meromorphic at $x in X$. Let $lr((U , phi))$ be a
-  chart containing $x$ such that $f circle.stroked.tiny phi^(- 1)$ is meromorphic at $phi lr((x))$. Suppose the Laurent
-  expansion of $f circle.stroked.tiny phi^(- 1)$ at $phi lr((x))$ is $ f circle.stroked.tiny phi^(- 1) = sum_(n = - oo)^oo a_n lr((z - phi lr((x))))^n . $ Then
+#definition[Order of Meromorphic Function][
+  Let $X$ be a Riemann surface and $f$ is meromorphic at $x in X$. Let $lr((U , phi))$ be a chart containing $x$ such that $f circle.stroked.tiny phi^(- 1)$ is
+  meromorphic at $phi lr((x))$. Suppose the Laurent expansion of $f circle.stroked.tiny phi^(- 1)$ at $phi lr((x))$ is $ f circle.stroked.tiny phi^(- 1) = sum_(n = - oo)^oo a_n lr((z - phi lr((x))))^n . $ Then
   the #strong[order of $f$ at $x$] is defined as $ "ord"_p lr((f)) = inf lr({n divides a_n eq.not 0}) . $ Note that the
   order of $f$ at $x$ is independent of the choice of chart containing $x$.
-   
 ]
-#block[
-  Order is a Valuation Let $X$ be a Riemann surface and $f$ is meromorphic at $p in X$. Then the order of $f$ at $p$ $ "ord"_p : cal(M)_(X , p) & arrow.r bb(Z) union { oo }\
+#proposition[Order is a Valuation][
+  Let $X$ be a Riemann surface and $f$ is meromorphic at $p in X$. Then the order of $f$ at $p$ $ "ord"_p : cal(M)_(X , p) & arrow.r bb(Z) union { oo }\
   f                        & arrow.r.bar "ord"_p lr((f)) $ is a valuation on $cal(M)_(X , p)$. That is, for any $f , g in cal(M)_(X , p)$,
   we have
    
@@ -522,11 +561,9 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   - $"ord"_p lr((f g)) = "ord"_p lr((f)) + "ord"_p lr((g))$.
    
   - $"ord"_p lr((f + g)) gt.eq min lr({"ord"_p lr((f)) , "ord"_p lr((g))})$.
-   
 ]
-#block[
-  Relation between Order and Ramification Index Let $f$ be a meromorphic function on a Riemann surface $X$ and $x in X$.
-  Then $ upright(o r d)_x lr((f)) = cases(
+#proposition[Relation between Order and Ramification Index][
+  Let $f$ be a meromorphic function on a Riemann surface $X$ and $x in X$. Then $ upright(o r d)_x lr((f)) = cases(
     delim: "{",
     0 & upright("if ") f upright(" is holomorphic at ") x upright(" and ") f lr((a)) eq.not 0,
     k_x & upright("if ") f upright(" has a zero of multiplicity ") k_x upright(" at ") x,
@@ -553,13 +590,11 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   called the #strong[divisor group of degree zero]. So we have the exact sequence \$\$\\begin{tikzcd}\[ampersand
   replacement\=\\&\] 0 \\arrow\[r\] \\& \\operatorname{Div}^0\(X) \\arrow\[r, \"\"\] \\& \\operatorname{Div}\(X)
   \\arrow\[r, \"\\deg\"\] \\& \\mathbb{Z} \\arrow\[r\] \\& 0 \\end{tikzcd}\$\$
-   
 ]
 #block[
   Principal Divisors: Divisors from Meromorphic Functions Let $X$ be a Riemann surface and $f$ be a nonzero meromorphic
   function on $X$. The #strong[divisor of $f$] is defined as $ "div" lr((f)) = sum_(x in X) "ord"_x lr((f)) x . $ Any
   divisor of this form is called a #strong[principal divisor] on $X$. The set of principal divisors on $X$ is denoted by $"PDiv" lr((X))$.
-   
 ]
 
 #definition(
@@ -585,14 +620,12 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   Let $X$ be a Riemann surface and let $omega$ be a meromorphic 1-form on $X$ which is not identically zero. The divisor
   of $omega$ is defined as $ "div" lr((omega)) = sum_(x in X) "ord"_x lr((omega)) x . $ Any divisor of this form is called
   a #strong[canonical divisor] on $X$. The set of canonical divisors on $X$ is denoted by $"KDiv" lr((X))$.
-   
 ]
 #definition(
   [Complex Vector Space $L lr((D))$],
 )[
   Let $X$ be a Riemann surface and $D$ be a divisor on $X$. The #strong[complex vector space $L lr((D))$] is defined as $ L lr((D)) = lr({f in cal(M) lr((X)) thin | thin f equiv 0 upright(" or ") "div" lr((f)) gt.eq - D}) , $ called
   the space of meromorphic functions with poles bounded by $D$. The dimension of $L lr((D))$ is denoted as $ell lr((D)) = dim_(bb(C)) L lr((D))$.
-   
 ]
 If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) lt.eq ell lr((D_2))$.
 
@@ -600,7 +633,6 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
   [Riemann-Roch Theorem],
 )[
   Let $X$ be a compact Riemann surface and $D$ be a divisor on $X$. Then $ ell lr((D)) - ell lr((K_X - D)) = deg lr((D)) + 1 - g_X . $
-   
 ]
 #corollary[
   Let $X$ be a compact Riemann surface.
@@ -631,7 +663,6 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
   [Uniformization Theorem],
 )[
   Every simply connected Riemann surface is isomorphic to open disk $bb(D)$, complex plane $bb(C)$ or Riemann sphere $hat(bb(C))$.
-   
 ]
 === Complex Plane $bb(C)$ <complex-plane-mathbb-c>
 #block[
@@ -641,12 +672,10 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
 === Riemann Sphere $hat(bb(C))$ <riemann-sphere-widehatmathbb-c>
 #block[
   Automorphism of $hat(bb(C))$ The only automorphisms of $hat(bb(C))$ are Möbius transformations $ "Aut" lr((hat(bb(C)))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin | thin a , b , c , d in bb(C) , a d - b c = 1}) tilde.equiv upright(P S L) lr((2 , bb(C))) . $
-   
 ]
 === Half Upper Plane $bb(H)$ <half-upper-plane-mathbb-h>
 #block[
   Automorphism of $bb(H)$ The automorphism group of $bb(H)$ is given by $ "Aut" lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin | thin a , b , c , d in bb(R) , a d - b c = 1}) tilde.equiv upright(P S L) lr((2 , bb(R))) . $
-   
 ]
 === Open Disk $bb(D)$ <open-disk-mathbb-d>
 #block[
@@ -654,7 +683,6 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
     {z arrow.r.bar e^(i theta) frac(z - alpha, 1 - alpha^(‾) z) , alpha in bb(C) , lr(|alpha|) < 1 , theta in bb(R)}
   )\
                     & = lr({z arrow.r.bar frac(a^(‾) z + b^(‾), b z + a) , a , b in bb(C) , lr(|a|)^2 - lr(|b|)^2 = 1}) . $
-   
 ]
 == Compact Riemann Surfaces <compact-riemann-surfaces>
 #block[
@@ -668,6 +696,5 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
      
     + Genus $g gt.eq 2$: $bb(H) \/ Gamma$ where $Gamma$ is a Fuchsian group.
   ]
-   
 ]
 
