@@ -23,26 +23,24 @@
   set text(font: "Noto Sans")
   let fill_line_color = luma(70%)
   let indents = ("l1": 30pt, "l2": 28pt, "l3": 25pt)
+  let loc = it.element.location()
+  let page_number = it.page // page number
+  let (chapter_idx, _, header_text, ..) = it.body.children
    
-  if it.level == 1 {
+  let content_line = if it.level == 1 {
     v(26pt, weak: true)
     text(size: 15pt, weight: 700, fill: outline_color)[
-      #let (chapter_idx, _, text) = it.body.children
-      #let page_number = it.page
-      #let content_line(chapter_idx) = context { //let chapter_idx_width = measure(chapter_idx).width
-      [
-      #box(stroke: none, width: indents.l1, inset: (y: 0.0em), chapter_idx) #text #h(1fr) #page_number 
-      ] }
-      #content_line(chapter_idx)
+      #box(stroke: none, width: indents.l1, inset: (y: 0.0em), chapter_idx)
+      #header_text
+      #h(1fr)
+      #page_number 
     ]
   } else if it.level == 2 {
     v(10pt, weak: true)
     text(size: 10pt, weight: 500)[
-      #let (chapter_idx, _, text) = it.body.children
-      #let page_number = it.page
       #box(stroke: none, width: indents.l1 + 2pt) // 2pt extra padding
       #box(stroke: none, width: indents.l2, chapter_idx)
-      #text 
+      #header_text 
       #h(0.2em) 
       #box(stroke: none, width: 1fr, inset: (y: 0.0em), line(length: 100%, stroke: fill_line_color + .5pt)) 
       #h(0.2em) 
@@ -51,16 +49,15 @@
   } else if it.level == 3 {
     v(8pt, weak: true)
     text(size: 9pt, weight: 400, fill: luma(15%))[
-      #let (chapter_idx, _, text, ..) = it.body.children
-      #let page_number = it.page
       #box(stroke: none, width: indents.l1 + 2pt)
       #box(stroke: none, width: indents.l2 + 1pt) // 1pt extra padding
       #box(stroke: none, width: indents.l3, chapter_idx)
-      #text 
+      #header_text 
       #h(1fr) 
       #page_number
     ]
   }
+  link(loc, content_line)
 }
 
 
@@ -229,7 +226,7 @@
 #pagebreak()
 
 #block(inset: (left: -0.5em, right: -0.5em))[
-  #outline(title: text(font: "Noto Sans", size: 23pt, weight: 700, stretch: 150%)[Contents #v(1em)])
+  #outline(title: text(font: "Noto Sans", size: 23pt, weight: 700, stretch: 150%)[Contents #v(1em)], depth: 3)
 ]
 
 #pagebreak()
