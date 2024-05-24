@@ -74,8 +74,16 @@
   definition: (front: rgb("#000069"), background: rgb("#f2f2f9")),
 )
 
-
-
+#let quoteblock(background_color, front_color, bar_width: 0.25em, inset: 1em, contents) = table(
+  columns: 2,
+  stroke: none,
+  inset: (left: 0pt, top: 0pt, bottom: 0pt, right: bar_width),
+  gutter: 0.0em,
+  fill: (x, y) =>
+  if x == 1 { front_color } else { background_color },
+  [],
+  table.cell(inset: 1em, contents + h(1fr)),
+)
 
 #let custom_thmbox(
   identifier,
@@ -91,11 +99,15 @@
   base: "heading",
   base_level: none,
   front_color: luma(230),
+  background_color: luma(30),
 ) = {
   if supplement == auto {
     supplement = head
   }
   let boxfmt(name, number, body, title: auto, ..blockargs_individual) = {
+    set block(breakable: true)
+    set par(first-line-indent: 0pt)
+     
     if not name == none {
       name = [ #namefmt(name) ]
     } else {
@@ -109,15 +121,7 @@
     }
     title = titlefmt(title)
     body = bodyfmt(body)
-    block(fill: front_color, radius: 0.3em, pad(..padding, block(
-      width: 100%,
-      inset: 1.2em,
-      radius: 0em, //0.3em
-      breakable: false,
-      ..blockargs.named(),
-      ..blockargs_individual.named(),
-      [#title#name#separator#body],
-    )))
+    quoteblock(front_color, background_color)[#title#name#separator#v(3pt)#body#h(1fr)]
   }
   return thmenv(identifier, base, base_level, boxfmt).with(supplement: supplement)
 }
@@ -131,16 +135,16 @@
   fill: background_color,
   breakable: true,
   front_color: front_color,
+  background_color: background_color,
 )
 
 #let dict_from_pairs(pairs) = {
-  let dict = (:)
   for pair in pairs {
     assert(pair.len() == 2, message: "`from_pairs` accepts an array of pairs")
-    dict.insert(..pair)
+    (pair.at(0): pair.at(1))
   }
-  dict
 }
+
 
 #let theorem_envs = thm_env_color_dict.pairs().map(((env_name, env_colors)) => {
   let header = upper(env_name.first()) + env_name.slice(1) 
@@ -557,6 +561,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   divisor of this form is called a #strong[principal divisor] on $X$. The set of principal divisors on $X$ is denoted by $"PDiv" lr((X))$.
    
 ]
+
 #definition(
   [Degree of Principal Divisors on Compact Riemann Surfaces ],
 )[
