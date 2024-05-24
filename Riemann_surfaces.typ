@@ -288,8 +288,8 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 ]
 #example[Complex Projective Line][
   The #strong[complex projective line] $bb(P)^1 lr((bb(C)))$ is the set of all complex lines through the origin in $bb(C)^2$.
-  It is a Riemann surface with the following two charts: $   & V_1 = lr({lr([z_0 : z_1]) divides z_0 eq.not 0}) , quad psi_1 lr((z_0 , z_1)) = z_1 \/ z_0\
-    & V_2 = lr({lr([z_0 : z_1]) divides z_1 eq.not 0}) , quad psi_2 lr((z_0 , z_1)) = z_0 \/ z_1 $
+  It is a Riemann surface with the following two charts: $   & V_1 = lr({lr([z_0 : z_1]) mid(|) z_0 eq.not 0}) , quad psi_1 lr((z_0 , z_1)) = z_1 \/ z_0\
+    & V_2 = lr({lr([z_0 : z_1]) mid(|) z_1 eq.not 0}) , quad psi_2 lr((z_0 , z_1)) = z_0 \/ z_1 $
 ]
 #proposition[$hat(bb(C))$ is isomorphic to $bb(P)^1 lr((bb(C)))$][
   The map $f : hat(bb(C)) arrow.r bb(P)^1 lr((bb(C)))$ $ f lr((x)) = cases(delim: "{", lr([1 : x]) & upright("if ") x eq.not oo, lr([0 : 1]) & upright("if ") x = oo) $ is
@@ -306,18 +306,19 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 #example[Affine Hyperelliptic Curves][
   Consider first the algebraic equation 
   $ y^2 = product_(k = 1)^(2 g + 1) lr((x - a_k)), $ 
-  where $lr({a_k})_(k = 1)^(2 g + 1)$ is a collection of $2 g + 1$ distinct complex numbers, and let $ accent(S, circle) = lr({lr((x , y)) in bb(C)^2 thin | thin y^2 = product_(k = 1)^(2 g + 1) lr((x - a_k))}) . $ $accent(S, circle)$ is
+  where $lr({a_k})_(k = 1)^(2 g + 1)$ is a collection of $2 g + 1$ distinct complex numbers, and let $ accent(S, circle) = lr({lr((x , y)) in bb(C)^2 thin mid(|) thin y^2 = product_(k = 1)^(2 g + 1) lr((x - a_k))}) . $ $accent(S, circle)$ is
   called an #strong[affine hyperelliptic curve]. It is a Riemann surface with the following charts
    
   - If $P_alpha = lr((x_alpha , y_alpha)) in accent(S, circle)$ satisfies $y_alpha eq.not 0$, there exists $epsilon.alt_alpha > 0$ such
-    that for any $k in { 1 , 2 , dots.h.c , 2 g + 1 }$, $ lr((a_k , 0)) in.not B_(accent(S, circle)) lr((P_alpha , epsilon.alt_alpha)) = lr({lr((x , y)) in accent(S, circle) thin | thin lr(|x - x_alpha|)^2 + lr(|y - y_alpha|)^2 < epsilon.alt_alpha^2}) $ Let $U_alpha = B_(accent(S, circle)) lr((P_alpha , epsilon.alt_alpha))$ and
-    we can check that $ phi_alpha : U_alpha & --> bb(C)\
+    that for any $k in { 1 , 2 , dots.h.c , 2 g + 1 }$, $ lr((a_k , 0)) in.not B_(accent(S, circle)) lr((P_alpha , epsilon.alt_alpha)) = lr(
+      {lr((x , y)) in accent(S, circle) thin mid(|) thin lr(|x - x_alpha|)^2 + lr(|y - y_alpha|)^2 < epsilon.alt_alpha^2}
+    ) $ Let $U_alpha = B_(accent(S, circle)) lr((P_alpha , epsilon.alt_alpha))$ and we can check that $ phi_alpha : U_alpha & --> bb(C)\
     lr((x , y))         & arrow.r.long.bar x . $ is holomorphic and has inverse $ phi_alpha^(- 1) lr((x)) = lr((x , sqrt(product_(k = 1)^(2 g + 1) lr((x - a_k))) #h(0em))) , $ where
     the branch of the square root is chosen so that its value at $x_alpha$ is $y_alpha$ instead of $- y_alpha$.
    
   - If $lr((a_j , 0)) in accent(S, circle)$ for some integer $j in lr([1 , 2 g + 1])$, there exists $epsilon.alt_j > 0$ such
-    that $ a_k in.not B_(bb(C)) lr((a_j , epsilon.alt_j^2)) = lr({x in bb(C) thin | thin lr(|x - a_j|) < epsilon.alt_j^2}) , quad forall k eq.not j , $ which
-    implies for all $z in B_(bb(C)) lr((0 , epsilon.alt_j)) = lr({x in bb(C) thin | thin lr(|x|) < epsilon.alt_j})$, $ lr(|z^2 + a_j - a_k|) gt.eq lr(|a_j - a_k|) - lr(|z^2|) > epsilon.alt_j^2 - epsilon.alt_j^2 = 0 , quad forall k eq.not j . $ Let $V_j = B_(bb(C)) lr((0 , epsilon.alt_j))$ and
+    that $ a_k in.not B_(bb(C)) lr((a_j , epsilon.alt_j^2)) = lr({x in bb(C) thin mid(|) thin lr(|x - a_j|) < epsilon.alt_j^2}) , quad forall k eq.not j , $ which
+    implies for all $z in B_(bb(C)) lr((0 , epsilon.alt_j)) = lr({x in bb(C) thin mid(|) thin lr(|x|) < epsilon.alt_j})$, $ lr(|z^2 + a_j - a_k|) gt.eq lr(|a_j - a_k|) - lr(|z^2|) > epsilon.alt_j^2 - epsilon.alt_j^2 = 0 , quad forall k eq.not j . $ Let $V_j = B_(bb(C)) lr((0 , epsilon.alt_j))$ and
     we can check that $ psi_j : V_j & --> accent(S, circle)\
     z           & arrow.r.long.bar lr((a_j + z^2 , z sqrt(product_(k eq.not j) lr((z^2 + a_j - a_k))))) $ is holomorphic
     with any choice of the branch of the square root. Given $z_1 , z_2 in V_j$, if $psi_j lr((z_1)) = psi_j lr((z_2))$, then $a_j + z_1^2 = a_j + z_2^2$,
@@ -499,18 +500,18 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 ]
 #proof[
   + $ sum_(x in upright(R a m) (f)) (k_x - 1) = 2 (g_X - 1 - (g_Y - 1) deg (f)) . $
-  
+   
   + $ 2 g_X - 2 = (2 g_Y - 2) deg (f) + sum_(x in upright(R a m) (f)) (k_x - 1) gt.eq (2 g_Y - 2) deg (f) gt.eq 2 g_Y - 2 . $
-  
+   
   + $f$ is unramified on $X$, if and only if
     $ 2 g_X - 2 = (2 g_Y - 2) deg (f) arrow.l.r.double g_X = g_Y deg (f) - deg (f) + 1 . $
-  
+   
   + If $g_Y = 0$ and $g_X > 0$, then
     $ sum_(x in upright(R a m) (f)) (k_x - 1) = 2 (g_X - 1 + deg (f)) gt.eq 2 g_X > 0 . $
-  
+   
   + If $g_Y = 1$, then
     $ 2 (g_X - 1) = sum_(x in upright(R a m) (f)) (k_x - 1) . $ So $f$ is unramified if and only if $g_X = 1$.
-  
+   
   + Suppose $f$ is unramified and $g_Y > 1$. If $deg (f) = 1$, then
     $g_X = deg (f) (g_Y - 1) + 1 = g_Y$. If $deg (f) > 1$, then
     $ g_X = deg (f) (g_Y - 1) + 1 > g_Y - 1 + 1 = g_Y . $
@@ -518,7 +519,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 == Holomorphic Function Sheaf <holomorphic-function-sheaf>
 #definition[Holomorphic Function Sheaf][
   Let $X$ be a Riemann surface. The #strong[holomorphic function sheaf] $cal(O)_X$ is the sheaf of holomorphic functions
-  on $X$. That is, for any open set $U subset.eq X$, $ cal(O)_X lr((U)) = lr({f : U arrow.r bb(C) thin | thin f upright(" is holomorphic")}) . $
+  on $X$. That is, for any open set $U subset.eq X$, $ cal(O)_X lr((U)) = lr({f : U arrow.r bb(C) thin mid(|) thin f upright(" is holomorphic")}) . $
 ]
 #proposition[Holomorphic Function Sheaf on Compact Riemann Surface][
   Let $X$ be a compact Riemann surface. Then the only holomorphic functions on $X$ are the constant functions, i.e. $cal(O)_X lr((X)) = bb(C)$.
@@ -541,7 +542,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 #definition[Order of Meromorphic Function][
   Let $X$ be a Riemann surface and $f$ is meromorphic at $x in X$. Let $lr((U , phi))$ be a chart containing $x$ such that $f circle.stroked.tiny phi^(- 1)$ is
   meromorphic at $phi lr((x))$. Suppose the Laurent expansion of $f circle.stroked.tiny phi^(- 1)$ at $phi lr((x))$ is $ f circle.stroked.tiny phi^(- 1) = sum_(n = - oo)^oo a_n lr((z - phi lr((x))))^n . $ Then
-  the #strong[order of $f$ at $x$] is defined as $ "ord"_p lr((f)) = inf lr({n divides a_n eq.not 0}) . $ Note that the
+  the #strong[order of $f$ at $x$] is defined as $ "ord"_p lr((f)) = inf lr({n mid(|) a_n eq.not 0}) . $ Note that the
   order of $f$ at $x$ is independent of the choice of chart containing $x$.
 ]
 #proposition[Order is a Valuation][
@@ -605,92 +606,91 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   Let $X$ be a Riemann surface. The #strong[Picard group] of $X$ is defined as $ op("Pic") lr((X)) = op("Div") lr((X)) \/ op("PDiv") lr((X)) . $ The #strong[restricted Picard group] of $X$ is
   defined as $ op("Pic")^0 lr((X)) = op("Div")^0 lr((X)) \/ op("PDiv") lr((X)) . $
 ]
-#block[
-  Partial Order on $op("Div") lr((X))$ Given $D_1 , D_2 in op("Div") lr((X))$ where $ D_1 = sum_(x in X) n_x x , quad D_2 = sum_(x in X) m_x . $ We
-  define a partial order on $op("Div") lr((X))$ by $ D_1 lt.eq D_2 arrow.l.r.double n_x lt.eq m_x , quad forall x in X . $
+#definition[
+  Partial Order on $op("Div") lr((X))$
+][
+  Given $D_1 , D_2 in op("Div") lr((X))$ where $ D_1 = sum_(x in X) n_x x , quad D_2 = sum_(x in X) m_x . $ We define a
+  partial order on $op("Div") lr((X))$ by $ D_1 lt.eq D_2 arrow.l.r.double n_x lt.eq m_x , quad forall x in X . $
    
 ]
-#definition(
-  [Canonical Divisor],
-)[
+#definition[Canonical Divisor][
   Let $X$ be a Riemann surface and let $omega$ be a meromorphic 1-form on $X$ which is not identically zero. The divisor
   of $omega$ is defined as $ op("div") lr((omega)) = sum_(x in X) "ord"_x lr((omega)) x . $ Any divisor of this form is
   called a #strong[canonical divisor] on $X$. The set of canonical divisors on $X$ is denoted by $"KDiv" lr((X))$.
 ]
-#definition(
-  [Complex Vector Space $L lr((D))$],
-)[
-  Let $X$ be a Riemann surface and $D$ be a divisor on $X$. The #strong[complex vector space $L lr((D))$] is defined as $ L lr((D)) = lr({f in cal(M) lr((X)) thin | thin f equiv 0 op(" or")"" op("div") lr((f)) gt.eq - D}) , $ called
+#definition[Complex Vector Space $L lr((D))$][
+  Let $X$ be a Riemann surface and $D$ be a divisor on $X$. The #strong[complex vector space $L lr((D))$] is defined as $ L lr((D)) = lr({f in cal(M) lr((X)) thin mid(|) thin f equiv 0 op(" or")"" op("div") lr((f)) gt.eq - D}) , $ called
   the space of meromorphic functions with poles bounded by $D$. The dimension of $L lr((D))$ is denoted as $ell lr((D)) = dim_(bb(C)) L lr((D))$.
 ]
 If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) lt.eq ell lr((D_2))$.
 
-#theorem(
-  [Riemann-Roch Theorem],
-)[
+#theorem[Riemann-Roch Theorem][
   Let $X$ be a compact Riemann surface and $D$ be a divisor on $X$. Then $ ell lr((D)) - ell lr((K_X - D)) = deg lr((D)) + 1 - g_X . $
 ]
 #corollary[
   Let $X$ be a compact Riemann surface.
+  + $ell lr((K_X)) = g_X$.
    
-  #block[
-    #set enum(numbering: "(i)", start: 1)
-    + $ell lr((K_X)) = g_X$.
-     
-    + $deg lr((K_X)) = 2 g_X - 2 = chi lr((X))$.
-     
-    + $ l lr((D)) cases(
-        delim: "{",
-        #h(0em) = 0,
-          & upright(" if ") deg D < 0,
-        #h(0em) gt.eq 1 - g + deg D,
-          & upright(" if ") 0 lt.eq deg D lt.eq 2 g - 2,
-        #h(0em) = 1 - g + deg D,
-          & upright(" if ") deg D gt.eq 2 g - 1,
+  + $deg lr((K_X)) = 2 g_X - 2 = chi lr((X))$.
+   
+  + $ l lr((D)) cases(
+      delim: "{",
+      #h(0em) = 0,
+        & upright(" if ") deg D < 0,
+      #h(0em) gt.eq 1 - g + deg D,
+        & upright(" if ") 0 lt.eq deg D lt.eq 2 g - 2,
+      #h(0em) = 1 - g + deg D,
+        & upright(" if ") deg D gt.eq 2 g - 1,
 
-      ) $
-  ]
+    ) $
+]
+#proof[
+  + Let $D = 0$. Since $upright(d i m)_(bb(C)) L (0) = 1$, we have
+    $ell (0) = 1$.
    
+  + Let $D = K_X$.
 ]
 
 = Classification of Riemann Surfaces <classification-of-riemann-surfaces>
 == Simply Connected Riemann Surfaces <simply-connected-riemann-surfaces>
-#theorem(
-  [Uniformization Theorem],
-)[
+#theorem[Uniformization Theorem][
   Every simply connected Riemann surface is isomorphic to open disk $bb(D)$, complex plane $bb(C)$ or Riemann sphere $hat(bb(C))$.
 ]
 === Complex Plane $bb(C)$ <complex-plane-mathbb-c>
-#block[
-  Automorphism of $bb(C)$ The only automorphisms of $bb(C)$ are affine transformations $ op("Aut") lr((bb(C))) = lr({z arrow.r.bar a z + b thin | thin a , b in bb(C)}) . $
+#proposition[
+  Automorphism of $bb(C)$
+][
+  The only automorphisms of $bb(C)$ are affine transformations $ op("Aut") lr((bb(C))) = lr({z arrow.r.bar a z + b thin mid(|) thin a , b in bb(C)}) . $
    
 ]
 === Riemann Sphere $hat(bb(C))$ <riemann-sphere-widehatmathbb-c>
-#block[
-  Automorphism of $hat(bb(C))$ The only automorphisms of $hat(bb(C))$ are Möbius transformations $ op("Aut") lr((hat(bb(C)))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin | thin a , b , c , d in bb(C) , a d - b c = 1}) tilde.equiv upright(P S L) lr((2 , bb(C))) . $
+#proposition[
+  Automorphism of $hat(bb(C))$
+][The only automorphisms of $hat(bb(C))$ are Möbius transformations $ op("Aut") lr((hat(bb(C)))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(C) , a d - b c = 1}) tilde.equiv upright(P S L) lr((2 , bb(C))) . $
 ]
 === Half Upper Plane $bb(H)$ <half-upper-plane-mathbb-h>
-#block[
-  Automorphism of $bb(H)$ The automorphism group of $bb(H)$ is given by $ op("Aut") lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin | thin a , b , c , d in bb(R) , a d - b c = 1}) tilde.equiv upright(P S L) lr((2 , bb(R))) . $
+#proposition[
+  Automorphism of $bb(H)$
+][The automorphism group of $bb(H)$ is given by $ op("Aut") lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(R) , a d - b c = 1}) tilde.equiv upright(P S L) lr((2 , bb(R))) . $
 ]
 === Open Disk $bb(D)$ <open-disk-mathbb-d>
-#block[
-  Automorphism of $bb(D)$ The automorphism group of $bb(D)$ is given by $ op("Aut") lr((bb(D))) & = lr(
-    {z arrow.r.bar e^(i theta) frac(z - alpha, 1 - alpha^(‾) z) , alpha in bb(C) , lr(|alpha|) < 1 , theta in bb(R)}
+#proposition[
+  Automorphism of $bb(D)$
+][
+  The automorphism group of $bb(D)$ is given by $ op("Aut") lr((bb(D))) & = lr(
+    {z arrow.r.bar e^(i theta) frac(z - alpha, 1 - overline(alpha) z) thin mid(|) thin alpha in bb(C) , lr(|alpha|) < 1 , theta in bb(R)}
   )\
-                        & = lr({z arrow.r.bar frac(a^(‾) z + b^(‾), b z + a) , a , b in bb(C) , lr(|a|)^2 - lr(|b|)^2 = 1}) . $
+                        & = lr(
+    {z arrow.r.bar frac(overline(a) z + overline(b), b z + a) thin mid(|) thin a, b in bb(C) , lr(|a|)^2 - lr(|b|)^2 = 1}
+  ) . $
 ]
 == Compact Riemann Surfaces <compact-riemann-surfaces>
-#block[
-  Uniformization of compact Riemann surfaces Compact Riemann surfaces can be classified as follows
+#theorem[Uniformization of compact Riemann surfaces][ 
+  Compact Riemann surfaces can be classified as follows
+  + Genus $g = 0$: $hat(bb(C))$.
    
-  #block[
-    #set enum(numbering: "(i)", start: 1)
-    + Genus $g = 0$: $hat(bb(C))$.
-     
-    + Genus $g = 1$: $bb(C) \/ Lambda$ where $Lambda = w_1 bb(Z) xor w_2 bb(Z) lr((w_1 \/ w_2 in.not bb(R)))$ is a lattice in $bb(C)$.
-     
-    + Genus $g gt.eq 2$: $bb(H) \/ Gamma$ where $Gamma$ is a Fuchsian group.
-  ]
+  + Genus $g = 1$: $bb(C) \/ Lambda$ where $Lambda = w_1 bb(Z) xor w_2 bb(Z) lr((w_1 \/ w_2 in.not bb(R)))$ is a lattice in $bb(C)$.
+   
+  + Genus $g gt.eq 2$: $bb(H) \/ Gamma$ where $Gamma$ is a Fuchsian group.
 ]
 
