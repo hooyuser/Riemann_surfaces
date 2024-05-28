@@ -231,6 +231,8 @@
 
 #pagebreak()
 
+#let cal(x) = text(font: "Computer Modern Symbol", x)
+
 = Basic Concepts <basic-concepts>
 
 == Complex Manifold <complex-manifold>
@@ -524,17 +526,17 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 == Meromorphic Functions <meromorphic-functions-1>
 #definition[Meromorphic Function Field][
   Let $X$ be a Riemann surface and $U$ be an open set of $X$. The #strong[meromorphic function field] on $U$ is the field
-  of meromorphic functions on $U$, denoted by $cal(M)_X lr((U))$ or simply $cal(M) lr((U))$.
+  of meromorphic functions on $U$, denoted by $cal(M)_X lr((U))$ or simply $cal(M)lr((U))$.
 ]
 #proposition[][
-  Let us denote by $c_P in op("Hom") lr((X , hat(bb(C))))$ the constant morphism $c_P : x arrow.r.bar P$. Then $ cal(M) lr((X)) equiv op("Mor") lr((X , hat(bb(C)))) - lr({c_oo}) . $
+  Let us denote by $c_P in op("Hom") lr((X , hat(bb(C))))$ the constant morphism $c_P : x arrow.r.bar P$. Then $ cal(M)lr((X)) equiv op("Mor") lr((X , hat(bb(C)))) - lr({c_oo}) . $
 ]
 #proposition[][
-  Let $X$ be a Riemann surface and $U$ be an connected non-compact open set of $X$. Then $ cal(M) lr((U)) = op("Frac") lr((cal(O)_X lr((U)))) . $
+  Let $X$ be a Riemann surface and $U$ be an connected non-compact open set of $X$. Then $ cal(M)lr((U)) = op("Frac") lr((cal(O)_X lr((U)))) . $
 ]
 #proposition[GAGA for Compact Riemann Surfaces][
   Let $X$ be a compact Riemann surface. Then the meromorphic function field $cal(M) lr((X))$ is the field of rational
-  functions $K lr((X))$. $ cal(M) lr((X)) = K lr((X)) . $ Especially, we have $cal(M) lr((hat(bb(C)))) = bb(C) lr((z))$.
+  functions $K lr((X))$. $ cal(M)lr((X)) = K lr((X)) . $ Especially, we have $cal(M) lr((hat(bb(C)))) = bb(C) lr((z))$.
 ]
 #definition[Order of Meromorphic Function][
   Let $X$ be a Riemann surface and $f$ is meromorphic at $x in X$. Let $lr((U , phi))$ be a chart containing $x$ such that $f circle.stroked.tiny phi^(- 1)$ is
@@ -662,7 +664,7 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
   Automorphism of $hat(bb(C))$
 ][The only automorphisms of $hat(bb(C))$ are Möbius transformations $ op("Aut") lr((hat(bb(C)))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(C) , a d - b c = 1}) tilde.equiv upright(P S L) lr((2 , bb(C))) . $
 ]
-=== Half Upper Plane $bb(H)$ <half-upper-plane-mathbb-h>
+=== Upper Half Plane $bb(H)$ <upper-half-plane-mathbb-h>
 #proposition[
   Automorphism of $bb(H)$
 ][The automorphism group of $bb(H)$ is given by $ op("Aut") lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(R) , a d - b c = 1}) tilde.equiv upright(P S L) lr((2 , bb(R))) . $
