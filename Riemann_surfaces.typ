@@ -231,7 +231,7 @@
 
 #pagebreak()
 
-#let cal(x) = text(font: "Computer Modern Symbol", x)
+#let cal(x) = math.class("unary", text(font: "Computer Modern Symbol", x))
 
 = Basic Concepts <basic-concepts>
 
@@ -463,13 +463,13 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 #theorem(
   [Riemann-Hurwitz Formula],
 )[
-  Let $f : X arrow.r Y$ be a nonconstant, degree d, holomorphic map of compact Riemann surfaces. Denote the genus of $X$ by $g_X$ and
+  Let $f : X arrow.r Y$ be a nonconstant, degree $d$, holomorphic map of compact Riemann surfaces. Denote the genus of $X$ by $g_X$ and
   the genus of $g_Y$. Then $ 2 g_X - 2 = lr((2 g_Y - 2)) deg lr((f)) + sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) , $ where $k_x$ is
   the ramification index of $f$ at $x$.
 ]
 #proof[
   Let $Gamma_Y$ be a good graph on $Y$ with $f lr((upright(R a m)_X lr((f)))) subset.eq V_(Gamma_Y)$: the branch locus of $f$ is
-  contained in the vertex set of $Gamma_Y$. Define $Gamma_X$ to be the “lift\" of $Gamma_Y$ via the map $f$ : the support
+  contained in the vertex set of $Gamma_Y$. Define $Gamma_X$ to be the "lift" of $Gamma_Y$ via the map $f$ : the support
   of $Gamma_X$ is $f^(- 1) lr((Gamma_Y))$ and the vertices, edges and faces of $Gamma_X$ are the connected components of
   the inverse images of vertices, edges and faces of $Gamma_Y$. Note $ deg lr((f)) = sum_(x in f^(- 1) lr((y))) k_x = lr(|f^(- 1) lr((y))|) + sum_(x in f^(- 1) lr((y))) lr((k_x - 1)) . $ We
   can obtain the following equations by counting the number of vertices, edges and faces of $Gamma_X$ and $Gamma_Y$: $ lr(|V_(Gamma_X)|) & = sum_(y in Gamma_Y) lr(|f^(- 1) lr((y))|) = sum_(y in V_(Gamma_Y)) deg lr((f)) - sum_(y in V_(Gamma_Y)) sum_(x in f^(- 1) lr((y))) lr((k_x - 1)) = deg lr((f)) lr(|V_(Gamma_Y)|) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) ,\
@@ -529,14 +529,14 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   of meromorphic functions on $U$, denoted by $cal(M)_X lr((U))$ or simply $cal(M)lr((U))$.
 ]
 #proposition[][
-  Let us denote by $c_P in op("Hom") lr((X , hat(bb(C))))$ the constant morphism $c_P : x arrow.r.bar P$. Then $ cal(M)lr((X)) equiv op("Mor") lr((X , hat(bb(C)))) - lr({c_oo}) . $
+  Let us denote by $c_P in op("Hom") lr((X , hat(bb(C))))$ the constant morphism $c_P : x arrow.r.bar P$. Then $ cal(M)lr((X)) = op("Mor") lr((X , hat(bb(C)))) - lr({c_oo}) . $
 ]
 #proposition[][
   Let $X$ be a Riemann surface and $U$ be an connected non-compact open set of $X$. Then $ cal(M)lr((U)) = op("Frac") lr((cal(O)_X lr((U)))) . $
 ]
 #proposition[GAGA for Compact Riemann Surfaces][
-  Let $X$ be a compact Riemann surface. Then the meromorphic function field $cal(M) lr((X))$ is the field of rational
-  functions $K lr((X))$. $ cal(M)lr((X)) = K lr((X)) . $ Especially, we have $cal(M) lr((hat(bb(C)))) = bb(C) lr((z))$.
+  Let $X$ be a compact Riemann surface. Then the meromorphic function field $cal(M)lr((X))$ is the field of rational
+  functions $K lr((X))$. $ cal(M)lr((X)) = K lr((X)) . $ Especially, we have $cal(M)lr((hat(bb(C)))) = bb(C) lr((z))$.
 ]
 #definition[Order of Meromorphic Function][
   Let $X$ be a Riemann surface and $f$ is meromorphic at $x in X$. Let $lr((U , phi))$ be a chart containing $x$ such that $f circle.stroked.tiny phi^(- 1)$ is
