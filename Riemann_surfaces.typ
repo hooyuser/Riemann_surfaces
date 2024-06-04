@@ -7,10 +7,18 @@
 #set page(margin: 1.9cm)
 #set heading(numbering: "1.1")
 #set par(leading: 0.55em, first-line-indent: 1.8em, justify: true)
-#set text(font: "New Computer Modern", size: 11pt, fallback: false)
-#show math.equation: set text(weight: 400)
+
+// set font for document text
+// #set text(font: "New Computer Modern", size: 11pt, fallback: false)
+#set text(font: "STIX Two Text", size: 11pt, fallback: false)
+
+// set font for math text
+// #show math.equation: set text(font: "STIX Two Math", weight: 400)
+#show math.equation: set text(font: "New Computer Modern Math", weight: 450, fallback: false)
 #show math.equation: set block(below: 8pt, above: 9pt)
 //#show raw: set text(font: "New Computer Modern Mono")
+
+#set strong(delta: 200)
 
 #show par: set block(spacing: 0.55em)
 #show heading: set block(above: 1.4em, below: 1em)
@@ -61,7 +69,19 @@
 }
 
 
-#let thm_env_sans(name, color, weight: 400) = [#text(font: "Latin Modern Sans", weight: weight, fill: color)[#name]]
+
+
+#let thm_env_head_sans(name, color) = [#text(font: "Latin Modern Sans", weight: 700, fill: color)[#name]]
+
+#let thm_env_name_sans(name, color) = [#text(font: "Noto Sans Display", weight: 500, fill: color, size: 10.5pt)[#name]]
+
+// #let thm_env_name_sans(name, color) = [#text(font: "Latin Modern Sans", weight: 500, fill: color)[#name]]
+
+
+// #let thm_env_name_sans(name, color) = thm_env_sans(name, color, "Latin Modern Sans", weight: 400)
+
+
+
 
 #let theorem_color = rgb("#f19000")
 #let theorem_color_bg = rgb("#fdf8ea")
@@ -171,10 +191,10 @@
 
 #let thmbox_quote_style(identifier, head, front_color, background_color) = thmbox_quote(
   identifier,
-  thm_env_sans(head, front_color, weight: 700),
+  thm_env_head_sans(head, front_color),
   separator: [ \ ],
-  namefmt: x => thm_env_sans(x, front_color),
-  numberfmt: x => thm_env_sans(x, front_color, weight: 700),
+  namefmt: x => thm_env_name_sans(x, front_color),
+  numberfmt: x => thm_env_head_sans(x, front_color),
   fill: background_color,
   breakable: true,
   front_color: front_color,
@@ -202,10 +222,10 @@
 
 #let example = thmbox_frame(
   "example",
-  thm_env_sans("Example", rgb("#2a7f7f"), weight: 700),
+  thm_env_head_sans("Example", rgb("#2a7f7f")),
   separator: [ \ ],
-  namefmt: x => thm_env_sans(x, rgb("#2a7f7f")),
-  numberfmt: x => thm_env_sans(x, rgb("#2a7f7f")),
+  namefmt: x => thm_env_name_sans(x, rgb("#2a7f7f")),
+  numberfmt: x => thm_env_head_sans(x, rgb("#2a7f7f")),
   fill: rgb("#f2fbf8"),
   stroke: rgb("#88d6d1") + 1pt,
   breakable: true,
@@ -319,10 +339,9 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
     we can check that $ psi_j : V_j & --> accent(S, circle)\
     z           & arrow.r.long.bar lr((a_j + z^2 , z sqrt(product_(k eq.not j) lr((z^2 + a_j - a_k))))) $ is holomorphic
     with any choice of the branch of the square root. Given $z_1 , z_2 in V_j$, if $psi_j lr((z_1)) = psi_j lr((z_2))$, then $a_j + z_1^2 = a_j + z_2^2$,
-    which implies $z_1 = z_2$. Hence $psi_j$ is injective and is a biholomorphism onto its image. So we can take $U_j = psi_j lr((V_j))$ and $phi_j = psi_j^(- 1)$ as
-    a chart.
-     
-    (Note we cannot set the first coordinate simply as $a_j + z$, because it would enforce a branch cut from the square root
+    which implies $z_1 = z_2$. Hence $psi_j$ is injective and is a biholomorphism onto its image. So we can take 
+    $ (U_j, phi_j) = (psi_j lr((V_j)), psi_j^(- 1)) $ 
+    as a chart. (Note we cannot set the first coordinate simply as $a_j + z$, because it would enforce a branch cut from the square root
     to intrude into the disk $B_(bb(C)) lr((0 , epsilon.alt_j))$, thereby disrupting the holomorphicity of $psi$.)
    
   we can check that $ phi_alpha circle.stroked.tiny phi_j^(- 1) lr((z)) = a_j + z^2 , $ which is holomorphic. Therefore, $accent(S, circle)$ is
