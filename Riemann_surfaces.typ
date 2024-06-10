@@ -22,11 +22,39 @@
 
 #set strong(delta: 200)
 
-#show par: set block(spacing: 0.55em)
-#show heading: set block(above: 1.4em, below: 1em)
-
 #set enum(indent: 0.45em, body-indent: 0.45em, numbering: "(i)", start: 1)
 #set list(indent: 0.45em, body-indent: 0.45em)
+
+
+#show par: set block(spacing: 0.55em)
+#show heading: set block(above: 1.4em, below: 1em)
+// #set heading(numbering: "1.")
+
+#show heading: it => {
+  if it.numbering == none {
+    it
+  } else if it.level == 1 {
+    set par(first-line-indent: 0em)
+    text(weight: 550, 22pt, tracking: 0.5pt, font: "Lato", fill: luma(30%))[
+      #v(2em)
+      Chapter #counter(heading).display(it.numbering)#v(1.1em, weak: true)
+    ]
+    text(weight: 600, 28pt, font: "Lato")[
+      #it.body #v(2em, weak: true)
+    ]
+  } else if it.level == 2 {
+    set text(16pt, weight: 600, font: "New Computer Modern")
+    it
+  } else if it.level == 3 {
+    set text(13pt, weight: 600, font: "New Computer Modern")
+    it
+  } else {
+    it
+  }
+}
+
+
+
 
 #let outline_color = rgb("#4682b4")
 #show outline.entry: it => {
@@ -241,7 +269,7 @@
 
 // Overwrite the default definition
 
-#let hatCC = $hat(CC, size:#1.00001em)$
+#let hatCC = $hat(CC, size: #1.00001em)$
 
 
 // Title Page
@@ -311,8 +339,8 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   the upper half-plane $bb(H) = { z in bb(C) : "Im" z > 0 }$ and the punctured complex plane $bb(C)^(\*) = bb(C) \\ { 0 }$.
 ]
 #example[Riemann Sphere][
-  The #strong[Riemann sphere] is the one-point compactification of $bb(C)$, denoted by $hatCC = bb(C) union { oo }$.
-  It is a Riemann surface with the following two charts: $   & U_1 = bb(C) , quad phi_1 lr((z))= z\
+  The #strong[Riemann sphere] is the one-point compactification of $bb(C)$, denoted by $hatCC = bb(C) union { oo }$. It is
+  a Riemann surface with the following two charts: $   & U_1 = bb(C) , quad phi_1 lr((z))= z\
     & U_2 = hatCC - { 0 } , quad phi_2 lr((z)) = cases(delim: "{", 1 \/ z & upright("if ") z eq.not oo, 0 & upright("if ") z = oo) $
 ]
 #example[Complex Projective Line][
@@ -361,9 +389,9 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 ]
 == Meromorphic Functions <meromorphic-functions>
 #definition[Meromorphic Functions][
-  Let $X$ be a Riemann surface. A function on $f : X arrow.r hatCC$ is called #strong[meromorphic at $x in X$] if
-  there is a chart $lr((U , phi))$ containing $x$ such that $f circle.stroked.tiny phi^(- 1)$ is meromorphic at $phi lr((x))$.
-  The function $f$ is called #strong[meromorphic on $X$] if it is meromorphic at every point of $X$.
+  Let $X$ be a Riemann surface. A function on $f : X arrow.r hatCC$ is called #strong[meromorphic at $x in X$] if there is
+  a chart $lr((U , phi))$ containing $x$ such that $f circle.stroked.tiny phi^(- 1)$ is meromorphic at $phi lr((x))$. The
+  function $f$ is called #strong[meromorphic on $X$] if it is meromorphic at every point of $X$.
 ]
 #definition[Singularity][
   Singularity Let $f$ be holomorphic in a punctured neighborhood of $p in$ $X$.
@@ -377,6 +405,9 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   - We say $f$ has an #strong[essential singularity] at $p$ if and only if there exists a chart $phi.alt : U arrow.r V$ with $p in U$,
     such that the composition $f circle.stroked.tiny phi.alt^(- 1)$ has an essential singularity at $phi.alt lr((p))$.
 ]
+
+#pagebreak()
+
 = Holomorphic Maps <holomorphic-maps>
 == Local Structure of Holomorphic Maps <local-structure-of-holomorphic-maps>
 #theorem[Local Expression of Holomorphic Map][
@@ -485,8 +516,8 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   $ deg lr((f)) = sum_(x in f^(- 1) lr((y))) k_x. $
 ]
 #corollary[
-  Let $f : X arrow.r hatCC$ be a non-zero meromorphic function on a compact Riemann surface $X$. Counting
-  multiplicities, the number of poles of $f$ is equal to the number of zeros of $f$.
+  Let $f : X arrow.r hatCC$ be a non-zero meromorphic function on a compact Riemann surface $X$. Counting multiplicities,
+  the number of poles of $f$ is equal to the number of zeros of $f$.
 ]
 #proof[
   Since $ sum_(x in f^(- 1) lr((0))) k_x = sum_(x in f^(- 1) lr((oo))) k_x , $ we have $ sum_(x upright("is a zero")) upright("multiplicity of ") x = sum_(x upright("is a pole")) upright("multiplicity of ") x . $
@@ -567,7 +598,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 ]
 #proposition[GAGA for Compact Riemann Surfaces][
   Let $X$ be a compact Riemann surface. Then the meromorphic function field $cal(M)lr((X))$ is the field of rational
-  functions $K lr((X))$. $ cal(M)lr((X)) = K lr((X)) . $ Especially, we $hat(CC,size:#1em)$ have $cal(M)lr(hat(C,size:#3em)) = bb(C) lr((z))$.
+  functions $K lr((X))$. $ cal(M)lr((X)) = K lr((X)) . $ Especially, we $hat(CC, size: #1em)$ have $cal(M)lr(hat(C, size: #3em)) = bb(C) lr((z))$.
 ]
 #definition[Order of Meromorphic Function][
   Let $X$ be a Riemann surface and $f$ is meromorphic at $x in X$. Let $lr((U , phi))$ be a chart containing $x$ such that $f circle.stroked.tiny phi^(- 1)$ is
@@ -677,6 +708,8 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
    
   + Let $D = K_X$.
 ]
+
+#pagebreak()
 
 = Classification of Riemann Surfaces <classification-of-riemann-surfaces>
 == Simply Connected Riemann Surfaces <simply-connected-riemann-surfaces>
