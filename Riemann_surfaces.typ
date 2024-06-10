@@ -1,6 +1,8 @@
 #import "@preview/ctheorems:1.1.2": *
 #import "@preview/fletcher:0.4.5" as fletcher: diagram, node, edge
 
+
+
 #show: thmrules.with(qed-symbol: $square$)
 
 //#set page(width: 16cm, height: auto, margin: 1.5cm)
@@ -71,6 +73,7 @@
 
 
 
+
 #let thm_env_head_sans(name, color) = [#text(font: "Latin Modern Sans", weight: 700, fill: color)[#name]]
 
 #let thm_env_name_sans(name, color) = [#text(font: "Noto Sans Display", weight: 500, fill: color, size: 10.5pt)[#name]]
@@ -133,11 +136,11 @@
       title = head
     }
     if not number == none {
-      title += " " + numberfmt(number)
+      title += h(0.15em) + numberfmt(number)
     }
     title = titlefmt(title)
     body = bodyfmt(body)
-    quoteblock(front_color, background_color)[#title#name#separator#v(3pt)#body]
+    quoteblock(front_color, background_color)[#title#h(2pt)#name#separator#v(3pt)#body]
   }
   return thmenv(identifier, base, base_level, boxfmt).with(supplement: supplement)
 }
@@ -234,6 +237,13 @@
 
 #let proof = thmproof("proof", "Proof", separator: [.])
 
+
+
+// Overwrite the default definition
+
+#let hatCC = $hat(CC, size:#1.00001em)$
+
+
 // Title Page
 #v(1fr)
 #align(center)[
@@ -253,7 +263,9 @@
 
 #let cal(x) = math.class("unary", text(font: "Computer Modern Symbol", x))
 
+
 = Basic Concepts <basic-concepts>
+
 
 == Complex Manifold <complex-manifold>
 #definition[Holomorphic Chart][
@@ -299,17 +311,17 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   the upper half-plane $bb(H) = { z in bb(C) : "Im" z > 0 }$ and the punctured complex plane $bb(C)^(\*) = bb(C) \\ { 0 }$.
 ]
 #example[Riemann Sphere][
-  The #strong[Riemann sphere] is the one-point compactification of $bb(C)$, denoted by $hat(bb(C)) = bb(C) union { oo }$.
+  The #strong[Riemann sphere] is the one-point compactification of $bb(C)$, denoted by $hatCC = bb(C) union { oo }$.
   It is a Riemann surface with the following two charts: $   & U_1 = bb(C) , quad phi_1 lr((z))= z\
-    & U_2 = hat(bb(C)) - { 0 } , quad phi_2 lr((z)) = cases(delim: "{", 1 \/ z & upright("if ") z eq.not oo, 0 & upright("if ") z = oo) $
+    & U_2 = hatCC - { 0 } , quad phi_2 lr((z)) = cases(delim: "{", 1 \/ z & upright("if ") z eq.not oo, 0 & upright("if ") z = oo) $
 ]
 #example[Complex Projective Line][
   The #strong[complex projective line] $bb(P)^1 lr((bb(C)))$ is the set of all complex lines through the origin in $bb(C)^2$.
   It is a Riemann surface with the following two charts: $   & V_1 = lr({lr([z_0 : z_1]) mid(|) z_0 eq.not 0}) , quad psi_1 lr((z_0 , z_1)) = z_1 \/ z_0\
     & V_2 = lr({lr([z_0 : z_1]) mid(|) z_1 eq.not 0}) , quad psi_2 lr((z_0 , z_1)) = z_0 \/ z_1 $
 ]
-#proposition[$hat(bb(C))$ is isomorphic to $bb(P)^1 lr((bb(C)))$][
-  The map $f : hat(bb(C)) arrow.r bb(P)^1 lr((bb(C)))$ $ f lr((x)) = cases(delim: "{", lr([1 : x]) & upright("if ") x eq.not oo, lr([0 : 1]) & upright("if ") x = oo) $ is
+#proposition[$hatCC$ is isomorphic to $bb(P)^1 lr((bb(C)))$][
+  The map $f : hatCC arrow.r bb(P)^1 lr((bb(C)))$ $ f lr((x)) = cases(delim: "{", lr([1 : x]) & upright("if ") x eq.not oo, lr([0 : 1]) & upright("if ") x = oo) $ is
   a biholomorphism.
 ]
 #proof[
@@ -341,15 +353,15 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
     with any choice of the branch of the square root. Given $z_1 , z_2 in V_j$, if $psi_j lr((z_1)) = psi_j lr((z_2))$, then $a_j + z_1^2 = a_j + z_2^2$,
     which implies $z_1 = z_2$. Hence $psi_j$ is injective and is a biholomorphism onto its image. So we can take 
     $ (U_j, phi_j) = (psi_j lr((V_j)), psi_j^(- 1)) $ 
-    as a chart. (Note we cannot set the first coordinate simply as $a_j + z$, because it would enforce a branch cut from the square root
-    to intrude into the disk $B_(bb(C)) lr((0 , epsilon.alt_j))$, thereby disrupting the holomorphicity of $psi$.)
+    as a chart. (Note we cannot set the first coordinate simply as $a_j + z$, because it would enforce a branch cut from the
+    square root to intrude into the disk $B_(bb(C)) lr((0 , epsilon.alt_j))$, thereby disrupting the holomorphicity of $psi$.)
    
   we can check that $ phi_alpha circle.stroked.tiny phi_j^(- 1) lr((z)) = a_j + z^2 , $ which is holomorphic. Therefore, $accent(S, circle)$ is
   a Riemann surface.
 ]
 == Meromorphic Functions <meromorphic-functions>
 #definition[Meromorphic Functions][
-  Let $X$ be a Riemann surface. A function on $f : X arrow.r hat(bb(C))$ is called #strong[meromorphic at $x in X$] if
+  Let $X$ be a Riemann surface. A function on $f : X arrow.r hatCC$ is called #strong[meromorphic at $x in X$] if
   there is a chart $lr((U , phi))$ containing $x$ such that $f circle.stroked.tiny phi^(- 1)$ is meromorphic at $phi lr((x))$.
   The function $f$ is called #strong[meromorphic on $X$] if it is meromorphic at every point of $X$.
 ]
@@ -403,7 +415,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   or simply $upright(R a m) lr((f))$.
 ]
 #example[Ramification Index of Meromorphic Functions][
-  Let $f : X arrow.r hat(bb(C))$ be a non-constant meromorphic function on Riemann surface $X$.
+  Let $f : X arrow.r hatCC$ be a non-constant meromorphic function on Riemann surface $X$.
    
   - If $x in X$ is a zero of $f$, then the ramification index $k_x$ equals the order of zero of $f$ at $x$.
    
@@ -414,7 +426,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   $(U , phi)$ centered at $x$ such that
   $ f circle.stroked.tiny phi^(- 1) = z^(- k) $ for some positive number
   $k$. Choose a chart
-  $   & V = hat(bb(C)) - { 0 } , quad psi (z) = cases(delim: "{", 1 \/ z & upright("if ") z eq.not oo, 0 & upright("if ") z = oo) $
+  $   & V = hatCC - { 0 } , quad psi (z) = cases(delim: "{", 1 \/ z & upright("if ") z eq.not oo, 0 & upright("if ") z = oo) $
   centered at $f (x)$. Since the local expression of $f$ under the charts
   $(U , phi)$ and $(V , psi)$ is
   $ F (z) = psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) (z) = z^k , $
@@ -473,7 +485,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   $ deg lr((f)) = sum_(x in f^(- 1) lr((y))) k_x. $
 ]
 #corollary[
-  Let $f : X arrow.r hat(bb(C))$ be a non-zero meromorphic function on a compact Riemann surface $X$. Counting
+  Let $f : X arrow.r hatCC$ be a non-zero meromorphic function on a compact Riemann surface $X$. Counting
   multiplicities, the number of poles of $f$ is equal to the number of zeros of $f$.
 ]
 #proof[
@@ -548,14 +560,14 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   of meromorphic functions on $U$, denoted by $cal(M)_X lr((U))$ or simply $cal(M)lr((U))$.
 ]
 #proposition[][
-  Let us denote by $c_P in op("Hom") lr((X , hat(bb(C))))$ the constant morphism $c_P : x arrow.r.bar P$. Then $ cal(M)lr((X)) = op("Mor") lr((X , hat(bb(C)))) - lr({c_oo}) . $
+  Let us denote by $c_P in op("Hom") lr((X , hatCC))$ the constant morphism $c_P : x arrow.r.bar P$. Then $ cal(M)lr((X)) = op("Mor") lr((X , hatCC)) - lr({c_oo}) . $
 ]
 #proposition[][
   Let $X$ be a Riemann surface and $U$ be an connected non-compact open set of $X$. Then $ cal(M)lr((U)) = op("Frac") lr((cal(O)_X lr((U)))) . $
 ]
 #proposition[GAGA for Compact Riemann Surfaces][
   Let $X$ be a compact Riemann surface. Then the meromorphic function field $cal(M)lr((X))$ is the field of rational
-  functions $K lr((X))$. $ cal(M)lr((X)) = K lr((X)) . $ Especially, we have $cal(M)lr((hat(bb(C)))) = bb(C) lr((z))$.
+  functions $K lr((X))$. $ cal(M)lr((X)) = K lr((X)) . $ Especially, we $hat(CC,size:#1em)$ have $cal(M)lr(hat(C,size:#3em)) = bb(C) lr((z))$.
 ]
 #definition[Order of Meromorphic Function][
   Let $X$ be a Riemann surface and $f$ is meromorphic at $x in X$. Let $lr((U , phi))$ be a chart containing $x$ such that $f circle.stroked.tiny phi^(- 1)$ is
@@ -669,7 +681,7 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
 = Classification of Riemann Surfaces <classification-of-riemann-surfaces>
 == Simply Connected Riemann Surfaces <simply-connected-riemann-surfaces>
 #theorem[Uniformization Theorem][
-  Every simply connected Riemann surface is isomorphic to open disk $bb(D)$, complex plane $bb(C)$ or Riemann sphere $hat(bb(C))$.
+  Every simply connected Riemann surface is isomorphic to open disk $bb(D)$, complex plane $bb(C)$ or Riemann sphere $hatCC$.
 ]
 === Complex Plane $bb(C)$ <complex-plane-mathbb-c>
 #proposition[
@@ -678,10 +690,10 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
   The only automorphisms of $bb(C)$ are affine transformations $ op("Aut") lr((bb(C))) = lr({z arrow.r.bar a z + b thin mid(|) thin a , b in bb(C)}) . $
    
 ]
-=== Riemann Sphere $hat(bb(C))$ <riemann-sphere-widehatmathbb-c>
+=== Riemann Sphere $hatCC$ <riemann-sphere-widehatmathbb-c>
 #proposition[
-  Automorphism of $hat(bb(C))$
-][The only automorphisms of $hat(bb(C))$ are Möbius transformations $ op("Aut") lr((hat(bb(C)))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(C) , a d - b c = 1}) tilde.equiv upright(P S L) lr((2 , bb(C))) . $
+  Automorphism of $hatCC$
+][The only automorphisms of $hatCC$ are Möbius transformations $ op("Aut") lr((hatCC)) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(C) , a d - b c = 1}) tilde.equiv upright(P S L) lr((2 , bb(C))) . $
 ]
 === Upper Half Plane $bb(H)$ <upper-half-plane-mathbb-h>
 #proposition[
@@ -702,7 +714,7 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
 == Compact Riemann Surfaces <compact-riemann-surfaces>
 #theorem[Uniformization of compact Riemann surfaces][ 
   Compact Riemann surfaces can be classified as follows
-  + Genus $g = 0$: $hat(bb(C))$.
+  + Genus $g = 0$: $hatCC$.
    
   + Genus $g = 1$: $bb(C) \/ Lambda$ where $Lambda = w_1 bb(Z) xor w_2 bb(Z) lr((w_1 \/ w_2 in.not bb(R)))$ is a lattice in $bb(C)$.
    
