@@ -1,5 +1,5 @@
 #import "@preview/ctheorems:1.1.2": *
-#import "@preview/fletcher:0.4.5" as fletcher: diagram, node, edge
+#import "@preview/fletcher:0.5.0" as fletcher: diagram, node, edge
 
 
 
@@ -39,7 +39,7 @@
       #v(2em)
       Chapter #counter(heading).display(it.numbering)#v(1.1em, weak: true)
     ]
-    text(weight: 600, 28pt, font: "Lato")[
+    text(weight: 600, 28pt, font: "Lato", ligatures: false)[
       #it.body #v(2em, weak: true)
     ]
   } else if it.level == 2 {
@@ -272,6 +272,12 @@
 #let hatCC = $hat(CC, size: #1.00001em)$
 
 
+// define commutative diagram
+#let commutative_diagram(math_content) = align(center)[
+  #diagram(label-size:0.8em, math_content)
+]
+
+
 // Title Page
 #v(1fr)
 #align(center)[
@@ -304,7 +310,7 @@ We say that a chart $lr((U , phi))$ for a Riemann surface $X$ is #strong[centere
 
 #definition[Holomorphic Atlas][
   A #strong[\(compatible\) holomorphic atlas] on a topological manifold $X$ is a collection of holomorphic charts $lr((U_i , phi_i))$ such
-  that $union.big_i U_i = X$ and for any $i , j$, the transition function $ phi_i circle.stroked.tiny phi_j^(- 1) : phi_j lr((U_i sect U_j)) arrow.r phi_i lr((U_i sect U_j)) $ is
+  that $union.big_i U_i = X$ and for any $i , j$, the transition function $ phi_i circle.stroked.tiny phi_j^(- 1) : phi_j lr((U_i sect U_j)) --> phi_i lr((U_i sect U_j)) $ is
   holomorphic, whenever $U_i sect U_j$ is nonempty.
 ]
 #definition[Complex Manifold][
@@ -505,7 +511,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   branch locus of $f$, then $lr(|f^(- 1) lr((y_0))|) = lr(|f^(- 1) lr((y_1))|)$.
 ]
 #definition[
-  Degree of Holomorphic Map of Compact Riemann surfaces
+  Degree of Holomorphic Map of Compact Riemann Surfaces
 ][
   Let $f : X arrow.r Y$ be a holomorphic map of compact Riemann surfaces. If $f$ is non-constant, for any $y in Y - f lr((upright(R a m) lr((f))))$ that
   is not a branch point, the number $lr(|f^(- 1) lr((y))|)$ is constant and called the #strong[degree] of $f$ at $y$ and
@@ -565,7 +571,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   + $ 2 g_X - 2 = (2 g_Y - 2) deg (f) + sum_(x in upright(R a m) (f)) (k_x - 1) gt.eq (2 g_Y - 2) deg (f) gt.eq 2 g_Y - 2 . $
    
   + $f$ is unramified on $X$, if and only if
-    $ 2 g_X - 2 = (2 g_Y - 2) deg (f) arrow.l.r.double g_X = g_Y deg (f) - deg (f) + 1 . $
+    $ 2 g_X - 2 = (2 g_Y - 2) deg (f) <==> g_X = g_Y deg (f) - deg (f) + 1 . $
    
   + If $g_Y = 0$ and $g_X > 0$, then
     $ sum_(x in upright(R a m) (f)) (k_x - 1) = 2 (g_X - 1 + deg (f)) gt.eq 2 g_X > 0 . $
@@ -598,7 +604,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 ]
 #proposition[GAGA for Compact Riemann Surfaces][
   Let $X$ be a compact Riemann surface. Then the meromorphic function field $cal(M)lr((X))$ is the field of rational
-  functions $K lr((X))$. $ cal(M)lr((X)) = K lr((X)) . $ Especially, we $hat(CC, size: #1em)$ have $cal(M)lr(hat(C, size: #3em)) = bb(C) lr((z))$.
+  functions $K lr((X))$. $ cal(M)lr((X)) = K lr((X)) . $ Especially, we $hat(CC, size: #1em)$ have $cal(M)lr((hatCC)) = bb(C) lr((z))$.
 ]
 #definition[Order of Meromorphic Function][
   Let $X$ be a Riemann surface and $f$ is meromorphic at $x in X$. Let $lr((U , phi))$ be a chart containing $x$ such that $f circle.stroked.tiny phi^(- 1)$ is
@@ -607,7 +613,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   order of $f$ at $x$ is independent of the choice of chart containing $x$.
 ]
 #proposition[Order is a Valuation][
-  Let $X$ be a Riemann surface and $f$ is meromorphic at $p in X$. Then the order of $f$ at $p$ $ "ord"_p : cal(M)_(X , p) & arrow.r bb(Z) union { oo }\
+  Let $X$ be a Riemann surface and $f$ is meromorphic at $p in X$. Then the order of $f$ at $p$ $ "ord"_p : cal(M)_(X , p) & --> bb(Z) union { oo }\
   f                        & arrow.r.long.bar "ord"_p lr((f)) $ is a valuation on $cal(M)_(X , p)$. That is, for any $f , g in cal(M)_(X , p)$,
   we have
    
@@ -638,21 +644,22 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   $ deg : op("Div") lr((X)) & --> bb(Z)\
   D = sum_(x in X) n_x x  & arrow.r.long.bar sum_(x in X) n_x . $ 
   It can be defined by the universal property of free abelian Group 
-  #align(center)[
-    #diagram($
-      op("Div") lr((X)) edge(deg, "-->") & im(f) \
-      X edge("u", iota, ->, #left) edge("ur", c_1, ->, #right)
-    $)
-  ]
+   
+  #commutative_diagram($
+    op("Div") lr((X)) edge(deg, "-->") & im(f) \
+    X edge("u", iota, ->, #left) edge("ur", c_1, ->, #right)
+  $)
+  
   where $c_1 : x |-> 1$ is a constant mapping. $deg (D)$ is called the #strong[degree] of $D$. The kernel of $deg$ is
   denoted by
   $"Div"^0 (X)$ and called the #strong[divisor group of degree zero];. So we have the exact sequence
-  #align(center)[
-    #diagram($
-      0 edge(->) & op("Div")^0 edge(->) & op("Div") lr((X)) edge(deg, ->) & bb(Z) edge(->) & 0
-    $)
-  ]
+  
+  #commutative_diagram($
+    0 edge(->) & op("Div")^0 edge(->) & op("Div") lr((X)) edge(deg, ->) & bb(Z) edge(->) & 0
+  $)
 ]
+
+
 #definition[
   Principal Divisors: Divisors from Meromorphic Functions
 ][
@@ -671,7 +678,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   Partial Order on $op("Div") lr((X))$
 ][
   Given $D_1 , D_2 in op("Div") lr((X))$ where $ D_1 = sum_(x in X) n_x x , quad D_2 = sum_(x in X) m_x . $ We define a
-  partial order on $op("Div") lr((X))$ by $ D_1 lt.eq D_2 arrow.l.r.double n_x lt.eq m_x , quad forall x in X . $
+  partial order on $op("Div") lr((X))$ by $ D_1 lt.eq D_2 <==> n_x lt.eq m_x , quad forall x in X . $
    
 ]
 #definition[Canonical Divisor][
@@ -720,7 +727,7 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
 #proposition[
   Automorphism of $bb(C)$
 ][
-  The only automorphisms of $bb(C)$ are affine transformations $ op("Aut") lr((bb(C))) = lr({z arrow.r.bar a z + b thin mid(|) thin a , b in bb(C)}) . $
+  The only automorphisms of $bb(C)$ are affine transformations $ op("Aut") lr((bb(C))) = lr({z |-> a z + b thin mid(|) thin a , b in bb(C)}) . $
    
 ]
 === Riemann Sphere $hatCC$ <riemann-sphere-widehatmathbb-c>
@@ -742,10 +749,10 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
   )\
                         & = lr(
     {z arrow.r.bar frac(overline(a) z + overline(b), b z + a) thin mid(|) thin a, b in bb(C) , lr(|a|)^2 - lr(|b|)^2 = 1}
-  ) . $
+  ) tilde.equiv upright(P U)(1,1). $
 ]
 == Compact Riemann Surfaces <compact-riemann-surfaces>
-#theorem[Uniformization of compact Riemann surfaces][ 
+#theorem[Uniformization of Compact Riemann Surfaces][ 
   Compact Riemann surfaces can be classified as follows
   + Genus $g = 0$: $hatCC$.
    
