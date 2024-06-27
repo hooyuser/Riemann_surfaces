@@ -26,18 +26,23 @@ jobs:
 
       - name: Setup Typst Math Notes Environment
         run: |
-          mkdir -p ~/.local/share/typst/packages/local/
-          cp -r typst_math_notes ~/.local/share/typst/packages/local/
+          mkdir -p $HOME/.local/share/typst/packages/local/
+          cp -r typst_math_notes $HOME/.local/share/typst/packages/local/
           echo "List files in typst_math_notes:"
           ls -R typst_math_notes
 
       - name: Debug output of destination folder
         run: |
           echo "List files after copying to destination:"
-          ls -R ~/.local/share/typst/packages/local/
+          ls -R $HOME/.local/share/typst/packages/local/
 
       - name: Set up Git repository
         uses: actions/checkout@v4
+
+      - name: Print environment path
+        run: |
+          echo "Home directory: $HOME"
+          echo "Working directory: $(pwd)"
 
       - name: Prepare Typst environment
         uses: typst-community/setup-typst@v3

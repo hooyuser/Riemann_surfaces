@@ -143,7 +143,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   which implies $G$ is open. We claim that $G$ is also closed. Suppose $b in partial G$, then $f_1(b)=f_2(b)$ since $f_1$ and $f_2$ are
   continuous. Now choose charts $(U , phi)$ centered at $x$ and any chart
   $(V , psi)$ centered at $f_1(b)$, and suppose $f_i$ have local expressions $F_i =psi circle.stroked.tiny f_i circle.stroked.tiny phi^(-1)$ in
-  this chart. Note that $U sect G eq.not emptyset$.
+  this chart. Note that $U sect G$ is a nonempty open set containing $b$. By the identity theorem for holomorphic functions, we have $F_1=F_2$ on $phi(U)$.
 ]
 
 == Meromorphic Functions <meromorphic-functions>
