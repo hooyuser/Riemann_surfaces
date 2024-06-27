@@ -1,4 +1,5 @@
 name: Generate Release PDF
+
 on: 
   push:
     branches:
@@ -7,24 +8,40 @@ on:
       - '.github/**'
       - '.gitignore'
       - '**.md'
+
 env:
   TYPST_FILE_NAME: Riemann_surfaces
+
 jobs:
   build_typst:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
+      - name: Checkout Typst Math Notes Repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'hooyuser/typst_math_notes'
+          path: 'typst_math_notes'
+
+      - name: Setup Typst Math Notes Environment
+        run: |
+          mkdir -p ~/.local/share/typst/packages/local/
+          cp -r typst_math_notes ~/.local/share/typst/packages/local/
+
       - name: Set up Git repository
         uses: actions/checkout@v4
+
       - name: Prepare Typst environment
         uses: typst-community/setup-typst@v3
         with:
           cache-dependency-path: requirements.typ
+
       - name: Compile Typst document
         run: |
           typst fonts --variants --font-path fonts
           typst compile ${{ env.TYPST_FILE_NAME }}.typ ${{ env.TYPST_FILE_NAME }}.pdf  --font-path fonts
+
       - name: Delete old Release
         uses: actions/github-script@v5
         with:
@@ -35,10 +52,12 @@ jobs:
               const { data: { id } } = await github.rest.repos.getLatestRelease({ owner, repo })
               await github.rest.repos.deleteRelease({ owner, repo, release_id: id })
             } catch {}
+
       - name: Generate release tag
         id: tag
         run: |
           echo "::set-output name=release_tag::latest_$(date +"%Y-%m-%d_%H-%M")"
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:

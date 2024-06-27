@@ -1,11 +1,10 @@
 #import "@preview/fletcher:0.5.0" as fletcher: diagram, node, edge
 
-#import "preamble.typ": math_notes, definition, proposition, lemma, theorem, corollary, example, proof
+#import "@local/math-notes:0.1.0": math_notes, definition, proposition, lemma, theorem, corollary, example, proof
 
 #show: math_notes
 
 // Overwrite the default definition
-#show math.equation: set text(features: ("cv01",))
 #let hatCC = $hat(CC, size: #1.00001em)$
 
 
