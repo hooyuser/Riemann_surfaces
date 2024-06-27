@@ -38,6 +38,7 @@ jobs:
           echo "Working directory: $(pwd)"
           echo "Current PATH: $PATH"
           echo "$HOME/.local/share" >> $GITHUB_PATH
+          ls -R ~/.local/share/typst/packages/local/
 
       - name: Compile Typst document
         run: |
