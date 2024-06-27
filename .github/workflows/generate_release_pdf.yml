@@ -30,7 +30,7 @@ jobs:
 
       - name: Clone Typst Math Notes Repository
         run: |
-          git clone https://github.com/hooyuser/typst_math_notes.git $HOME/.local/share/typst/packages/local/typst_math_notes
+          git clone https://github.com/hooyuser/typst_math_notes.git $HOME/.local/share/typst/packages/local/math-notes
   
       - name: Print environment path
         run: |
