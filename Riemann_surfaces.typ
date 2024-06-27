@@ -5,7 +5,7 @@
 #show: math_notes
 
 // Overwrite the default definition
-
+#show math.equation: set text(features: ("cv01",))
 #let hatCC = $hat(CC, size: #1.00001em)$
 
 
@@ -130,6 +130,19 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   we can check that $ phi_alpha circle.stroked.tiny phi_j^(- 1) lr((z)) = a_j + z^2 , $ which is holomorphic. Therefore, $accent(S, circle)$ is
   a Riemann surface.
 ]
+
+#theorem[Identity Theorem][
+  Suppose $X$ and $Y$ are Riemann surfaces and $f_1, f_2: X arrow Y$ are two holomorphic mappings which coincide on a set $A subset.eq X$, where $A$ has a limit point $a in X$. Then $f_1=f_2$ on $X$.
+]
+#proof[
+  Let 
+  $
+  G= { x in X | "there exists an open neighborhood" N "of" x "such that" f_1|_N = f_2|_N }.
+  $
+  If $x in G$, then there exists an open neighborhood $N$ of $x$ such that $f_1|_N = f_2|_N$. So we have $x in N subset.eq G$, which implies $G$ is open. We claim that $G$ is also closed. Suppose $b in partial G$, then $f_1(b)=f_2(b)$ since $f_1$ and $f_2$ are continuous. Now choose charts $(U , phi)$ centered at $x$ and any chart
+  $(V , psi)$ centered at $f_1(b)$, and suppose $f_i$ have local expressions $F_i =psi circle.stroked.tiny f_i circle.stroked.tiny phi^(-1)$ in this chart. Note that $U sect G eq.not emptyset$. 
+]
+
 == Meromorphic Functions <meromorphic-functions>
 #definition[Meromorphic Functions][
   Let $X$ be a Riemann surface. A function on $f : X arrow.r hatCC$ is called #strong[meromorphic at $x in X$] if there is
@@ -153,6 +166,9 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 
 = Holomorphic Maps <holomorphic-maps>
 == Local Structure of Holomorphic Maps <local-structure-of-holomorphic-maps>
+
+
+
 #theorem[Local Expression of Holomorphic Map][
   Let $f : X arrow.r Y$ be a non-constant holomorphic map of Riemann surfaces. For any $x in X$ there are charts centered
   at $x , f lr((x))$, such that the local expression of $f$ using these charts is $z arrow.r.bar z^k$ for some integer $k gt.eq 1$.
@@ -172,6 +188,20 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   $ tilde(F) (z) = psi circle.stroked.tiny f circle.stroked.tiny tilde(phi)^(- 1) (z) = psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) circle.stroked.tiny h^(- 1) (z) = F circle.stroked.tiny h^(- 1) (z) = sigma_k circle.stroked.tiny h circle.stroked.tiny h^(- 1) (z) = sigma_k (z) = z^k , $
   which is the local expression of $f$ using these charts.
 ]
+
+#corollary[Holomorphic Maps are Open][
+  Let $f : X arrow.r Y$ be a non-constant holomorphic map of Riemann surfaces. Then $f$ is an open map.
+]
+#proof[
+  For any point $x in X$, there are chart $(U , phi)$ centered at $x$ and chart $(V , psi)$ centered at $f (x)$ such that $psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) (z) = z^k$. Since $z^k$ is an open map, $f|_(U)$ is composition of open maps and hence open. For any open neighborhood $N$ of $x$, $f (U sect N)$ is a neighborhood of $f (x)$. Therefore, $f$ is open.
+]
+#corollary[Injective Holomorphic Maps are Biholomorphisms onto Their Images][
+  Let $f : X arrow.r Y$ be a holomorphic map of Riemann surfaces. If $f$ is injective, then $f:X arrow f(X)$ is a biholomorphism.
+]
+#proof[
+  For any point $x in X$, there are charts centered at $x$ and $f(x)$ such that the local expression of $f$ is  $psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) (z) = z^k$. Since $f$ is injective, $k = 1$. Therefore, $f^(-1): f(X) arrow.r X$ has the local expression  $phi circle.stroked.tiny f^(-1) circle.stroked.tiny psi^(- 1) (z) = z$, which means $f^(-1)$ is holomorphic at $f(x)$. Therefore, $f^(-1)$ is holomorphic on $f(X)$ and $f$ is a biholomorphism.
+]
+
 #lemma[
   Let $f : X arrow.r Y$ be a non-constant holomorphic map of Riemann surfaces, and $x in X$. Suppose that $f$ has two
   local expressions around $x$ of the form $F lr((z)) = z^k$ and $tilde(F) lr((tilde(z))) = tilde(z)^(tilde(k))$. Then $k = tilde(k)$.

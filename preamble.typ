@@ -70,11 +70,6 @@
 
 
 // Theorem environment
-
-
-
-
-
 #let thm_env_head_sans(name, color) = [#text(font: "Latin Modern Sans", weight: 700, fill: color)[#name]]
 
 #let thm_env_name_sans(name, color) = [#text(font: "Noto Sans Display", weight: 500, fill: color, size: 10.5pt)[#name]]
@@ -91,7 +86,7 @@
   pad(left: 0.5 * bar_width, block(fill: front_color, width: 100%, inset: inset, contents)),
 ))
 
-
+// Theorem environment for definition, lemma, proposition, corollary
 #let thmbox_quote(
   identifier,
   head,
@@ -133,7 +128,20 @@
   return thmenv(identifier, base, base_level, boxfmt).with(supplement: supplement)
 }
 
+#let thmbox_quote_style(identifier, head, front_color, background_color) = thmbox_quote(
+  identifier,
+  thm_env_head_sans(head, front_color),
+  separator: [ \ ],
+  namefmt: x => thm_env_name_sans(x, front_color),
+  numberfmt: x => thm_env_head_sans(x, front_color),
+  fill: background_color,
+  breakable: true,
+  front_color: front_color,
+  background_color: background_color,
+  base_level: 2,
+)
 
+// Theorem environment for example
 #let thmbox_frame(
   identifier,
   head,
@@ -180,22 +188,7 @@
 }
 
 
-#let thmbox_quote_style(identifier, head, front_color, background_color) = thmbox_quote(
-  identifier,
-  thm_env_head_sans(head, front_color),
-  separator: [ \ ],
-  namefmt: x => thm_env_name_sans(x, front_color),
-  numberfmt: x => thm_env_head_sans(x, front_color),
-  fill: background_color,
-  breakable: true,
-  front_color: front_color,
-  background_color: background_color,
-  base_level: 2,
-)
-
-
-
-
+// convert list of pairs to dictionary
 #let dict_from_pairs(pairs) = {
   for pair in pairs {
     assert(pair.len() == 2, message: "`from_pairs` accepts an array of pairs")
@@ -203,6 +196,7 @@
   }
 }
 
+// color dictionary for theorem environments
 #let thm_env_color_dict = (
   theorem: (front: rgb("#f19000"), background: rgb("#fdf8ea")),
   proposition: (front: rgb("#30773c"), background: rgb("#ebf4ec")),
@@ -211,13 +205,20 @@
   definition: (front: rgb("#000069"), background: rgb("#f2f2f9")),
 )
 
+// generate theorem environments from color dictionary
+#let gen_thm_envs(name_color_dict) = {
+  let theorem_envs = name_color_dict.pairs().map(((env_name, env_colors)) => {
+    // capitalize the first letter of the environment name
+    let header = upper(env_name.first()) + env_name.slice(1) 
+    (env_name, thmbox_quote_style("theorem", header, env_colors.front, env_colors.background))
+  })
+  // convert list of pairs to dictionary to enable matching by environment name
+  dict_from_pairs(theorem_envs)
+}
 
-#let theorem_envs = thm_env_color_dict.pairs().map(((env_name, env_colors)) => {
-  let header = upper(env_name.first()) + env_name.slice(1) 
-  (env_name, thmbox_quote_style("theorem", header, env_colors.front, env_colors.background))
-})
 
-#let (definition, proposition, lemma, theorem, corollary) = dict_from_pairs(theorem_envs)
+// Export theorem environments
+#let (definition, proposition, lemma, theorem, corollary) = gen_thm_envs(thm_env_color_dict)
 
 #let example = thmbox_frame(
   "example",
@@ -252,7 +253,6 @@
    
   set strong(delta: 200)
    
-   
   // setting for enumeration and list 
   set enum(indent: 0.45em, body-indent: 0.45em, numbering: "(i)", start: 1)
   set list(indent: 0.45em, body-indent: 0.45em)
@@ -260,7 +260,6 @@
    
   // setting for paragraph
   show par: set block(spacing: 0.55em)
-   
    
   // setting for heading
   show heading: heading_style
