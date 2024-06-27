@@ -18,31 +18,18 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout Typst Math Notes Repository
-        uses: actions/checkout@v4
-        with:
-          repository: 'hooyuser/typst_math_notes'
-          path: 'typst_math_notes'
-
-      - name: Setup Typst Math Notes Environment
+      - name: Clone Typst Math Notes Repository
         run: |
-          mkdir -p $HOME/.local/share/typst/packages/local/
-          cp -r typst_math_notes $HOME/.local/share/typst/packages/local/
-          echo "List files in typst_math_notes:"
-          ls -R typst_math_notes
+          git clone https://github.com/hooyuser/typst_math_notes.git $HOME/.local/share/typst/packages/local/typst_math_notes
 
-      - name: Debug output of destination folder
-        run: |
-          echo "List files after copying to destination:"
-          ls -R $HOME/.local/share/typst/packages/local/
-
-      - name: Set up Git repository
+      - name: Set up Git repository for secondary repo
         uses: actions/checkout@v4
 
       - name: Print environment path
         run: |
           echo "Home directory: $HOME"
           echo "Working directory: $(pwd)"
+          echo "Current PATH: $PATH"
 
       - name: Prepare Typst environment
         uses: typst-community/setup-typst@v3
