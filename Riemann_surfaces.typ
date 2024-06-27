@@ -131,15 +131,19 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 ]
 
 #theorem[Identity Theorem][
-  Suppose $X$ and $Y$ are Riemann surfaces and $f_1, f_2: X arrow Y$ are two holomorphic mappings which coincide on a set $A subset.eq X$, where $A$ has a limit point $a in X$. Then $f_1=f_2$ on $X$.
+  Suppose $X$ and $Y$ are Riemann surfaces and $f_1, f_2: X arrow Y$ are two holomorphic mappings which coincide on a set $A subset.eq X$,
+  where $A$ has a limit point $a in X$. Then $f_1=f_2$ on $X$.
 ]
 #proof[
   Let 
   $
-  G= { x in X | "there exists an open neighborhood" N "of" x "such that" f_1|_N = f_2|_N }.
+    G= { x in X | "there exists an open neighborhood" N "of" x "such that" f_1|_N = f_2|_N }.
   $
-  If $x in G$, then there exists an open neighborhood $N$ of $x$ such that $f_1|_N = f_2|_N$. So we have $x in N subset.eq G$, which implies $G$ is open. We claim that $G$ is also closed. Suppose $b in partial G$, then $f_1(b)=f_2(b)$ since $f_1$ and $f_2$ are continuous. Now choose charts $(U , phi)$ centered at $x$ and any chart
-  $(V , psi)$ centered at $f_1(b)$, and suppose $f_i$ have local expressions $F_i =psi circle.stroked.tiny f_i circle.stroked.tiny phi^(-1)$ in this chart. Note that $U sect G eq.not emptyset$. 
+  If $x in G$, then there exists an open neighborhood $N$ of $x$ such that $f_1|_N = f_2|_N$. So we have $x in N subset.eq G$,
+  which implies $G$ is open. We claim that $G$ is also closed. Suppose $b in partial G$, then $f_1(b)=f_2(b)$ since $f_1$ and $f_2$ are
+  continuous. Now choose charts $(U , phi)$ centered at $x$ and any chart
+  $(V , psi)$ centered at $f_1(b)$, and suppose $f_i$ have local expressions $F_i =psi circle.stroked.tiny f_i circle.stroked.tiny phi^(-1)$ in
+  this chart. Note that $U sect G eq.not emptyset$.
 ]
 
 == Meromorphic Functions <meromorphic-functions>
@@ -192,13 +196,18 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   Let $f : X arrow.r Y$ be a non-constant holomorphic map of Riemann surfaces. Then $f$ is an open map.
 ]
 #proof[
-  For any point $x in X$, there are chart $(U , phi)$ centered at $x$ and chart $(V , psi)$ centered at $f (x)$ such that $psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) (z) = z^k$. Since $z^k$ is an open map, $f|_(U)$ is composition of open maps and hence open. For any open neighborhood $N$ of $x$, $f (U sect N)$ is a neighborhood of $f (x)$. Therefore, $f$ is open.
+  For any point $x in X$, there are chart $(U , phi)$ centered at $x$ and chart $(V , psi)$ centered at $f (x)$ such that $psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) (z) = z^k$.
+  Since $z^k$ is an open map, $f|_(U)$ is composition of open maps and hence open. For any open neighborhood $N$ of $x$, $f (U sect N)$ is
+  a neighborhood of $f (x)$. Therefore, $f$ is open.
 ]
 #corollary[Injective Holomorphic Maps are Biholomorphisms onto Their Images][
-  Let $f : X arrow.r Y$ be a holomorphic map of Riemann surfaces. If $f$ is injective, then $f:X arrow f(X)$ is a biholomorphism.
+  Let $f : X arrow.r Y$ be a holomorphic map of Riemann surfaces. If $f$ is injective, then $f:X arrow f(X)$ is a
+  biholomorphism.
 ]
 #proof[
-  For any point $x in X$, there are charts centered at $x$ and $f(x)$ such that the local expression of $f$ is  $psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) (z) = z^k$. Since $f$ is injective, $k = 1$. Therefore, $f^(-1): f(X) arrow.r X$ has the local expression  $phi circle.stroked.tiny f^(-1) circle.stroked.tiny psi^(- 1) (z) = z$, which means $f^(-1)$ is holomorphic at $f(x)$. Therefore, $f^(-1)$ is holomorphic on $f(X)$ and $f$ is a biholomorphism.
+  For any point $x in X$, there are charts centered at $x$ and $f(x)$ such that the local expression of $f$ is $psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) (z) = z^k$.
+  Since $f$ is injective, $k = 1$. Therefore, $f^(-1): f(X) arrow.r X$ has the local expression $phi circle.stroked.tiny f^(-1) circle.stroked.tiny psi^(- 1) (z) = z$,
+  which means $f^(-1)$ is holomorphic at $f(x)$. Therefore, $f^(-1)$ is holomorphic on $f(X)$ and $f$ is a biholomorphism.
 ]
 
 #lemma[
@@ -518,6 +527,8 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
   ) tilde.equiv upright(P U)(1,1). $
 ]
 == Compact Riemann Surfaces <compact-riemann-surfaces>
+
+
 #theorem[Uniformization of Compact Riemann Surfaces][ 
   Compact Riemann surfaces can be classified as follows
   + Genus $g = 0$: $hatCC$.
