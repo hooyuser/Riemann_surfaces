@@ -4,6 +4,10 @@
 
 #show: math_notes
 
+
+#set math.mat(delim: "[")
+#set math.vec(delim: "[")
+
 // Overwrite the default definition
 #let hatCC = $hat(CC, size: #1.00001em)$
 
@@ -50,7 +54,8 @@ We say that a chart $lr((U , phi))$ for a Riemann surface $X$ is #strong[centere
   holomorphic, whenever $U_i sect U_j$ is nonempty.
 ]
 #definition[Complex Manifold][
-  A #strong[complex manifold] of dimension $n$ is a topological manifold of dimension $2 n$ with a holomorphic atlas $lr({lr((U_i , phi_i))})$.
+  A #strong[complex manifold] of dimension $n$ is a second-countable topological manifold of dimension $2 n$ with a
+  holomorphic atlas $lr({lr((U_i , phi_i))})$.
 ]
 #definition[Holomorphic Map][
   A map $f : X arrow.r Y$ between two complex manifolds is #strong[holomorphic at $x in X$] if there exists a holomorphic
@@ -93,7 +98,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 #proposition[$hatCC$ is isomorphic to $bb(P)^1 lr((bb(C)))$][
   The map $f : hatCC arrow.r bb(P)^1 lr((bb(C)))$ $ f lr((x)) = cases(delim: "{", lr([1 : x]) & upright("if ") x eq.not oo, lr([0 : 1]) & upright("if ") x = oo) $ is
   a biholomorphism.
-]
+]<riemann_sphere_isomorphic_to_complex_projective_line>
 #proof[
   It is clear that $f$ is bijective. We only need to check that the transition functions are holomorphic. For any $z in phi_1 lr((U_1)) = bb(C)$, $ psi_1 circle.stroked.tiny f circle.stroked.tiny phi_1^(- 1) lr((z)) = psi_1 circle.stroked.tiny f lr((z)) = psi_1 lr((lr([1 : z]))) = z , $ which
   implies $psi_1 circle.stroked.tiny f circle.stroked.tiny phi_1^(- 1) = upright(i d)_(bb(C))$ For any $z in phi_2 lr((U_2)) = bb(C)$,
@@ -139,11 +144,20 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   $
     G= { x in X | "there exists an open neighborhood" N "of" x "such that" f_1|_N = f_2|_N }.
   $
-  If $x in G$, then there exists an open neighborhood $N$ of $x$ such that $f_1|_N = f_2|_N$. So we have $x in N subset.eq G$,
-  which implies $G$ is open. We claim that $G$ is also closed. Suppose $b in partial G$, then $f_1(b)=f_2(b)$ since $f_1$ and $f_2$ are
-  continuous. Now choose charts $(U , phi)$ centered at $x$ and any chart
-  $(V , psi)$ centered at $f_1(b)$, and suppose $f_i$ have local expressions $F_i =psi circle.stroked.tiny f_i circle.stroked.tiny phi^(-1)$ in
-  this chart. Note that $U sect G$ is a nonempty open set containing $b$. By the identity theorem for holomorphic functions, we have $F_1=F_2$ on $phi(U)$. Thus $f_1|_U=f_2|_U$ on $U$. Hence $b in G$ and $G$ is closed. Now since $X$ is connected, $G$ is either $X$ or empty set. But $a in G$, so $G=X$.
+  We first show that $a in G$. Choose chart $(U , phi)$ centered at $a$ and chart $(V , psi)$ centered at $f_1(a)$, and
+  suppose $f_1$ and $f_2$ have local expressions $F_1$ and $F_2$ in these charts. By the identity theorem for holomorphic
+  functions, we have $F_1=F_2$ on $phi(U)$. Thus $f_1|_U=f_2|_U$ on $U$, which implies $a in G$.
+  
+  Then we show $G$ is open. If $x in G$, then there exists an open neighborhood $N$ of $x$ such that $f_1|_N = f_2|_N$. So
+  we have $x in N subset.eq G$, which implies $G$ is open. 
+   
+  We claim that $G$ is also closed. Suppose $b in partial G$. Since $f_1$ and $f_2$ are continuous, we have $f_1(b)=f_2(b)$.
+  Now choose chart $(tilde(U), phi)$ centered at $b$ and chart $(tilde(V), psi)$ centered at $f_1(b)$, and suppose $f_i$ have
+  local expressions $tilde(F)_i$ in this chart. Note that $b in partial G$ implies $tilde(U) sect G$ is a nonempty open
+  set. Thus there exists $g in tilde(U) sect G$ and an open neighborhood $M$ of $g$ such that $M subset.eq tilde(U)$ and $f_1|_M=f_2|_M$.
+  Since $phi(M)$ is an open set in $bb(C)$ and $F_1|_(phi(M))=F_2|_(phi(M))$, by the identity theorem for holomorphic
+  functions, we have $F_1=F_2$ on $phi(tilde(U))$. Thus $f_1|_(tilde(U))=f_2|_(tilde(U))$ on $tilde(U)$. Hence $b in G$ and $G$ is
+  closed. Since $X$ is connected and $G$ is a both open and closed nonempty subset of $X$, we have $G=X$. Therefore, $f_1=f_2$ on $X$.
 ]
 
 == Meromorphic Functions <meromorphic-functions>
@@ -508,12 +522,21 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
 === Riemann Sphere $hatCC$ <riemann-sphere-widehatmathbb-c>
 #proposition[
   Automorphism of $hatCC$
-][The only automorphisms of $hatCC$ are Möbius transformations $ op("Aut") lr((hatCC)) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(C) , a d - b c = 1}) tilde.equiv upright(P S L) lr((2 , bb(C))) . $
+][The only automorphisms of $hatCC$ are Möbius transformations $ op("Aut") lr((hatCC)) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(C) , a d - b c = 1}) tilde.equiv upright(P S L)_2 lr((bb(C))) . $
+]
+According to @riemann_sphere_isomorphic_to_complex_projective_line, the Riemann sphere $hatCC$ is isomorphic to the
+complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same automorphism group.
+#proposition[
+  Automorphism of $bb(P)^1 lr((bb(C)))$
+][
+  The automorphism group of $bb(P)^1 lr((bb(C)))$ is given by $ op("Aut") lr((bb(P)^1 lr((bb(C))))) = lr(
+    {vec(Z_0, Z_1) arrow.r.bar mat(a, b;c, d;gap: #1em) vec(Z_0, Z_1) thin mid(|) thin a , b , c , d in bb(C) , a d - b c = 1}
+  ) tilde.equiv upright(P S L)_2 lr((bb(C))) . $
 ]
 === Upper Half Plane $bb(H)$ <upper-half-plane-mathbb-h>
 #proposition[
   Automorphism of $bb(H)$
-][The automorphism group of $bb(H)$ is given by $ op("Aut") lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(R) , a d - b c = 1}) tilde.equiv upright(P S L) lr((2 , bb(R))) . $
+][The automorphism group of $bb(H)$ is given by $ op("Aut") lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(R) , a d - b c = 1}) tilde.equiv upright(P S L)_2 lr((bb(R))) . $
 ]
 === Open Disk $bb(D)$ <open-disk-mathbb-d>
 #proposition[
