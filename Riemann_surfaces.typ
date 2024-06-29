@@ -107,6 +107,17 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   implies $psi_2 circle.stroked.tiny f circle.stroked.tiny phi_2^(- 1) = upright(i d)_(bb(C))$. Therefore, $f$ is a
   biholomorphism.
 ]
+
+#proposition[$DD$ is isomorphic to $HH$][
+  The map 
+  $
+    f: DD &--> HH \
+    z     &arrow.long.bar (z+i)/(i z+1)
+  $
+  is a biholomorphism.
+]
+
+
 #example[Affine Hyperelliptic Curves][
   Consider first the algebraic equation 
   $ y^2 = product_(k = 1)^(2 g + 1) lr((x - a_k)), $ 
@@ -147,7 +158,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   We first show that $a in G$. Choose chart $(U , phi)$ centered at $a$ and chart $(V , psi)$ centered at $f_1(a)$, and
   suppose $f_1$ and $f_2$ have local expressions $F_1$ and $F_2$ in these charts. By the identity theorem for holomorphic
   functions, we have $F_1=F_2$ on $phi(U)$. Thus $f_1|_U=f_2|_U$ on $U$, which implies $a in G$.
-  
+   
   Then we show $G$ is open. If $x in G$, then there exists an open neighborhood $N$ of $x$ such that $f_1|_N = f_2|_N$. So
   we have $x in N subset.eq G$, which implies $G$ is open. 
    
@@ -520,6 +531,21 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
    
 ]
 === Riemann Sphere $hatCC$ <riemann-sphere-widehatmathbb-c>
+
+#definition[Möbius Transformations][
+  A #strong[Möbius transformation] is a map of the form
+  $
+    T:hatCC &--> hatCC\
+    z       &arrow.long.bar frac(a z + b, c z + d) ,\
+  $
+  which corresponds to a projective matrix $M_T=mat(a, b;c, d) in upright(P G L)_2 lr((bb(C))) tilde.equiv upright(P S L)_2 lr((bb(C)))$.
+]
+We can use any matrix in $op("GL")_2(lr(bb(C)))$ to represent a Möbius transformation, since $op("GL")_2(lr(bb(C)))$ acts
+on $hatCC$ through the quotient map $op("GL")_2(lr(bb(C))) &arrow.twohead op("PGL")_2(lr(bb(C)))$. 
+
+If we use a matrix in $op("SL")_2(lr(bb(C)))$ to represent a Möbius transformation, then we say it is a *normalized
+representation* of the Möbius transformation.
+
 #proposition[
   Automorphism of $hatCC$
 ][The only automorphisms of $hatCC$ are Möbius transformations $ op("Aut") lr((hatCC)) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(C) , a d - b c = 1}) tilde.equiv upright(P S L)_2 lr((bb(C))) . $
@@ -533,11 +559,102 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
     {vec(Z_0, Z_1) arrow.r.bar mat(a, b;c, d;gap: #1em) vec(Z_0, Z_1) thin mid(|) thin a , b , c , d in bb(C) , a d - b c = 1}
   ) tilde.equiv upright(P S L)_2 lr((bb(C))) . $
 ]
+
+#proposition[][
+  Nonidentity Möbius transformation has 1 or 2 fixed points.
+]
+#proof[
+  Suppose $T(z)=(a z+b)/(c z+d)$ is a nonidentity Möbius transformation. Then $T(z)=z$ implies 
+  $
+    c z^2+(d-a) z-b=0.
+  $
+  
+  + If $M_T=mat(1, b;0, 1)in op("PSL")_2(lr(bb(C)))$ where $b in CC^*$, then $T$ has a single fixed point $z=oo$.
+  
+  + If $c eq.not 0$, then the equation has two solutions
+  $
+    z_(1,2) = frac(a-d plus.minus sqrt((d-a)^2+4 b c), 2 c).
+  $
+  If $(d - a)^2 +4b c = 0 $, then $z_1 = z_2$ and $T$ has a single fixed point. Otherwise, $T$ has two fixed points.
+]
+
+#definition[Cross Ratio][
+  Let $z_0 , z_1 , z_2 , z_3 in hatCC $ be four distinct points. The #strong[cross ratio] of $z_0 , z_1 , z_2 , z_3$ is
+  defined as
+  $ [z_0 , z_1 , z_2 , z_3] = ((z_0 - z_2)(z_1 - z_3)) / ((z_0 - z_3)(z_1 - z_2)) . $
+  
+]
+
+#proposition[Möbius Transformations Preserve Cross Ratio][
+  Let $T$ be a Möbius transformation. Then $ [T(z_1) , T(z_2) , T(z_3) , T(z_4)] = [z_1 , z_2 , z_3 , z_4] . $
+]
+
+#proposition[][
+  If $z_1 , z_2 , z_3 in hatCC$ are 3 distinct points and $w_1, w_2, w_3 in hatCC$ are 3 distinct points, then there
+  exists a unique Möbius transformation $T$ such that $T(z_i) = w_i$ for $i = 1, 2, 3$.
+]
+#proof[
+  It is enough to show that there exists a unique Möbius transformation $T$ such that $T(z_1) = 1, T(z_2) = 0, T(z_3) = oo$.
+  The map
+  $
+    T(z) = [z , z_1 , z_2 , z_3] = ((z - z_2)(z_1 - z_3)) / ((z - z_3)(z_1 - z_2))
+  $
+  does the job. If there exists another Möbius transformation $S$ such that $S(z_1) = 1, S(z_2) = 0, S(z_3) = oo$, then $S$ preserves
+  the cross ratio, which implies
+  $
+    S(z) = [S(z) , 1 , 0 , oo] = [z , z_1 , z_2 , z_3]= T(z).
+  $
+]
+
+
+Two Möbius transformations $f$ and $g$ are said to be *conjugate* if there exists a Möbius transformation $h$ such that $f = h circle.stroked.tiny g circle.stroked.tiny h^(- 1)$.
+
+
+
+#proposition[][
+  Nonidentity Möbius transformations $f$ and $g$ are conjugate if and only if $op("Tr") M_f = plus.minus op("Tr") M_g$.
+]
+
+#proposition[Classification of Möbius Transformation][
+  Each Möbius transformation is conjugate to exactly one Möbius transformation of the form $z |-> mu z (mu in CC^*)$ or $z |-> z+1$,
+  where $mu$ is determined up to replacement by $1 / mu$. A nonidentity Möbius transformation is called
+  
+  + #strong[hyperbolic] if it is conjugate to $z |-> mu z$ with $ mu in bb(R)-{1}$;
+  
+  + #strong[loxodromic] if it is conjugate to $z |-> mu z$ with $mu in.not bb(R)$ and $|mu| eq.not 1$;
+  
+  + #strong[elliptic] if it is conjugate to $z |-> mu z$ with $|mu|=1$ and $mu eq.not 1$;
+  
+  + #strong[parabolic] if it is conjugate to $z |-> z+1$.
+]
+
 === Upper Half Plane $bb(H)$ <upper-half-plane-mathbb-h>
+
+$op("PSL")_2 lr((bb(R)))$ as a subgroup of $op("PSL")_2 lr((bb(C)))$
+acts on $hatCC$ and produces 3 orbits:
+
++ Real line plus a point at infinity : $bb(R) union {oo}$,
+
++ Upper half plane: $bb(H)$,
+
++ Lower half plane: $bb(C) - bb(H) - bb(R)$
+
 #proposition[
   Automorphism of $bb(H)$
-][The automorphism group of $bb(H)$ is given by $ op("Aut") lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(R) , a d - b c = 1}) tilde.equiv upright(P S L)_2 lr((bb(R))) . $
+][The automorphism group of $bb(H)$ is given by $ op("Aut") lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(R) , a d - b c = 1}) tilde.equiv op("PSL")_2 lr((bb(R))) . $
 ]
+
+#proposition[][
+  Let $op("PSL")_2 lr((bb(R)))$ acts on $bb(H)$ by Möbius transformations. Then the stabilizer of $i$ is given by
+  $
+    op("Stab")_(op("PSL")_2 lr((bb(R))))(i) = lr({mat(cos phi, -sin phi;sin phi, cos phi) thin mid(|) thin phi in bb(R)}) tilde.equiv op("SO")_2(RR).
+  $
+]
+
+#definition[Fuchsian Group][
+  A #strong[Fuchsian group] is a discrete subgroup of $op("PSL")_2 lr((bb(R)))$.
+]
+
 === Open Disk $bb(D)$ <open-disk-mathbb-d>
 #proposition[
   Automorphism of $bb(D)$
