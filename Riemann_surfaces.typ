@@ -912,7 +912,7 @@ Two Möbius transformations $f$ and $g$ are said to be *conjugate* if there exis
 $op("PSL")_2 lr((bb(R)))$ as a subgroup of $op("PSL")_2 lr((bb(C)))$
 acts on $hatCC$ and produces 3 orbits:
 
-+ Real line plus a point at infinity : $bb(R) union {oo}$,
++ Real line plus a point at infinity : $bb(R) union.sq {oo}$,
 
 + Upper half plane: $bb(H)$,
 
