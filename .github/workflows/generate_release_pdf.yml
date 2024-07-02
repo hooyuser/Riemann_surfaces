@@ -52,7 +52,7 @@ jobs:
           echo "::set-output name=release_tag::latest_$(date +"%Y-%m-%d_%H-%M")"
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: latest version
           body: Latest version of `${{ env.TYPST_FILE_NAME }}.pdf`
