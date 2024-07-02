@@ -36,7 +36,7 @@ jobs:
           typst compile ${{ env.TYPST_FILE_NAME }}.typ ${{ env.TYPST_FILE_NAME }}.pdf  --font-path fonts
 
       - name: Delete old Release
-        uses: actions/github-script@v5
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
