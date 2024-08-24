@@ -1,13 +1,12 @@
-#import "@preview/fletcher:0.5.0" as fletcher: diagram, node, edge
+#import "@preview/fletcher:0.5.1" as fletcher: diagram, node, edge
 #import "@preview/cetz:0.2.2": canvas, draw
 
 #import "@local/math-notes:0.1.0": *
 
-#show: math_notes
+#show: math_notes.with(title: "Riemann Surfaces")
 
 
-#set math.mat(delim: "[")
-#set math.vec(delim: "[")
+
 
 // Overwrite the default definition
 #let hatCC = $hat(CC, size: #1.00001em)$
@@ -128,7 +127,11 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
     f: DD &--> HH \
     z &arrow.long.bar (z+i) / (i z+1)
   $
-  is a biholomorphism.
+  is a biholomorphism and has the inverse
+  $
+    f^(- 1): HH &--> DD \
+    w &arrow.long.bar (i w+1) / (w+i)
+  $
 ]
 
 
@@ -964,6 +967,9 @@ acts on $hatCC$ and produces 3 orbits:
 ]
 
 === Open Disk $bb(D)$ <open-disk-mathbb-d>
+
+
+
 #proposition[
   Automorphism of $bb(D)$
 ][
@@ -974,6 +980,30 @@ acts on $hatCC$ and produces 3 orbits:
     {z arrow.r.bar frac(overline(a) z + overline(b), b z + a) thin mid(|) thin a, b in bb(C) , lr(|a|)^2 - lr(|b|)^2 = 1}
   ) tilde.equiv upright(P U)(1,1). $
 ]
+#proof[
+  Since 
+   $
+    f: DD &--> HH \
+    z &arrow.long.bar (z+i) / (i z+1)
+  $
+  is a biholomorphic map, we have 
+  $
+    op("Aut") lr((bb(D))) = {
+      f^(- 1) circle.stroked.tiny T circle.stroked.tiny f thin mid(|) thin T in op("Aut") lr((bb(H)))
+    } 
+  $
+]
+
+#proposition[][
+  Let $op("PU")(1,1)$ acts on $bb(D)$ by Möbius transformations. Then the stabilizer of $0$ is given by
+  $
+    op("Stab")_(op("PSL")_2 lr((bb(R))))(
+      0
+    ) = lr({z |-> e^(i theta)z thin mid(|) thin theta in bb(R)}) tilde.equiv op("SO")_2(RR).
+  $
+]
+
+
 == Compact Riemann Surfaces <compact-riemann-surfaces>
 
 
@@ -1146,13 +1176,17 @@ Complex torus $bb(C) \/ Lambda$, as a quotient group of $bb(C)$, has a abelian g
   A nonzero holomorphic homomorphism between two complex tori is called an #strong[isogeny].
 ]
 
-#example[Multiply-by-$n$ Map is an Isogeny][
-  The map
+#example[Multiply-by-$N$ Map is an Isogeny][
+  Let $N$ be a postive integer. The map
   $
-    [n]:bb(C) \/ Lambda &--> bb(C) \/ Lambda \
+    [N]:bb(C) \/ Lambda &--> bb(C) \/ Lambda \
     z + Lambda &arrow.long.bar n z + Lambda
   $
-  is called the #strong[multiply-by-$n$ map]. Since $n Lambda subset.eq Lambda$, we see $[n]$ is an isogeny.
+  is called the #strong[multiply-by-$N$ map]. Since $N Lambda subset.eq Lambda$, we see $[N]$ is an isogeny. Let $E$ denote the complex torus $bb(C) \/ Lambda$. The kernel of $[N]$ is denoted by 
+  $
+  E[N] = ker [N] = {z + Lambda in bb(C) \/ Lambda | N z in Lambda} = (N^(-1) Lambda) \/ Lambda tilde.equiv (ZZ \/ N ZZ)^(2),
+  $
+  where the isomorphism is given by
 ]
 
 
