@@ -23,8 +23,6 @@ jobs:
 
       - name: Prepare Typst environment
         uses: typst-community/setup-typst@v3
-        with:
-          cache-dependency-path: requirements.typ
 
       - name: Clone Typst Math Notes Repository
         run: |
