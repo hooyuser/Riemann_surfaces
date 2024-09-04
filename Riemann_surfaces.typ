@@ -1,5 +1,5 @@
 #import "@preview/fletcher:0.5.1" as fletcher: diagram, node, edge
-#import "@preview/cetz:0.2.2": canvas, draw
+#import "@preview/cetz:0.2.2"
 
 #import "@local/math-notes:0.1.0": *
 
@@ -99,7 +99,57 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
     & arrow.l.bar.long x+i y
   $
 ]
+#align(center)[
+  #cetz.canvas(
+    length: 0.95cm,
+    {
+      import cetz.draw: *
+      scale(200%)
+      set-style(stroke: (paint: luma(40%), thickness: 1.2pt))
 
+      let radius = 1.5
+      let dash_pattern = (0.4em, 0.25em)
+      let dash_stroke = (paint: rgb("#0fcdae"), dash: dash_pattern, cap: "round")
+      let point_radius = 0.05
+
+      let h_line = line((-3.2, 0), (3.2, 0), stroke: navy + 2pt)
+      let circ = circle((0, 0), radius: radius, stroke: rgb("#6bb3ff") + 2pt)
+
+      let circle_point_style = (radius: point_radius, stroke: 0.9pt + luma(45%), fill: red.desaturate(10%))
+
+      let line_point_style = (radius: point_radius, stroke: 0.9pt + luma(45%), fill: rgb("#ff8b6c"))
+
+
+      intersections(
+        "sect_left",
+        {
+          h_line
+          line((0, radius), (240deg, radius), stroke: dash_stroke)
+        },
+      )
+      circle("sect_left.0", ..line_point_style)
+
+      intersections(
+        "sect_right",
+        {
+          circ
+          line((0, radius), (3, 0), stroke: dash_stroke)
+        },
+      )
+      circle("sect_right.1", ..circle_point_style, name: "right_intersection")
+      circle((3, 0), ..line_point_style)
+
+      circle((240deg, radius), ..circle_point_style) // left circle point
+
+      circle((0, radius), radius: point_radius, fill: luma(80%), name: "north pole")
+
+      content("right_intersection", anchor: "south-west", padding: .12, [$P=(X,Y,Z)$])
+
+      content((3, 0), anchor: "north", padding: .25, [$pi(P)$])
+
+    },
+  )
+]
 
 
 
@@ -766,10 +816,10 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
 
 ]
 
-#canvas(
+#cetz.canvas(
   length: 0.72cm,
   {
-    import draw: *
+    import cetz.draw: *
 
     let image_circle_from_cicle(r) = ((r * r + 1) / (r * r - 1), 2 * r / calc.abs(r * r - 1))
 
@@ -785,9 +835,13 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
 
     let angle_n = 6
     let angles = range(angle_n).map(i => i / angle_n * 180deg)
-    let angle_colors = range(angle_n).map(i => color.map.rainbow.at(
-      int(i / angle_n * color.map.rainbow.len()),
-    ).darken(20%))
+    let angle_colors = range(angle_n).map(i => color
+      .map
+      .rainbow
+      .at(
+        int(i / angle_n * color.map.rainbow.len()),
+      )
+      .darken(20%))
 
     let geodesic_stroke = edge_stroke_2
 
@@ -951,16 +1005,59 @@ acts on $hatCC$ and produces 3 orbits:
 #proposition[
   Automorphism of $bb(H)$
 ][The automorphism group of $bb(H)$ is given by $ op("Aut") lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(R) , a d - b c = 1}) tilde.equiv op("PSL")_2 lr((bb(R))) . $
+  The action of $op("PSL")_2(RR)$ on $HH$ is smooth and transitive.
+]
+#proof[
+  It is clear that the map
+  $
+    op("PSL")_2 lr((bb(R))) times bb(H) &--> bb(H)\
+    (mat(a, b;c, d), z) &arrow.bar.long frac(a z + b, c z + d)
+  $ is smooth.
 ]
 
-#proposition[][
+
+#proposition[Stabilizer of $i$ in $op("PSL")_2 lr((bb(R)))$][
   Let $op("PSL")_2 lr((bb(R)))$ acts on $bb(H)$ by Möbius transformations. Then the stabilizer of $i$ is given by
   $
     op("Stab")_(op("PSL")_2 lr((bb(R))))(
       i
-    ) = lr({mat(cos phi, -sin phi;sin phi, cos phi) thin mid(|) thin phi in bb(R)}) tilde.equiv op("SO")_2(RR).
+    ) = lr({mat(cos phi, -sin phi;sin phi, cos phi) thin mid(|) thin phi in bb(R)}) = op("SO")_2(RR).
   $
 ]
+#proof[
+  Let $T in op("PSL")_2 lr((bb(R)))$ be a Möbius transformation such that $T(i) = i$. Then $T$ can be written as
+  $
+    T(z) = frac(a z + b, c z + d)
+  $
+  where $a , b , c , d in bb(R)$ and $a d - b c = 1$. Since $T(i) = i$, we have
+  $
+    frac(a i + b, c i + d) = i ==> (b+c)+(a-d)i=0
+  $
+  By comparing the real and imaginary parts, we have $b=-c$ and $a=d$, which implies $a^2+d^2=1$. Therefore, $T$ can be written as
+  $
+    T = mat(cos phi, -sin phi;sin phi, cos phi)
+  $
+  for some $phi in bb(R)$.
+]
+
+#proposition[Iwasawa Decomposition of $op("SL")_2(RR)$][
+  Any $T in op("SL")_2 lr((bb(R)))$ can be uniquely written as
+  $
+    T = K A N= mat(cos phi, -sin phi;sin phi, cos phi) mat(lambda, 0;0, lambda^(-1)) mat(1, x;0, 1)
+  $
+
+  where
+
+  + $K =mat(cos phi, -sin phi;sin phi, cos phi) in op("SO")_2(RR)$ , where $phi in [0,2pi )$ is the rotation angle,
+
+  + $A=mat(lambda, 0;0, lambda^(-1))$ is positive diagonal matrix, where $lambda in RR^+$ means scaling by $lambda^2$,
+
+  + $N=mat(1, x;0, 1)$ is an unitriangular matrix, where $x in RR$ is the translation.
+]
+
+
+
+
 
 #definition[Fuchsian Group][
   A #strong[Fuchsian group] is a discrete subgroup of $op("PSL")_2 lr((bb(R)))$.
@@ -981,16 +1078,16 @@ acts on $hatCC$ and produces 3 orbits:
   ) tilde.equiv upright(P U)(1,1). $
 ]
 #proof[
-  Since 
-   $
+  Since
+  $
     f: DD &--> HH \
     z &arrow.long.bar (z+i) / (i z+1)
   $
-  is a biholomorphic map, we have 
+  is a biholomorphic map, we have
   $
     op("Aut") lr((bb(D))) = {
       f^(- 1) circle.stroked.tiny T circle.stroked.tiny f thin mid(|) thin T in op("Aut") lr((bb(H)))
-    } 
+    }
   $
 ]
 
@@ -1182,9 +1279,11 @@ Complex torus $bb(C) \/ Lambda$, as a quotient group of $bb(C)$, has a abelian g
     [N]:bb(C) \/ Lambda &--> bb(C) \/ Lambda \
     z + Lambda &arrow.long.bar n z + Lambda
   $
-  is called the #strong[multiply-by-$N$ map]. Since $N Lambda subset.eq Lambda$, we see $[N]$ is an isogeny. Let $E$ denote the complex torus $bb(C) \/ Lambda$. The kernel of $[N]$ is denoted by 
+  is called the #strong[multiply-by-$N$ map]. Since $N Lambda subset.eq Lambda$, we see $[N]$ is an isogeny. Let $E$ denote the complex torus $bb(C) \/ Lambda$. The kernel of $[N]$ is denoted by
   $
-  E[N] = ker [N] = {z + Lambda in bb(C) \/ Lambda | N z in Lambda} = (N^(-1) Lambda) \/ Lambda tilde.equiv (ZZ \/ N ZZ)^(2),
+    E[N] = ker [N] = {z + Lambda in bb(C) \/ Lambda | N z in Lambda} = (N^(-1) Lambda) \/ Lambda tilde.equiv (
+      ZZ \/ N ZZ
+    )^(2),
   $
   where the isomorphism is given by
 ]
