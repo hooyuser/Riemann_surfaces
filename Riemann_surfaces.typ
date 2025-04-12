@@ -1,16 +1,14 @@
-#import "@preview/fletcher:0.5.1" as fletcher: diagram, node, edge
-#import "@preview/cetz:0.2.2"
+#import "@preview/fletcher:0.5.7" as fletcher: diagram, node, edge
+#import "@preview/cetz:0.3.4"
 
-#import "@local/math-notes:0.1.0": *
+#import "@local/math-notes:0.3.0": *
 
 #show: math_notes.with(title: "Riemann Surfaces")
 
 
-
-
 // Overwrite the default definition
 #let hatCC = $hat(CC, size: #1.00001em)$
-
+#let acts = $arrow.cw.half$
 
 // define commutative diagram
 #let commutative_diagram(math_content) = align(center)[
@@ -19,23 +17,6 @@
 ]
 
 
-// Title Page
-#v(1fr)
-#align(center)[
-  #text(font: "Noto Serif", size: 45pt, weight: 500)[Riemann Surfaces]
-  #v(1.5fr)
-  #text(font: "Noto Serif", size: 15pt, datetime.today().display())
-]
-#v(1.2fr)
-
-#pagebreak()
-
-#block(inset: (left: -0.5em, right: -0.5em))[
-  #outline(title: text(font: "Noto Sans", size: 23pt, weight: 700, stretch: 150%)[Contents #v(1em)], depth: 3)
-]
-
-#pagebreak()
-
 #let cal(x) = math.class("unary", text(font: "Computer Modern Symbol", x))
 
 
@@ -43,6 +24,8 @@
 
 
 == Complex Manifold <complex-manifold>
+=== Complex Structure <holomorphic-atlas>
+
 #definition[Holomorphic Chart][
   A #strong[holomorphic chart] on a topological manifold $X$ is a homeomorphism $phi : U arrow.r V subset.eq bb(C)^n$ where $U$ is
   an open subset of $X$, denoted by $lr((U , phi))$.
@@ -50,13 +33,23 @@
 We say that a chart $lr((U , phi))$ for a Riemann surface $X$ is #strong[centered at $x$] if $phi lr((x)) = 0$.
 
 #definition[Holomorphic Atlas][
-  A #strong[\(compatible\) holomorphic atlas] on a topological manifold $X$ is a collection of holomorphic charts $lr((U_i , phi_i))$ such
-  that $union.big_i U_i = X$ and for any $i , j$, the transition function $ phi_i circle.stroked.tiny phi_j^(- 1) : phi_j lr((U_i sect U_j)) --> phi_i lr((U_i sect U_j)) $ is
-  holomorphic, whenever $U_i sect U_j$ is nonempty.
+  A #strong[(compatible) holomorphic atlas] on a topological manifold $X$ is a collection of holomorphic charts $Sigma = {lr((U_i , phi_i))}$ such
+  that $union.big_i U_i = X$ and for any $i , j$, the transition function
+  $
+    phi_i circle.stroked.tiny phi_j^(- 1) : phi_j lr((U_i inter U_j)) --> phi_i lr((U_i inter U_j))
+  $
+  is holomorphic, whenever $U_i inter U_j$ is nonempty.
 ]
+#remark[
+  Any compatible holomorphic atlas $Sigma$ can be extended to a maximal compatible holomorphic atlas $overline(Sigma)$
+]
+
 #definition[Complex Manifold][
-  A #strong[complex manifold] of dimension $n$ is a second-countable topological manifold of dimension $2 n$ with a
+  A #strong[complex manifold] of dimension $n$ is a second-countable Hausdorff topological manifold of dimension $2 n$ with a maximal compatible
   holomorphic atlas $lr({lr((U_i , phi_i))})$.
+]
+#remark[
+  If we say $X$ is a complex manifold with compatible atlas $Sigma = lr({lr((U_i , phi_i))})$, what we mean is that $X$ is a complex manifold with the maximal compatible atlas $overline(Sigma)$ that contains $Sigma$.
 ]
 #definition[Holomorphic Map][
   A map $f : X arrow.r Y$ between two complex manifolds is #strong[holomorphic at $x in X$] if there exists a holomorphic
@@ -73,8 +66,251 @@ We say $f$ is #strong[holomorphic] if it is holomorphic at every point of $X$.
   that $J^2 = - upright(i d)_V$.
 ]
 #definition[Almost Complex Structure][
-  Let $M$ be a smooth manifold. An almost complex structure on $M$ a smooth $lr((1 , 1))$-tensor field $J in Gamma lr((T^(lr((1 , 1))) M))$.
+  Let $M$ be a smooth manifold. An almost complex structure on $M$ is a smooth $lr((1 , 1))$-tensor field $J in Gamma lr((T^(lr((1 , 1))) M))$.
 ]
+
+=== Complexified Tangent Bundle <complex-tangent-bundle>
+
+#definition[Complex Vector Bundle][
+  A #strong[complex vector bundle] of rank $k$ over a topological space $X$ is a vector bundle $p:E->X$ satisfiing that for each $x in X$, the fiber $p^(-1)(x)$ is a $CC$-vector space of dimension $k$.
+]
+
+#definition[Holomorphic Vector Bundle][
+  A complex vector bundle $p:E->X$ is called a #strong[holomorphic vector bundle] if $X$ is a complex manifold and the local trivialization maps
+  $
+    phi_alpha : p^(-1)(U_alpha) &--> U_alpha times CC^k
+  $ are biholomorphic maps.
+]
+#remark[
+  This definition is equivalent to requiring that all the transition maps
+  $
+    t_(alpha, beta) : U_alpha inter U_beta &--> op("GL")_k (CC)
+  $
+  are holomorphic.
+
+  If not specified, the topological space $E$ is always regarded to be a complex manifold with the holomorphic atlas ${(U_alpha , phi_alpha)}$.
+]
+
+#definition[Holomorphic Sections of a Holomorphic Vector Bundle][
+  Let $p:E->X$ be a holomorphic vector bundle over a complex manifold $X$ and $U subset.eq X$ be an open subset. A section $sigma : U -> E$ is called #strong[holomorphic] if it is a holomorphic map.
+]
+
+#definition[Complexified Tangent Space][
+  Let $M$ be a complex manifold of complex dimension $n$. Define $T_p^RR M$ as the tangent space of the underlying smooth manifold. The #strong[complexified tangent space] at $p in M$ is defined as the $CC$-vector space
+  $
+    T_p^CC M:=T_p^RR M times.circle_RR CC
+  $
+]
+If $(U, (z^j))$ is a holomorphic chart at $p$, then $(U, (x^j,y^j))$ is a smooth chart at $p$, where $x^j = op("Re") z^j$ and $y^j = op("Im") z^j$. Then $T_p M$ as a $2n$-dimensional $CC$-vector space has a $CC$-basis
+$
+  lr(frac(partial, partial x^1)|)_p , med lr(frac(partial, partial x^2)|)_p , dots.h.c med, lr(frac(partial, partial x^n)|)_p ,quad lr(frac(partial, partial y^1)|)_p , med lr(frac(partial, partial y^2)|)_p ,med dots.h.c med, med lr(frac(partial, partial y^n)|)_p.
+$
+Define
+$
+  partial / (partial z^j) & := frac(1, 2) (frac(partial, partial x^j) - i lr(frac(partial, partial y^j)) ),\
+  partial / (partial overline(z)^j) & := frac(1, 2) (frac(partial, partial x^j) + i lr(frac(partial, partial y^j)) ).
+$
+Then it is easy to check that
+$
+  T_p^CC M = op("span")_CC {lr(partial / (partial z^1)|)_p , med lr(partial / (partial z^2)|)_p, med dots.h.c ,med lr(partial / (partial z^n)|)_p, med lr(partial / (partial overline(z)^1)|)_p , med lr(partial / (partial overline(z)^2)|)_p, med dots.h.c ,med lr(partial / (partial overline(z)^n)|)_p}.
+$
+#definition[Holomorphic Tangent Space][
+  Let $M$ be a complex manifold of complex dimension $n$.
+  The $CC$-vector spaces
+  $
+    T_p^(1,0)M &:= op("span")_CC {lr(partial / (partial z^1)|)_p , med lr(partial / (partial z^2)|)_p, med dots.h.c ,med lr(partial / (partial z^n)|)_p},
+  $
+
+  is called the #strong[holomorphic tangent space] at $p$. The $CC$-vector space
+
+  $
+    T_p^(0,1)M &:= op("span")_CC {lr(partial / (partial overline(z)^1)|)_p , med lr(partial / (partial overline(z)^2)|)_p, med dots.h.c ,med lr(partial / (partial overline(z)^n)|)_p}.
+  $
+
+  is called the #strong[anti-holomorphic tangent space] at $p$.
+]
+
+
+We have the following direct sum decomposition
+$
+  T_p^CC M = T_p^(1,0)M plus.circle T_p^(0,1)M,
+$
+where $T^(1,0)_p M$ is the $i$-eigenspace of $T_p^CC M$ and $T^(0,1)_p M$ is the $-i$-eigenspace of $T_p^CC M$.
+
+#definition[Complexified Tangent Bundle][
+  The #strong[complexified tangent bundle] of a complex manifold $M$ is the complex vector bundle
+  $
+    T^CC M := union.sq.big_(p in M) T_p^CC M.
+  $
+]
+
+#definition[Holomorphic Tangent Bundle][
+  The #strong[holomorphic tangent bundle] of a complex manifold $M$ is the holomorphic vector bundle
+  $ T^(1,0) M := union.sq.big_(p in M) T_p^(1,0) M. $
+  The #strong[anti-holomorphic tangent bundle] is the holomorphic vector bundle $ T^(0,1) M := union.sq.big_(p in M) T_p^(0,1) M. $
+]
+
+We have the following direct sum decomposition
+$
+  T^CC M = T^(1,0)M plus.circle T^(0,1)M,
+$
+where $T^(1,0)M$ is the $i$-eigenbundle of $T^CC  M$ and $T^(0,1)M$ is the $-i$-eigenbundle of $T^CC  M$.
+
+#proposition[Holomorphic Tangent Space is Holomorphic Vector Bundle][
+  Let $M$ be a complex manifold. The holomorphic tangent bundle $T^(1,0)M$ is a holomorphic vector bundle over $M$, with the projection map
+  $
+    p: T^(1,0)M &--> M\
+    (x, v) &arrow.bar.long x.
+  $
+]
+#proof[
+  Let $lr((U, phi))$ be a holomorphic chart on $M$. Then the local trivialization map
+  $
+    phi_* : p^(-1)(U) &--> U times CC^n\
+    (x, v) &arrow.bar.long (p(x), phi lr((x)))
+  $
+  is a biholomorphism.
+]
+
+=== Complexified Cotangent Bundle <complex-cotangent-bundle>
+
+#definition[Complexified Cotangent Space][
+  Let $M$ be a complex manifold of complex dimension $n$. The #strong[complexified cotangent space] at $p in M$ is defined as
+  $
+    T_p^(*CC)M:=(T_p^CC M)^*.
+  $
+]
+If $(U, (z^j))$ is a holomorphic chart at $p$, then $(U, (x^j,y^j))$ is a smooth chart at $p$, where $x^j = op("Re") z^j$ and $y^j = op("Im") z^j$. Then $T_p^(*CC)M$ as a $2n$-dimensional $CC$-vector space has a $CC$-basis
+$
+  dif x^1 , med dif x^2 ,med dots.h.c , dif x^n ,quad dif y^1 , med dif y^2 ,med dots.h.c , med dif y^n.
+$
+Define
+$
+  dif z^j & := dif x^j + i dif y^j,\
+  dif overline(z)^j & := dif x^j - i dif y^j.
+$
+Then it is easy to check that
+$
+  T_p^(*CC)M = op("span")_CC {dif z^1 , med dif z^2, med dots.h.c , med dif z^n, med dif overline(z)^1 , med dif overline(z)^2, med dots.h.c , med dif overline(z)^n}.
+$
+
+
+#definition[Holomorphic Cotangent Space][
+  Let $M$ be a complex manifold of complex dimension $n$. The #strong[holomorphic cotangent space] at $p in M$ is defined as
+  $
+    T_p^(*1,0)M:=(T_p^(1,0)M)^* = op("span")_CC {dif z^1 , med dif z^2, med dots.h.c , med dif z^n},
+  $
+  The #strong[anti-holomorphic cotangent space] at $p in M$ is defined as
+  $
+    T_p^(*0,1)M:=(T_p^(0,1)M)^* = op("span")_CC {dif overline(z)^1 , med dif overline(z)^2, med dots.h.c , med dif overline(z)^n}.
+  $
+]
+
+We have the following direct sum decomposition
+$
+  T_p^(*CC)M = T_p^(*1,0)M plus.circle T_p^(*0,1)M.
+$
+
+#definition[Holomorphic Cotangent Bundle][
+  The #strong[holomorphic cotangent bundle] of a complex manifold $M$ is the holomorphic vector bundle
+  $
+    T^(*1,0)M:=union.sq.big_(p in M) T_p^(*1,0)M.
+  $
+  The #strong[anti-holomorphic cotangent bundle] is the holomorphic vector bundle
+  $
+    T^(*0,1)M:=union.sq.big_(p in M) T_p^(*0,1)M.
+  $
+]
+
+We have the following direct sum decomposition
+$
+  T^(*CC)M = T^(*1,0)M plus.circle T^(*0,1)M.
+$
+=== Complex Differential Forms <complex-differential-forms>
+
+#definition[Complex Differential Form][
+  A #strong[complex differential form of total degree $k$] on a complex manifold $M$ is a smooth section of the holomorphic vector bundle $and^k T^*M$. The space of all complex differential $k$-forms on $M$ is denoted by
+  $
+    cal(E)^k (M) := Gamma lr((and^k T^(*CC)M)).
+  $
+  And the space of all complex differential forms on $M$ is defined as the following graded algebra
+  $
+    cal(E) (M) := plus.circle.big_(k = 0)^n cal(E)^k (M).
+  $
+]
+
+#definition[Bigraded Structure on $cal(E)(M)$][
+  Suppose $M$ is a complex manifold of complex dimension $n$. Define the space of #strong[$(1,0)$-forms] on $M$ as
+  $
+    Omega^(1,0) (M) := Gamma lr((T^(*1,0)M)).
+  $
+  and the space of #strong[$(0,1)$-forms] on $M$ as
+  $
+    Omega^(0,1) (M) := Gamma lr((T^(*0,1)M)).
+  $
+  Now define the space of #strong[$(p,q)$-forms] on $M$ as
+  $
+    Omega^(p,q) (M) := (and^p Omega^(1,0) (M)) and.big (and^q Omega^(0,1) (M)).
+  $
+  Then we have the following direct sum decomposition
+  $
+    cal(E)^k (M) = plus.circle.big_(p+q=k) Omega^(p,q) (M)=Omega^(k,0) (M) plus.circle Omega^(k-1,1) (M) plus.circle dots.h.c plus.circle Omega^(0,k) (M),
+  $
+  which induces a bigraded structure on $cal(E)(M)$
+  $
+    cal(E) (M) = plus.circle.big_(p,q) Omega^(p,q) (M).
+  $
+
+]
+
+#definition[Holomorphic $k$-Form][
+  A #strong[holomorphic $k$-form] on a complex manifold $M$ is a holomorphic section of the complex vector bundle $and^k T^(*1,0)M$. Or equivalently, a holomorphic $k$-form on $M$ is smooth section in $Omega^(k,0) (M)$ which is also holomorphic.
+]
+
+#definition[Dolbeault Operators][
+  Let $M$ be a complex manifold of complex dimension $n$. Let
+  $
+    d^((k)) : cal(E)^k (M) arrow.r cal(E)^(k+1) (M)
+  $
+  be the exterior derivative and
+  $
+    pi^(p,q) : cal(E)^k (M) arrow.r Omega^(p,q) (M)
+  $
+  be the natural projection. Suppose
+  $
+    omega = sum_(lr(|I|) = p \, lr(|J|) = q) med f_(I J) thin d z^I and d macron(z)^J in Omega^(p , q)(M)
+  $
+  is a $(p,q)$-form on $M$, where $I ,J in ZZ_(g>=0)^n$ are multi-indices.
+
+  Define the #strong[Dolbeault operators] as $partial^(p,q)= pi^(p+1,q) compose d^((p+q))$
+  $
+    partial^(p,q): Omega^(p,q) (M) &--> Omega^(p+1,q) (M)\
+    omega & arrow.bar.long sum_(j=1)^n frac(partial f_(I J), partial z^j) thin d z^j and omega = sum_(lr(|I|=p) \, lr(|J|=q)) sum_(j=1)^n frac(partial f_(I J), partial z^j) thin d z^j and d z^I and d macron(z)^J,
+  $
+  and $macron(partial)^(p,q)= pi^(p,q+1) compose d^((p+q))$
+  $
+    macron(partial)^(p,q): Omega^(p,q) (M) &--> Omega^(p,q+1) (M)\
+    omega & arrow.bar.long sum_(j=1)^n frac(partial f_(I J), partial macron(z)^j) d macron(z)^j and omega = sum_(lr(|I|=p) \, lr(|J|=q)) sum_(j=1)^n frac(partial f_(I J), partial macron(z)^j) d macron(z)^j and d z^I and d macron(z)^J.
+  $
+
+
+]
+
+#proposition[][
+  The Dolbeault operators $partial^(p,q)$ and $macron(partial)^(p,q)$ satisfy the following properties
+
+  - $partial compose partial = macron(partial) compose macron(partial) = partial compose macron(partial) + macron(partial) compose partial = 0$
+
+  - $d|_(Omega^(p,q) (M)) = partial + macron(partial)$ .
+]
+
+#definition[Dolbeault Complex][
+  The #strong[Dolbeault complex] of a complex manifold $M$ is the bigraded complex $Omega^(bullet,bullet) (M)$ with the differential operator $partial$ and $macron(partial)$.
+]
+
+
+
+
 == Riemann Surface <Riemann-surface>
 #definition[Riemann Surface][
   A #strong[Riemann surface] is a connected complex manifold of dimension one.
@@ -84,7 +320,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 #example[Complex Plane $bb(C)$][
   $bb(C)$ is a Riemann surface with the atlas $lr({lr((bb(C) , upright("id")))})$. Any open subset $U subset.eq bb(C)$ is
   also a Riemann surface with the atlas $lr({lr((U , upright("id")))})$. Some interesting cases are the unit disc $bb(D) = { z in bb(C) : lr(|z|) < 1 }$,
-  the upper half-plane $bb(H) = { z in bb(C) : "Im" z > 0 }$ and the punctured complex plane $bb(C)^(\*) = bb(C) \\ { 0 }$.
+  the upper half-plane $bb(H) = { z in bb(C) : "Im" z > 0 }$ and the punctured complex plane $bb(C)^(\*) = bb(C) - { 0 }$.
 ]
 #example[Riemann Sphere][
   The #strong[Riemann sphere] is the one-point compactification of $bb(C)$, denoted by $hatCC = bb(C) union { oo }$. It is
@@ -146,7 +382,6 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
       content("right_intersection", anchor: "south-west", padding: .12, [$P=(X,Y,Z)$])
 
       content((3, 0), anchor: "north", padding: .25, [$pi(P)$])
-
     },
   )
 ]
@@ -231,8 +466,8 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 
   We claim that $G$ is also closed. Suppose $b in partial G$. Since $f_1$ and $f_2$ are continuous, we have $f_1(b)=f_2(b)$.
   Now choose chart $(tilde(U), phi)$ centered at $b$ and chart $(tilde(V), psi)$ centered at $f_1(b)$, and suppose $f_i$ have
-  local expressions $tilde(F)_i$ in this chart. Note that $b in partial G$ implies $tilde(U) sect G$ is a nonempty open
-  set. Thus there exists $g in tilde(U) sect G$ and an open neighborhood $M$ of $g$ such that $M subset.eq tilde(U)$ and $f_1|_M=f_2|_M$.
+  local expressions $tilde(F)_i$ in this chart. Note that $b in partial G$ implies $tilde(U) inter G$ is a nonempty open
+  set. Thus there exists $g in tilde(U) inter G$ and an open neighborhood $M$ of $g$ such that $M subset.eq tilde(U)$ and $f_1|_M=f_2|_M$.
   Since $phi(M)$ is an open set in $bb(C)$ and $F_1|_(phi(M))=F_2|_(phi(M))$, by the identity theorem for holomorphic
   functions, we have $F_1=F_2$ on $phi(tilde(U))$. Thus $f_1|_(tilde(U))=f_2|_(tilde(U))$ on $tilde(U)$. Hence $b in G$ and $G$ is
   closed. Since $X$ is connected and $G$ is a both open and closed nonempty subset of $X$, we have $G=X$. Therefore, $f_1=f_2$ on $X$.
@@ -274,9 +509,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   Taylor expansion at
   $z = 0$:
   $
-    F (z) = psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) (z) = sum_(n = 1)^oo a_n z^n = z^k G (z) , quad (
-      k gt.eq 1
-    )
+    F (z) = psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) (z) = sum_(n = 1)^oo a_n z^n = z^k G (z) , quad ( k gt.eq 1 )
   $
   where $G (z)$ is holomorphic and $G (0) eq.not 0$. Define
   $h (z) = z root(k, G (z))$. $h$ is holomorphic at $z = 0$ and
@@ -285,13 +518,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   $tilde(phi) = h circle.stroked.tiny phi$. Let
   $sigma_k : z arrow.r.bar z^k$. Then we have
   $
-    tilde(F) (z) = psi circle.stroked.tiny f circle.stroked.tiny tilde(phi)^(- 1) (
-      z
-    ) = psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) circle.stroked.tiny h^(- 1) (
-      z
-    ) = F circle.stroked.tiny h^(- 1) (z) = sigma_k circle.stroked.tiny h circle.stroked.tiny h^(- 1) (z) = sigma_k (
-      z
-    ) = z^k ,
+    tilde(F) (z) = psi circle.stroked.tiny f circle.stroked.tiny tilde(phi)^(- 1) ( z ) = psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) circle.stroked.tiny h^(- 1) ( z ) = F circle.stroked.tiny h^(- 1) (z) = sigma_k circle.stroked.tiny h circle.stroked.tiny h^(- 1) (z) = sigma_k ( z ) = z^k ,
   $
   which is the local expression of $f$ using these charts.
 ]
@@ -301,7 +528,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 ]
 #proof[
   For any point $x in X$, there are chart $(U , phi)$ centered at $x$ and chart $(V , psi)$ centered at $f (x)$ such that $psi circle.stroked.tiny f circle.stroked.tiny phi^(- 1) (z) = z^k$.
-  Since $z^k$ is an open map, $f|_(U)$ is composition of open maps and hence open. For any open neighborhood $N$ of $x$, $f (U sect N)$ is
+  Since $z^k$ is an open map, $f|_(U)$ is composition of open maps and hence open. For any open neighborhood $N$ of $x$, $f (U inter N)$ is
   a neighborhood of $f (x)$. Therefore, $f$ is open.
 ]
 #corollary[Injective Holomorphic Maps are Biholomorphisms onto Their Images][
@@ -418,13 +645,23 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   Let $Gamma_Y$ be a good graph on $Y$ with $f lr((upright(R a m)_X lr((f)))) subset.eq V_(Gamma_Y)$: the branch locus of $f$ is
   contained in the vertex set of $Gamma_Y$. Define $Gamma_X$ to be the "lift" of $Gamma_Y$ via the map $f$ : the support
   of $Gamma_X$ is $f^(- 1) lr((Gamma_Y))$ and the vertices, edges and faces of $Gamma_X$ are the connected components of
-  the inverse images of vertices, edges and faces of $Gamma_Y$. Note $ deg lr((f)) = sum_(x in f^(- 1) lr((y))) k_x = lr(|f^(- 1) lr((y))|) + sum_(x in f^(- 1) lr((y))) lr((k_x - 1)) . $ We
-  can obtain the following equations by counting the number of vertices, edges and faces of $Gamma_X$ and $Gamma_Y$: $ lr(|V_(Gamma_X)|) & = sum_(y in Gamma_Y) lr(|f^(- 1) lr((y))|) = sum_(y in V_(Gamma_Y)) deg lr((f)) - sum_(y in V_(Gamma_Y)) sum_(x in f^(- 1) lr((y))) lr((k_x - 1)) = deg lr((f)) lr(|V_(Gamma_Y)|) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) ,\
-  lr(|E_(Gamma_X)|) & = deg lr((f)) lr(|E_(Gamma_X)|) ,\
-  lr(|F_(Gamma_X)|) & = deg lr((f)) lr(|F_(Gamma_X)|) . $ Thus we have $ chi lr((X)) & = lr(|V_(Gamma_X)|) - lr(|E_(Gamma_X)|) + lr(|F_(Gamma_X)|)\
-              & = deg lr((f)) lr(|V_(Gamma_Y)|) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) - deg lr((f)) lr(|E_(Gamma_Y)|) + deg lr((f)) lr(|F_(Gamma_Y)|)\
-              & = deg lr((f)) lr((lr(|V_(Gamma_Y)|) - lr(|E_(Gamma_Y)|) + lr(|F_(Gamma_Y)|))) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1))\
-              & = deg lr((f)) chi lr((Y)) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) . $
+  the inverse images of vertices, edges and faces of $Gamma_Y$. Note
+  $
+    deg lr((f)) = sum_(x in f^(- 1) lr((y))) k_x = lr(|f^(- 1) lr((y))|) + sum_(x in f^(- 1) lr((y))) lr((k_x - 1)).
+  $
+  We can obtain the following equations by counting the number of vertices, edges and faces of $Gamma_X$ and $Gamma_Y$:
+  $
+    lr(|V_(Gamma_X)|) & = sum_(y in Gamma_Y) lr(|f^(- 1) lr((y))|) = sum_(y in V_(Gamma_Y)) deg lr((f)) - sum_(y in V_(Gamma_Y)) sum_(x in f^(- 1) lr((y))) lr((k_x - 1)) = deg lr((f)) lr(|V_(Gamma_Y)|) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) ,\
+    lr(|E_(Gamma_X)|) & = deg lr((f)) lr(|E_(Gamma_X)|) ,\
+    lr(|F_(Gamma_X)|) & = deg lr((f)) lr(|F_(Gamma_X)|) .
+  $
+  Thus we have
+  $
+    chi lr((X)) & = lr(|V_(Gamma_X)|) - lr(|E_(Gamma_X)|) + lr(|F_(Gamma_X)|)\
+    & = deg lr((f)) lr(|V_(Gamma_Y)|) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) - deg lr((f)) lr(|E_(Gamma_Y)|) + deg lr((f)) lr(|F_(Gamma_Y)|)\
+    & = deg lr((f)) lr((lr(|V_(Gamma_Y)|) - lr(|E_(Gamma_Y)|) + lr(|F_(Gamma_Y)|))) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1))\
+    & = deg lr((f)) chi lr((Y)) - sum_(x in upright(R a m) lr((f))) lr((k_x - 1)) .
+  $
 ]
 #corollary[
   Suppose that $f : X arrow.r Y$ is a non-constant holomorphic map of compact Riemann surfaces. Then we have
@@ -448,9 +685,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   + $ sum_(x in upright(R a m) (f)) (k_x - 1) = 2 (g_X - 1 - (g_Y - 1) deg (f)) . $
 
   + $
-      2 g_X - 2 = (2 g_Y - 2) deg (f) + sum_(x in upright(R a m) (f)) (k_x - 1) gt.eq (2 g_Y - 2) deg (
-        f
-      ) gt.eq 2 g_Y - 2 .
+      2 g_X - 2 = (2 g_Y - 2) deg (f) + sum_(x in upright(R a m) (f)) (k_x - 1) gt.eq (2 g_Y - 2) deg ( f ) gt.eq 2 g_Y - 2 .
     $
 
   + $f$ is unramified on $X$, if and only if
@@ -469,7 +704,10 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 == Holomorphic Function Sheaf <holomorphic-function-sheaf>
 #definition[Holomorphic Function Sheaf][
   Let $X$ be a Riemann surface. The #strong[holomorphic function sheaf] $cal(O)_X$ is the sheaf of holomorphic functions
-  on $X$. That is, for any open set $U subset.eq X$, $ cal(O)_X lr((U)) = lr({f : U arrow.r bb(C) thin mid(|) thin f upright(" is holomorphic")}) . $
+  on $X$. That is, for any open set $U subset.eq X$,
+  $
+    cal(O)_X lr((U)) = lr({f : U arrow.r bb(C) thin mid(|) thin f "is holomorphic"}).
+  $
 ]
 #proposition[Holomorphic Function Sheaf on Compact Riemann Surface][
   Let $X$ be a compact Riemann surface. Then the only holomorphic functions on $X$ are the constant functions, i.e. $cal(O)_X lr((X)) = bb(C)$.
@@ -496,8 +734,12 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   order of $f$ at $x$ is independent of the choice of chart containing $x$.
 ]
 #proposition[Order is a Valuation][
-  Let $X$ be a Riemann surface and $f$ is meromorphic at $p in X$. Then the order of $f$ at $p$ $ "ord"_p : cal(M)_(X , p) & --> bb(Z) union { oo }\
-  f                        & arrow.r.long.bar "ord"_p lr((f)) $ is a valuation on $cal(M)_(X , p)$. That is, for any $f , g in cal(M)_(X , p)$,
+  Let $X$ be a Riemann surface and $f$ is meromorphic at $p in X$. Then the order of $f$ at $p$
+  $
+    op("ord")_p : cal(M)_(X , p) & --> bb(Z) union { oo }\
+    f & arrow.r.long.bar op("ord")_p lr((f))
+  $
+  is a valuation on $cal(M)_(X , p)$. That is, for any $f , g in cal(M)_(X , p)$,
   we have
 
   - $"ord"_p lr((f)) = oo$ if and only if $f = 0$.
@@ -519,10 +761,67 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 
 == Differential Forms <differential-forms>
 
+// #definition[Holomorphic Tangent Space][
+//   Let $X$ be a Riemann surface. We define $T_p^\mathbb{R}M$ as the tangent space of the underlying smooth manifold, and define $T_pM:=T_p^\mathbb{R}M\otimes \mathbb{C}$.
+// ]
+
 #definition[Holomorphic Differential Forms][
   Let $X$ be a Riemann surface. A #strong[differential form of degree $k$] on $X$ is a section of the $k$-th exterior power of
-  the holomorphic cotangent bundle $Omega^1_X$. The space of all differential forms of degree $k$ on $X$ is denoted by
-  $Omega^k_X$.
+  the holomorphic cotangent bundle $T^(*1,0)X:=(T^(1,0) X)^*$. The space of all differential forms of degree $k$ on $X$ is denoted by
+  $
+    Omega^(k,0)_X = Gamma(X,  and^k (T^(*1,0)X)).
+  $
+]
+
+#definition[Holomorphic 1-Forms][
+  Let $X$ be a Riemann surface. A #strong[holomorphic 1-form] on $X$ is a holomorphic form of degree 1. The space of all holomorphic 1-forms on $X$ is denoted by
+  $
+    Omega^(1,0)_X = Gamma(X, T^(*1,0) X).
+  $
+]
+#remark[
+  If $(U,z)$ is a holomorphic chart on $X$, then any holomorphic 1-form $omega$ on $X$ can be written as
+  $
+    omega = f dif z
+  $
+  for some holomorphic function $f$ on $U$. More explicitly, $omega$ is a map
+  $
+    omega: U &--> T^(*1,0) X \
+    p & arrow.bar.long f(z(p)) dif z.
+  $
+
+
+  Let ${(U_alpha,z_alpha)}$ be a holomorphic atlas on $X$. A holomorphic 1-from can be alternatively defined as a collection of holomorphic functions ${f_alpha:z_alpha (U_alpha)->CC}$ such that if $U_alpha inter U_beta eq.not emptyset$, then
+  $
+    f_beta (z_beta (p)) = f_alpha (z_alpha (p))T'(z_beta (p))= f_alpha (T(z_beta (p)))T'(z_beta (p)), quad forall p in U_alpha inter U_beta,
+  $
+  where $T= z_alpha circle.stroked.tiny z_beta^(-1)$ is the transition function. The above condition guarantees
+  $
+    dif z_alpha = T' dif z_beta
+  $
+  so that we have invariance of the 1-form under the change of coordinates
+  $
+    f_alpha dif z_alpha = f_beta dif z_beta.
+  $
+]
+
+#definition[Order of Holomorphic 1-Form][
+  Let $X$ be a Riemann surface and $omega$ be a holomorphic 1-form on $X$. The #strong[order of $omega$ at $x$] is defined as
+  $
+    "ord"_x lr((omega)) = "ord"_x lr((f))
+  $
+  where $omega = f dif z$ in a chart $(U,z)$ centered at $x$.
+]
+#remark[
+  We need to check that the definition of the order of a holomorphic 1-form is independent of the choice of chart. This follows from that any transition function $T$ is holomorphic and $T'$ is nonzero.
+]
+
+#theorem[Poincare Lemma][
+  Let $X$ be a Riemann surface and $omega in cal(E)^(med 1)(X)$ be a complex 1-form on $X$. Suppose $p in X$ and $dif omega=0$ on a neighborhood of $p$. Then there exists a smooth function $f$ defined on a neighborhood of $p$ such that $omega=dif f$.
+]
+
+#theorem[$macron(partial)$-Poincaré Lemma][
+  Let $X$ be a Riemann surface and $omega in Omega^(0,1)_X$ be an anti-holomorphic 1-form on $X$. Then on some neighborhood of $p$, there exists a smooth function $f$ such that $omega=macron(partial) f$.
 ]
 
 == Divisor <divisor>
@@ -560,11 +859,11 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   Let $X$ be a Riemann surface and $f$ be a nonzero meromorphic function on $X$. We have the following abelian group
   homomorphism:
   $
-    op("div") : cal(M) lr((X))^* & --> op("Div") lr((X))\
+    op("div") : cal(M) lr((X))_(!0) & --> op("Div") lr((X))\
     f & arrow.long.bar sum_(x in X) "ord"_x lr((f)) x .
   $
   The #strong[divisor of $f$] defined as $op("div") (f)$. Any divisor of this form is called a #strong[principal divisor] on $X$.
-  The group of principal divisors on $X$ is denoted by $op("PDiv") lr((X))= op("div")lr((cal(M) lr((X))^*))$.
+  The group of principal divisors on $X$ is denoted by $op("PDiv") lr((X))= op("div")lr((cal(M) lr((X))_(!0)))$.
 ]
 
 #proposition[Principal Divisors on Compact Riemann Surfaces][
@@ -583,14 +882,14 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   And we have the exact sequence
 
   #commutative_diagram($
-    cal(M) lr((X))^* edge(op("div"), ->) & op("Div") lr((X)) edge(->) & op("Pic") lr((X)) edge(->) & 0
+    cal(M) lr((X))_(!0) edge(op("div"), ->) & op("Div") lr((X)) edge(->) & op("Pic") lr((X)) edge(->) & 0
   $)
 
   For compact Riemann surfaces $X$, the #strong[restricted Picard group] of $X$ is defined as $ op("Pic")^0 lr((X)) = op("Div")^0 lr((X)) \/ op("PDiv") lr((X)) . $
   And we have the exact sequence
 
   #commutative_diagram($
-    1 edge(->)& CC^* edge(->) &cal(M) lr((X))^* edge(op("div"), ->) & op("Div")^0 lr((X)) edge(->) & op("Pic")^0 lr((X)) edge(->) & 0
+    1 edge(->)& CC^* edge(->) &cal(M) lr((X))_(!0) edge(op("div"), ->) & op("Div")^0 lr((X)) edge(->) & op("Pic")^0 lr((X)) edge(->) & 0
   $)
 ]
 
@@ -664,13 +963,18 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
     T:hatCC &--> hatCC\
     z &arrow.long.bar frac(a z + b, c z + d) ,\
   $
-  which corresponds to a projective matrix $M_T=mat(a, b;c, d) in upright(P G L)_2 lr((bb(C))) tilde.equiv upright(P S L)_2 lr((bb(C)))$.
+  which corresponds to a projective matrix $T=mat(a, b;c, d) in upright(P G L)_2 lr((bb(C))) tilde.equiv upright(P S L)_2 lr((bb(C))) tilde.equiv upright( S L)_2 lr((bb(C)))\/(plus.minus I)$.
 ]
+#remark[
+  Here we abuse the notation and use $T$ to denote both the Möbius transformation $z arrow.bar frac(a z + b, c z + d)$ and the corresponding matrix $mat(a, b;c, d) in op("PSL")_2(lr(bb(C)))$.
+]
+
 We can use any matrix in $op("GL")_2(lr(bb(C)))$ to represent a Möbius transformation, since $op("GL")_2(lr(bb(C)))$ acts
 on $hatCC$ through the quotient map $op("GL")_2(lr(bb(C))) &arrow.twohead op("PGL")_2(lr(bb(C)))$.
 
 If we use a matrix in $op("SL")_2(lr(bb(C)))$ to represent a Möbius transformation, then we say it is a *normalized
 representation* of the Möbius transformation.
+
 
 #proposition[Inverse of Möbius Transformation][
   The inverse of a Möbius transformation $T(z)=frac(a z + b, c z + d)$ is given by $ T^(- 1)(z)=frac(d z - b, - c z + a) . $
@@ -693,11 +997,7 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
 #proposition[Decomposition of Möbius Transformations][
   Suppose $T(z)=frac(a z + b, c z + d)$ is a Möbius transformation and $c eq.not 0$. Then $T$ can be decomposed as
   $
-    T(
-      z
-    )= frac(a z + b, c z + d) =a / c+(b c-a d) / c^2 frac(1, z+d/c) = T_4 circle.stroked.tiny T_3 circle.stroked.tiny T_2 circle.stroked.tiny T_1(
-      z
-    )
+    T( z )= frac(a z + b, c z + d) =a / c+(b c-a d) / c^2 frac(1, z+d/c) = T_4 circle.stroked.tiny T_3 circle.stroked.tiny T_2 circle.stroked.tiny T_1( z )
   $
   where
 
@@ -719,9 +1019,9 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
     c z^2+(d-a) z-b=0.
   $
 
-  + If $M_T=mat(1, b;0, 1)in op("PGL")_2(lr(bb(C)))$ where $b in CC^*$, then $T$ has a single fixed point $z=oo$.
+  + If $T=mat(1, b;0, 1)in op("PGL")_2(lr(bb(C)))$ where $b in CC^*$, then $T$ has a single fixed point $z=oo$.
 
-  + If $M_T=mat(a, b;0, d)in op("PGL")_2(lr(bb(C)))$ where $a ,d in CC^*$ and $a eq.not d$, then $T$ has a two fixed point $z_1=b/(d-a)$ and $z_2=oo$.
+  + If $T=mat(a, b;0, d)in op("PGL")_2(lr(bb(C)))$ where $a ,d in CC^*$ and $a eq.not d$, then $T$ has a two fixed point $z_1=b/(d-a)$ and $z_2=oo$.
 
   + If $c eq.not 0$, then the equation has two solutions
   $
@@ -812,7 +1112,7 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
   $
     T(z) = frac(z + 1, z - 1)
   $
-  satisfies $T^2=1$.
+  maps the unit disk $bb(D) = {z in bb(C) thin mid(|) abs(z) lt 1}$ to the left half plane $bb(H) = {z in bb(C) thin mid(|) op("Re")(z) < 0}$. Note that $T$ is involutory, i.e. $T^2 = id$, which implies that $T^(- 1) = T$.
 
 ]
 
@@ -838,9 +1138,7 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
     let angle_colors = range(angle_n).map(i => color
       .map
       .rainbow
-      .at(
-        int(i / angle_n * color.map.rainbow.len()),
-      )
+      .at(int(i / angle_n * color.map.rainbow.len()))
       .darken(20%))
 
     let geodesic_stroke = edge_stroke_2
@@ -921,18 +1219,20 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
   Therefore, $z_0$ does not lie on the generalized circle determined by $z_1 , z_2 , z_3$.
 ]
 
-Two Möbius transformations $f$ and $g$ are said to be *conjugate* if there exists a Möbius transformation $h$ such that $f = h circle.stroked.tiny g circle.stroked.tiny h^(- 1)$.
+#definition[Conjugate Möbius Transformations][
+  Nonidentity Möbius transformations $T$ and $S$ are are said to be *conjugate* if one of the following equivalent conditions holds:
 
+  + there exists a Möbius transformation $R$ such that $T = R circle.stroked.tiny S circle.stroked.tiny R^(- 1)$.
 
-
-
-#proposition[][
-  Nonidentity Möbius transformations $f$ and $g$ are conjugate if and only if $op("Tr") M_f = plus.minus op("Tr") M_g$.
+  + conjugate if and only if $op("Tr") T = plus.minus op("Tr") S$.
+]
+#remark[
+  The trace of a Möbius transformation is only well-defined up to sign.
 ]
 
-#proposition[Classification of Möbius Transformation][
-  Each Möbius transformation is conjugate to exactly one Möbius transformation of the form $z |-> mu z (mu in CC^*)$ or $z |-> z+1$,
-  where $mu$ is determined up to replacement by $1 / mu$. A nonidentity Möbius transformation is called
+#proposition[Classification of Möbius Transformation $upright(P S L)_2 lr((bb(C)))$][
+  Each Möbius transformation $T in op("PSL")_2(CC)$ is conjugate to exactly one Möbius transformation of the form $z |-> mu z (mu in CC^*)$ or $z |-> z+1$,
+  where $mu$ is called the *multiplier of $T$* and is determined up to replacement by $1 / mu$. A nonidentity Möbius transformation is called
 
   + #strong[parabolic] if it is conjugate to $z |-> z+1$.
 
@@ -942,18 +1242,16 @@ Two Möbius transformations $f$ and $g$ are said to be *conjugate* if there exis
 
   + #strong[loxodromic] if it is conjugate to $z |-> mu z$ with $mu in.not bb(R)^*$ and $|mu| eq.not 1$;
 
-
-
-
-
-  Suppose a Möbius transformation $f(z)$ has fixed points $z_1$ and $z_2$, the multiplier $mu$ can be calculated as
+  Suppose a Möbius transformation $f(z)=(a z+b)/(c z + d)$ has fixed points $z_1$ and $z_2$, the multiplier $mu$ can be calculated as
   follows:
   $
-    mu_i = cases(f^prime (z_i) & upright(" if ") z_i eq.not oo, \
-    limits(lim)_(z arrow.r oo) frac(1, f^prime (z)) & upright(" if ") z_i = oo)
+    mu_i = cases(f^prime (z_i)=display((a d - b c)/(c z_i + d)^2) & upright(" if ") z_i eq.not oo, \
+    limits(lim)_(z arrow.r oo) display(frac(1, f^prime (z)))=display(d/a )& upright(" if ") z_i = oo)
   $
 
 ]
+
+Let $T in op("PSL")_2(CC)-{plus.minus I}$ and $sigma = op("Tr")(T)^2$. Then we have the following classification of Möbius transformations.
 
 #table(
   columns: (auto, auto, auto, auto, auto),
@@ -970,9 +1268,9 @@ Two Möbius transformations $f$ and $g$ are said to be *conjugate* if there exis
 
   [Parabolic], $sigma = 4$, $mu = 1$, $ mat(1, b;0, 1) $, $ z |-> z + b $,
   [Hyperbolic],
-  $sigma gt.eq 4$,
+  $sigma gt 4$,
   [
-    $mu_(1,2) = rho^(plus.minus 1)$,\ $rho in RR^*$
+    $mu_(1,2) = rho^(plus.minus 1)$,\ $rho in RR^* - {1}$
   ],
   $ mat(sqrt(rho), 0;0, 1\/sqrt(rho)) $,
   $ z |->rho z $,
@@ -988,40 +1286,142 @@ Two Möbius transformations $f$ and $g$ are said to be *conjugate* if there exis
 
 
 #proposition[Möbius Transformations of Finite Order are Elliptic][
-  A Möbius transformation $T in op("PSL") (CC)$ has finite order if and only if it is elliptic and conjugate to $z |-> e^(i theta) z$ where $theta/(2 pi) in (0,1) sect QQ$.
+  A nonidentity Möbius transformation $T in op("PSL")_2 (CC)$ has finite order if and only if it is elliptic and conjugate to $z |-> e^(i theta) z$ where $theta/(2 pi) in (0,1) inter QQ$.
+]
+#proof[
+  Suppose $T in op("PSL")_2(CC)-{plus.minus I}$ has finite order. First, we assert $T$ is not parabolic. If $T$ is parabolic, since $T$ is conjugate to $z |-> z+1$, $z |-> z+1$ must have finite order, which is a contradiction. Let $M=mat(a,b;c,d) in op("SL")_2(CC)$ be a lift of $T$. Then we have $M^n=plus.minus I$ for some $n >= 2$, which implies any eigenvalue $lambda$ of $M$ satisfies $lambda^n=plus.minus 1$. Therefore, $lambda$ is a root of unity. Suppose the $z_1 in CC$ is a fixed point of $T$, then we have
+  $
+    T(z_1)=(a z_1+b) / (c z_1 +d)=z_1 ==> mat(a, b;c, d) mat(z_1;1) = mat(a z_1 + b;c z_1 + d) = (c z_1 + d) mat(z_1;1),
+  $
+  Hence $c z_1 + d$ is an eigenvalue of $M$. Note that the multiplier of $T$ is
+  $
+    mu_1 = T'(z_1) = (a d - b c) / (c z_1 + d)^2=1 / (c z_1 + d)^2.
+  $
+  We have $abs(mu_1)=1$. Therefore, $T$ is elliptic and conjugate to $z |-> e^(i theta) z$. Since $T^q (1)=e^(i q theta)=e^(i theta)$ for some $q >= 2$, we have $q theta = 2 pi k$ for some $k in ZZ$. Therefore, $theta/(2 pi) in (0,1) inter QQ$.
+
+  Conversely, suppose $T$ is elliptic and conjugate to $z |-> e^(i theta) z$ where $theta/(2 pi) in (0,1) inter QQ$. Suppose $T(z)=e^(2 pi i p /q) z$ for some $p in ZZ$ and $q >= 2$. Then we have $T^q = op("id")$. Therefore, $T$ has finite order.
 ]
 
 === Upper Half Plane $bb(H)$ <upper-half-plane-mathbb-h>
 
-$op("PSL")_2 lr((bb(R)))$ as a subgroup of $op("PSL")_2 lr((bb(C)))$
-acts on $hatCC$ and produces 3 orbits:
 
-+ Real line plus a point at infinity : $bb(R) union.sq {oo}$,
 
-+ Upper half plane: $bb(H)$,
 
-+ Lower half plane: $bb(C) - bb(H) - bb(R)$
+#proposition[Fixed Points of $op("PSL")_2 lr((bb(R))) acts hat(CC)$][
+  Let $op("PSL")_2 lr((bb(R)))$ acts on $hat(CC)$ by Möbius transformations. Or equivalently, $op("PSL")_2 lr((bb(R)))$ acts on $upright(bold(P))_(CC)^1$ by matrix multiplication
+  $
+    op("PSL")_2 lr((bb(R))) times upright(bold(P))_(CC)^1 &--> upright(bold(P))_(CC)^1 \
+    (mat(a, b;c, d), mat(z;dot dot ;w)) &arrow.bar.long mat(a z + b w;dot dot;c z + d w)
+  $
+  Then the fixed points of $T in op("PSL")_2 lr((bb(R)))-{plus.minus I}$ can be classified as follows:
+
+  + Elliptic: $op("Tr")(T)^2 lt 4$, fixed points are $z_1=tau in HH$ and $z_2=overline(tau) in -HH$.
+
+  + Parabolic: $op("Tr")(T)^2=4$, fixed points are $z_1=z_2 in RR union.sq {oo}$.
+
+  + Hyperbolic: $op("Tr")(T)^2 gt 4$, fixed points are $z_1eq.not z_2 in RR union.sq {oo}$.
+
+]
+#proof[
+  $mat(z;dot dot;w) in upright(bold(P))_(CC)^1$ is a fixed point of $mat(a, b;c, d) in op("PSL")_2 lr((bb(R)))$ if and only if $mat(z;w) in CC^2$ is a eigenvector of $T=mat(a, b;c, d) in op("SL")_2 lr((bb(R)))$. Since the characteristic polynomial of $T$ is
+  $
+    det(lambda I- T)=lambda^2 - op("Tr")(T) lambda + 1,
+  $
+  we have the following classification of fixed points:
+
+  + $Delta = op("Tr")(T)^2 - 4 lt 0$ implies that $T$ has two distinct complex conjugate eigenvalues $lambda_1 = c in HH$ and $lambda_2 = overline(c) in -HH$.
+
+  + $Delta = op("Tr")(T)^2 - 4 = 0$ implies that $T$ has a double real eigenvalue $lambda_1=lambda_2 = c in RR$.
+
+  + $Delta = op("Tr")(T)^2 - 4 gt 0$ implies that $T$ has two distinct real eigenvalues $lambda_1 = c in RR$ and $lambda_2 = d in RR$.
+]
+Let $T in op("PSL")_2(RR)-{plus.minus I}$ and $sigma = op("Tr")(T)^2$. Then we have the following classification of Möbius transformations.
+
+#table(
+  columns: (auto, auto, auto, auto, auto, auto),
+  inset: (top: 10pt, bottom: 10pt),
+  align: horizon + center,
+  table.header(
+    [*Transformation*],
+    [*Trace Squared*],
+    [*Fixed Points*],
+    [*Multipliers*],
+    table.cell(colspan: 2)[*Examples*],
+  ),
+
+  [Elliptic],
+  $sigma<4$,
+  [$
+      z_1=tau in HH\
+      z_2=overline(tau) in -HH
+    $],
+  [
+    $mu_(1,2) = e^(plus.minus i theta)$,\ $theta in (0, 2 pi)$
+  ],
+  $ mat(cos theta/2, -sin theta/2;sin theta/2, cos theta/2) $,
+  $ z |-> (z cos theta / 2-sin theta / 2) / (z sin theta / 2 + cos theta / 2) $,
+
+  [Parabolic], $sigma = 4$, $ z_1=z_2 \ in RR union.sq {oo} $, $mu = 1$, $ mat(1, b;0, 1) $, $ z |-> z + b $,
+  [Hyperbolic],
+  $sigma gt 4$,
+  $ z_1eq.not z_2 \ in RR union.sq {oo} $,
+  [
+    $mu_(1,2) = rho^(plus.minus 1)$,\ $rho in RR^*-{1}$
+  ],
+  $ mat(sqrt(rho), 0;0, 1\/sqrt(rho)) $,
+  $ z |->rho z $,
+)
+
+Before we prove this result, we should first see how $op("SL")_2(RR)$ can be uniquely decomposed into 3 different types of transformations.
+
+#lemma[Iwasawa Decomposition of $op("SL")_2(RR)$][
+  Any $M in op("SL")_2 lr((bb(R)))$ can be uniquely written as
+  $
+    M = K A N= mat(cos phi, -sin phi;sin phi, cos phi) mat(lambda, 0;0, lambda^(-1)) mat(1, x;0, 1)
+  $
+
+  When we consider $op("SL")_2 lr((bb(R))) acts HH$
+
+  + $K =mat(cos phi, -sin phi;sin phi, cos phi) in op("SO")_2(RR)$ means hyperbolic rotations around $i$, where $2 phi in [0,2pi )$ is the rotation angle,
+
+  + $A=mat(lambda, 0;0, lambda^(-1))$ is positive diagonal matrix, where $lambda in RR^+$ means scaling by $lambda^2$,
+
+  + $N=mat(1, x;0, 1)$ is an unitriangular matrix, where $x in RR$ is the translation.
+]
+
 
 #proposition[
   Automorphism of $bb(H)$
-][The automorphism group of $bb(H)$ is given by $ op("Aut") lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(R) , a d - b c = 1}) tilde.equiv op("PSL")_2 lr((bb(R))) . $
+][The automorphism group of $bb(H)$ is given by
+  $
+    op("Aut") lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(R) , a d - b c = 1}) tilde.equiv op("PSL")_2 lr((bb(R))) = op("SL")_2 lr((bb(R))) \/ { plus.minus I }.
+  $
   The action of $op("PSL")_2(RR)$ on $HH$ is smooth and transitive.
-]
+]<automorphism-of-upper-half-plane>
 #proof[
   It is clear that the map
   $
     op("PSL")_2 lr((bb(R))) times bb(H) &--> bb(H)\
     (mat(a, b;c, d), z) &arrow.bar.long frac(a z + b, c z + d)
-  $ is smooth.
+  $
+  is smooth. To show that the action is transitive, note that for any $z=x+i y in bb(H)$, there exists
+  $
+    T=mat(1,x;0,1) mat(sqrt(y),0;0,1/sqrt(y)) = mat(sqrt(y),x/sqrt(y);0,1/sqrt(y)) in op("PSL")_2 lr((bb(R))),
+  $
+  such that $T(i)=z$.
 ]
+
 
 
 #proposition[Stabilizer of $i$ in $op("PSL")_2 lr((bb(R)))$][
   Let $op("PSL")_2 lr((bb(R)))$ acts on $bb(H)$ by Möbius transformations. Then the stabilizer of $i$ is given by
   $
-    op("Stab")_(op("PSL")_2 lr((bb(R))))(
-      i
-    ) = lr({mat(cos phi, -sin phi;sin phi, cos phi) thin mid(|) thin phi in bb(R)}) = op("SO")_2(RR).
+    op("Stab")_(op("PSL")_2 lr((bb(R))))( i ) = lr({mat(cos phi, -sin phi;sin phi, cos phi) thin mid(|) thin phi in bb(R)}) = op("SO")_2(RR).
+  $
+  And we have differential homeomorphism between smooth manifolds
+  $
+    op("PSL")_2 lr((bb(R))) \/ op("SO")_2(RR) & -->^tilde bb(H)\
+    T op("SO")_2(RR) &arrow.bar.long T(i).
   $
 ]
 #proof[
@@ -1040,28 +1440,46 @@ acts on $hatCC$ and produces 3 orbits:
   for some $phi in bb(R)$.
 ]
 
-#proposition[Iwasawa Decomposition of $op("SL")_2(RR)$][
-  Any $T in op("SL")_2 lr((bb(R)))$ can be uniquely written as
-  $
-    T = K A N= mat(cos phi, -sin phi;sin phi, cos phi) mat(lambda, 0;0, lambda^(-1)) mat(1, x;0, 1)
-  $
+#proposition[
+  Properties of $op("PSL")_2 lr((bb(R))) acts upright(bold(P))^1_RR$
+][
+  - Any $(x:y)in upright(bold(P))^1_RR$ can be written as #h(1fr)
+    $
+      mat(x;dot dot;y)=T(oo)=mat(x,b;y,d) mat(1;dot dot;0)
+    $
+    for some $T= mat(x,b;y,d) in op("PSL")_2 lr((bb(R)))$. Therefore, $op("PSL")_2 lr((bb(R)))$ acts transitively on $upright(bold(P))^1_RR$.
+  - The stabilizer of $oo$ in $op("PSL")_2 lr((bb(R)))$ is given by
+    $
+      op("Stab")_(op("PSL")_2 lr((bb(R))))(oo) = lr({mat(a ,b;0, d) thin mid(|) thin a,b,d in bb(R)}).
+    $
+    As a result, we have
+    $
+      op("Stab")_(op("PSL")_2 lr((bb(R))))(T(oo))= T op("Stab")_(op("PSL")_2 lr((bb(R))))(oo) T^(- 1).
+    $
+]<properties-of-PSL2R-on-P1R>
 
-  where
+#proposition[
+  Orbit Decomposition of $op("PSL")_2 lr((bb(R))) acts upright(bold(P))^1_CC$
+][
+  $op("PSL")_2 lr((bb(R)))$ as a subgroup of $op("PSL")_2 lr((bb(C)))$
+  acts on $hatCC$ and produces 3 orbits:
 
-  + $K =mat(cos phi, -sin phi;sin phi, cos phi) in op("SO")_2(RR)$ , where $phi in [0,2pi )$ is the rotation angle,
+  + Real line plus a point at infinity : $bb(R) union.sq {oo}$,
 
-  + $A=mat(lambda, 0;0, lambda^(-1))$ is positive diagonal matrix, where $lambda in RR^+$ means scaling by $lambda^2$,
+  + Upper half plane: $bb(H)$,
 
-  + $N=mat(1, x;0, 1)$ is an unitriangular matrix, where $x in RR$ is the translation.
+  + Lower half plane: $- bb(H)$
 ]
-
-
-
+#proof[
+  This is corollary of @automorphism-of-upper-half-plane and @properties-of-PSL2R-on-P1R.
+]
 
 
 #definition[Fuchsian Group][
   A #strong[Fuchsian group] is a discrete subgroup of $op("PSL")_2 lr((bb(R)))$.
 ]
+
+$op("SL")_2(ZZ)$ is a Fuchsian group.
 
 === Open Disk $bb(D)$ <open-disk-mathbb-d>
 
@@ -1070,12 +1488,15 @@ acts on $hatCC$ and produces 3 orbits:
 #proposition[
   Automorphism of $bb(D)$
 ][
-  The automorphism group of $bb(D)$ is given by $ op("Aut") lr((bb(D))) & = lr(
-    {z arrow.r.bar e^(i theta) frac(z - alpha, 1 - overline(alpha) z) thin mid(|) thin alpha in bb(C) , lr(|alpha|) < 1 , theta in bb(R)}
+  The automorphism group of $bb(D)$ is given by
+  $
+    op("Aut") lr((bb(D))) & = lr(
+    {z arrow.r.bar e^(i theta) frac(z - alpha, 1 - overline(alpha) z) thin mid(|) thin alpha in bb(C) ,thick lr(|alpha|) < 1 ,thick theta in bb(R)}
   )\
-                        & = lr(
-    {z arrow.r.bar frac(overline(a) z + overline(b), b z + a) thin mid(|) thin a, b in bb(C) , lr(|a|)^2 - lr(|b|)^2 = 1}
-  ) tilde.equiv upright(P U)(1,1). $
+    & = lr({z arrow.r.bar frac(a z + b, overline(b) z + overline(a)) thin mid(|) thin a, b in bb(C) , thick lr(|a|)^2 - lr(|b|)^2 = 1}) \
+    &tilde.equiv { mat(a,b;overline(b),overline(a)) thin mid(|) thin a, b in bb(C) , thick lr(|a|)^2 - lr(|b|)^2 = 1 } \/ lr({ plus.minus I }) \
+    &=op("SU")(1,1)\/ lr({ plus.minus I }) = upright(P U)(1,1).
+  $
 ]
 #proof[
   Since
@@ -1085,18 +1506,14 @@ acts on $hatCC$ and produces 3 orbits:
   $
   is a biholomorphic map, we have
   $
-    op("Aut") lr((bb(D))) = {
-      f^(- 1) circle.stroked.tiny T circle.stroked.tiny f thin mid(|) thin T in op("Aut") lr((bb(H)))
-    }
+    op("Aut") lr((bb(D))) = { f^(- 1) circle.stroked.tiny T circle.stroked.tiny f thin mid(|) thin T in op("Aut") lr((bb(H))) }
   $
 ]
 
 #proposition[][
   Let $op("PU")(1,1)$ acts on $bb(D)$ by Möbius transformations. Then the stabilizer of $0$ is given by
   $
-    op("Stab")_(op("PSL")_2 lr((bb(R))))(
-      0
-    ) = lr({z |-> e^(i theta)z thin mid(|) thin theta in bb(R)}) tilde.equiv op("SO")_2(RR).
+    op("Stab")_(op("PSL")_2 lr((bb(R))))( 0 ) = lr({z |-> e^(i theta)z thin mid(|) thin theta in bb(R)}) tilde.equiv op("SO")_2(RR).
   $
 ]
 
@@ -1190,9 +1607,7 @@ We can always assume that $tau = w_2 \/ w_1 in bb(H)$ because if this is not the
 
   For any $lambda in Lambda_1$, consider the holomorphic function $g_lambda (z) = tilde(f)(z + lambda) - tilde(f)(z)$. Since
   $
-    pi_2 circle.tiny g_lambda(z)= pi_2 circle.tiny tilde(f)(z + lambda) - pi_2 circle.tiny tilde(f)(
-      z
-    ) = f circle.tiny pi_1(z + lambda) - f circle.tiny pi_1(z) = 0,
+    pi_2 circle.tiny g_lambda(z)= pi_2 circle.tiny tilde(f)(z + lambda) - pi_2 circle.tiny tilde(f)( z ) = f circle.tiny pi_1(z + lambda) - f circle.tiny pi_1(z) = 0,
   $
   we have $g_lambda (z) in Lambda_2$. Then we see that $g_lambda (z)$ is constant, because any continuous
   map from a connected space to a discrete
@@ -1281,9 +1696,7 @@ Complex torus $bb(C) \/ Lambda$, as a quotient group of $bb(C)$, has a abelian g
   $
   is called the #strong[multiply-by-$N$ map]. Since $N Lambda subset.eq Lambda$, we see $[N]$ is an isogeny. Let $E$ denote the complex torus $bb(C) \/ Lambda$. The kernel of $[N]$ is denoted by
   $
-    E[N] = ker [N] = {z + Lambda in bb(C) \/ Lambda | N z in Lambda} = (N^(-1) Lambda) \/ Lambda tilde.equiv (
-      ZZ \/ N ZZ
-    )^(2),
+    E[N] = ker [N] = {z + Lambda in bb(C) \/ Lambda | N z in Lambda} = (N^(-1) Lambda) \/ Lambda tilde.equiv ( ZZ \/ N ZZ )^(2),
   $
   where the isomorphism is given by
 ]
