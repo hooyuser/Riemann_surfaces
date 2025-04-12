@@ -1,58 +1,15 @@
 name: Generate Release PDF
 
-on: 
+on:
   push:
     branches:
-      - master
+      - main
     paths-ignore:
-      - '.github/**'
       - '.gitignore'
-      - '**.md'
-
-env:
-  TYPST_FILE_NAME: Riemann_surfaces
+      - '**/*.md'
 
 jobs:
-  build_typst:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Set up Git repository for secondary repo
-        uses: actions/checkout@v4
-
-      - name: Prepare Typst environment
-        uses: typst-community/setup-typst@v3
-
-      - name: Clone Typst Math Notes Repository
-        run: |
-          git clone https://github.com/hooyuser/typst_math_notes.git $HOME/.local/share/typst/packages/local/math-notes
-
-      - name: Compile Typst document
-        run: |
-          typst fonts --variants --font-path fonts
-          typst compile ${{ env.TYPST_FILE_NAME }}.typ ${{ env.TYPST_FILE_NAME }}.pdf  --font-path fonts
-
-      - name: Delete old Release
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { owner, repo } = context.repo
-            try {
-              const { data: { id } } = await github.rest.repos.getLatestRelease({ owner, repo })
-              await github.rest.repos.deleteRelease({ owner, repo, release_id: id })
-            } catch {}
-
-      - name: Generate release tag
-        id: tag
-        run: |
-          echo "release_tag=latest_$(date +"%Y-%m-%d_%H-%M")" >> $GITHUB_OUTPUT
-
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: latest version
-          body: Latest version of `${{ env.TYPST_FILE_NAME }}.pdf`
-          tag_name: ${{ steps.tag.outputs.release_tag }}
-          files: ${{ env.TYPST_FILE_NAME }}.pdf
+  release_pdf:
+    uses: hooyuser/pdf-ci-templates/.github/workflows/typst-pdf-release.yml@main
+    with:
+      TYPST_FILE_NAME: Riemann_surfaces
