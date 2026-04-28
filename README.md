@@ -1,5 +1,5 @@
 # Riemann Surfaces
-![Lines of code](https://tokei.rs/b1/github/hooyuser/Riemann_surfaces) ![](https://img.shields.io/github/repo-size/hooyuser/Riemann_surfaces?style=plastic
+![Lines of Code](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/hooyuser/github-badges/main/badges/hooyuser-Riemann_surfaces.json) ![](https://img.shields.io/github/repo-size/hooyuser/Riemann_surfaces
 )
 
 **Preview Here**: [Riemann_surfaces.pdf](https://hooyuser.github.io/Riemann_surfaces/Riemann_surfaces.pdf)
