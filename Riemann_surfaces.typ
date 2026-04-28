@@ -1,23 +1,27 @@
-#import "@preview/fletcher:0.5.7" as fletcher: diagram, node, edge
+#import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
 #import "@preview/cetz:0.3.4"
 
-#import "@local/math-notes:0.3.0": *
+#import "@local/math-notes:0.4.0": *
 
 #show: math_notes.with(title: "Riemann Surfaces")
 
 
 // Overwrite the default definition
 #let hatCC = $hat(CC, size: #1.00001em)$
-#let acts = $arrow.cw.half$
+
+#let mapsfrom = $arrow.l.bar.long$
+#let clat = math.op($cal(L)$)  // the set of all complex lattices
+#let framedclat = math.op($clat^(zws^(display(corner.l.b)))$)
+
+#let negframedclat = math.op($clat^(zws^(display(corner.l.b)))_(-)$)
+
+#let posframedclat = math.op($clat^(zws^(display(corner.l.b)))_(+)$)
 
 // define commutative diagram
 #let commutative_diagram(math_content) = align(center)[
   #diagram(label-size: 0.8em, math_content)
   #v(1em, weak: true)
 ]
-
-
-#let cal(x) = math.class("unary", text(font: "Computer Modern Symbol", x))
 
 
 = Basic Concepts <basic-concepts>
@@ -32,16 +36,16 @@
 ]
 We say that a chart $lr((U , phi))$ for a Riemann surface $X$ is #strong[centered at $x$] if $phi lr((x)) = 0$.
 
-#definition[Holomorphic Atlas][
-  A #strong[(compatible) holomorphic atlas] on a topological manifold $X$ is a collection of holomorphic charts $Sigma = {lr((U_i , phi_i))}$ such
+#definition[Compatible Holomorphic Atlas][
+  A #strong[compatible holomorphic atlas] on a topological manifold $X$ is a collection of holomorphic charts $Sigma = {lr((U_i , phi_i))}$ such
   that $union.big_i U_i = X$ and for any $i , j$, the transition function
   $
     phi_i circle.stroked.tiny phi_j^(- 1) : phi_j lr((U_i inter U_j)) --> phi_i lr((U_i inter U_j))
   $
   is holomorphic, whenever $U_i inter U_j$ is nonempty.
-]
+]<compatible-holomorphic-atlas>
 #remark[
-  Any compatible holomorphic atlas $Sigma$ can be extended to a maximal compatible holomorphic atlas $overline(Sigma)$
+  Any compatible holomorphic atlas $Sigma$ can be extended to a maximal compatible holomorphic atlas $overline(Sigma)$.
 ]
 
 #definition[Complex Manifold][
@@ -71,34 +75,274 @@ We say $f$ is #strong[holomorphic] if it is holomorphic at every point of $X$.
 
 === Complexified Tangent Bundle <complex-tangent-bundle>
 
+#definition[Local Trivializing Atlas][
+  Let $X, E$ be topological spaces, and let $pi : E -> X$ be a continuous surjection. Suppose that for each $x in X$, the fiber $pi^(-1)(x)$ is equipped with a $CC$-vector space structure.
+
+  Let $k in ZZ_(>=0)$. A #strong[local trivializing atlas of rank $k$] for $pi : E -> X$
+  consists of an open cover ${U_alpha}zws_(alpha in A)$ of $X$ and for each $alpha in A$, a homeomorphism
+  $
+    phi_alpha : pi^(-1)(U_alpha) -->^(tilde) U_alpha times CC^k
+  $
+  such that:
+
+  + the following diagram commutes #h(1fr)
+
+    #commutative_diagram({
+      node((0, 0), $pi^(-1)(U_alpha)$)
+      node((2, 0), $U_alpha times CC^k$)
+      node((1, 1), $U_alpha$)
+      edge((0, 0), (2, 0), $phi_alpha$, label-side: left, "->")
+      edge((0, 0), (1, 1), $pi$, label-side: right, "->")
+      edge((2, 0), (1, 1), $op("pr")_1$, label-side: left, "->")
+    })
+
+  + for every $x in U_alpha$, the restricted map
+    $
+      evaluated(phi_alpha)_(pi^(-1)(x)) : pi^(-1)(x)--> {x} times CC^k
+    $
+    is a $CC$-linear isomorphism, where ${x} times CC^k$ is equipped with the $CC$-vector space structure induced from the identification ${x} times CC^k tilde.equiv CC^k$.
+
+  A map $phi_alpha$ occurring in a local trivializing atlas is called a
+  #strong[local trivialization].
+]<local-trivializing-atlas>
+
 #definition[Complex Vector Bundle][
-  A #strong[complex vector bundle] of rank $k$ over a topological space $X$ is a vector bundle $p:E->X$ satisfiing that for each $x in X$, the fiber $p^(-1)(x)$ is a $CC$-vector space of dimension $k$.
+  Let $X$ be a topological space and let $k in ZZ_(>=0)$.
+  A #strong[complex vector bundle of rank $k$] over $X$ consists of:
+
+  + a topological space $E$
+
+  + a continuous surjection
+    $
+      pi : E -> X
+    $
+
+  + for each $x in X$, a $CC$-vector space structure on the fiber $pi^(-1)(x)$
+
+  such that $pi : E -> X$ admits a #link(<local-trivializing-atlas>)[local trivializing atlas of rank $k$].
+]<complex-vector-bundle>
+#remark[
+  A complex vector bundle is not equipped with a distinguished local trivializing atlas. In general, it may admit many different local trivializing atlases.
 ]
+
+
+#definition[Transition Functions of a Complex Vector Bundle][
+  Let $pi : E -> X$ be a #link(<complex-vector-bundle>)[complex vector bundle of rank $k$] over a topological space $X$.
+  Let ${(U_i, phi_i)}$ be a #link(<local-trivializing-atlas>)[local trivializing atlas] of $pi : E -> X$. For $U_i inter U_j != emptyset$, the #strong[transition function]
+  from $phi_i$ to $phi_j$ is the following map
+
+  #block(breakable: false, width: 100%)[
+    $
+      g_(i j) : U_i inter U_j & --> op("GL")_k (CC) \
+                            x & ⟼ (#block($ g_(i j)(x):CC^k & --> CC^k, \
+                                  v & ⟼ op("pr")_2 ∘ phi_j ∘ phi_i^(-1)(x,v) $)).
+    $]
+
+
+  Thus $g_(i j)(x)$ is the $CC$-linear automorphism of $CC^k$ obtained by
+  changing coordinates from the $i$-th local trivialization to the $j$-th local
+  trivialization.
+
+  Consider the #strong[change of local trivialization]
+  $
+    phi_j compose phi_i^(-1)|_((U_i inter U_j) times CC^k) :
+    (U_i inter U_j) times CC^k & --> (U_i inter U_j) times CC^k \
+                         (x,v) & arrow.bar.long (x, g_(i j)(x)v).
+  $
+  It preserves the base coordinate and restricts
+  on each slice ${x} times CC^k$ to the $CC$-linear automorphism
+  $id_{x} times g_(i j)(x): {x} times CC^k -> {x} times CC^k$.
+]<transition-functions-of-complex-vector-bundle>
+#remark[
+  Note $pi^(-1)(U_i inter U_j)=pi^(-1)(U_i) inter pi^(-1)(U_j)$. For any $x in U_i inter U_j$ and $v in CC^k$, we see $pi(phi_i^(-1)(x,v))=op("pr")_1(x,v)=x in U_i inter U_j$, which implies $phi_i^(-1)(x,v) in pi^(-1)(U_i inter U_j)subset.eq pi^(-1)(U_j)$. So the composition $phi_j ∘ phi_i^(-1)$ is well-defined on $(U_i inter U_j) times CC^k$.
+]
+
+
+#lemma[Total Space of a Vector Bundle over a Manifold is a Manifold][
+  Let $X$ be a topological manifold, and let $pi : E -> X$ be a complex vector bundle of rank $k$ over $X$. Then $E$ is a topological manifold of real dimension
+  $
+    dim_RR X + 2k.
+  $
+]
+
 
 #definition[Holomorphic Vector Bundle][
-  A complex vector bundle $p:E->X$ is called a #strong[holomorphic vector bundle] if $X$ is a complex manifold and the local trivialization maps
-  $
-    phi_alpha : p^(-1)(U_alpha) &--> U_alpha times CC^k
-  $ are biholomorphic maps.
-]
-#remark[
-  This definition is equivalent to requiring that all the transition maps
-  $
-    t_(alpha, beta) : U_alpha inter U_beta &--> op("GL")_k (CC)
-  $
-  are holomorphic.
+  Let $X$ be a complex manifold, and let $k in ZZ_(>=0)$.
 
-  If not specified, the topological space $E$ is always regarded to be a complex manifold with the holomorphic atlas ${(U_alpha , phi_alpha)}$.
+  A #strong[holomorphic vector bundle of rank $k$] over $X$ is a
+  #link(<complex-vector-bundle>)[complex vector bundle] of rank $k$
+  $
+    pi : E --> X
+  $
+  together with a #link(<compatible-holomorphic-atlas>)[maximal compatible
+    holomorphic atlas] $Sigma_E$ on the topological manifold $E$, making $E$ a
+  complex manifold, such that $pi : E -> X$ admits a local trivializing atlas
+  ${ (U_alpha, phi_alpha) }$ for which every local trivialization
+  $
+    phi_alpha : pi^(-1)(U_alpha) -->^(tilde) U_alpha times CC^k
+  $
+  is biholomorphic, where $pi^(-1)(U_alpha)$ is regarded as an open submanifold
+  of $E$, and $U_alpha times CC^k$ is equipped with the product complex
+  manifold structure.
+
+  Such maps $phi_alpha$ are called #strong[holomorphic local trivializations].
+]
+// #definition[Holomorphic Vector Bundle][
+//   A complex vector bundle $p:E->X$ is called a #strong[holomorphic vector bundle] if $X$ is a complex manifold and the local trivialization maps
+//   $ phi_alpha : p^(-1)(U_alpha) & --> U_alpha times CC^k $ are biholomorphic maps.
+// ]
+// #remark[
+//   This definition is equivalent to requiring that all the transition maps
+//   $
+//     t_(alpha, beta) : U_alpha inter U_beta & --> op("GL")_k (CC)
+//   $
+//   are holomorphic.
+
+//   If not specified, the topological space $E$ is always regarded to be a complex manifold with the holomorphic atlas ${(U_alpha , phi_alpha)}$.
+// ]
+//
+#proposition[Holomorphic Vector Bundle Criterion by Transition Functions][
+  Let $X$ be a complex manifold, and let $pi : E -> X$
+  be a complex vector bundle of rank $k$. Suppose ${(U_i, phi_i)}zwj_(i in I)$ is a local trivializing atlas for $pi : E -> X$. Then the following are equivalent:
+
+  + There exists a maximal compatible holomorphic atlas $Sigma_E$ on $E$,
+    making $E$ a complex manifold, such that for every $i in I$, the local
+    trivialization
+    $
+      phi_i : pi^(-1)(U_i) -->^(tilde) U_i times CC^k
+    $
+    is biholomorphic.
+
+  + For every $i,j in I$, the #link(<transition-functions-of-complex-vector-bundle>)[transition function]
+    $
+      g_(i j) : U_i inter U_j --> op("GL")_k (CC)
+    $
+    is holomorphic.
+
+  In this case, there is a unique maximal compatible holomorphic atlas $Sigma_E$ on $E$ making $phi_i$ biholomorphic for all $i in I$.
+]
+#proof[
+  Let $n = dim_CC X$.
+
+  - (i) $==>$ (ii). Suppose that there exists a maximal compatible holomorphic atlas $Sigma_E$ on $E$ such that every local trivialization
+    $
+      phi_i : pi^(-1)(U_i) -->^(tilde) U_i times CC^k
+    $
+    is biholomorphic. Fix $i,j in I$. On $(U_i inter U_j) times CC^k$, the map
+    $
+      phi_i compose phi_j^(-1)
+    $
+    is biholomorphic. By the definition of the #link(<transition-functions-of-complex-vector-bundle>)[transition function], it has the form
+    $
+      phi_i compose phi_j^(-1)(x,v) = (x, g_(i j)(x)v).
+    $
+
+    For each standard basis vector $e_a in CC^k$, the map
+    $
+      U_i inter U_j & --> CC^k \
+                  x & mapsto.long op("pr")_2 lr((phi_i compose phi_j^(-1))(x,e_a))
+    $
+    is holomorphic. But this map is precisely
+    $
+      x mapsto.long g_(i j)(x)e_a.
+    $
+    Hence every column of the matrix $g_(i j)(x)$ depends holomorphically on $x$. Therefore
+    $
+      g_(i j) : U_i inter U_j --> op("GL")_k (CC)
+    $
+    is holomorphic.
+
+  - (ii) $==>$ (i). suppose that every transition function
+    $
+      g_(i j) : U_i inter U_j --> op("GL")_k (CC)
+    $
+    is holomorphic.
+
+    We construct a compatible holomorphic atlas on $E$. For every $i in I$ and
+    every holomorphic chart
+    $
+      (V, psi)
+    $
+    of $X$ with $V subset.eq U_i$, define a chart on $E$ by
+    $
+      Psi_(i,psi)
+      :=
+      (psi times id_(CC^k)) compose phi_i :
+      pi^(-1)(V) --> psi(V) times CC^k subset.eq CC^(n+k).
+    $
+    These charts cover $E$, since the $U_i$ cover $X$ and the holomorphic charts
+    of $X$ cover each $U_i$.
+
+    We now check compatibility. Let
+    $
+      Psi_(i,psi) : pi^(-1)(V) --> psi(V) times CC^k
+    $
+    and
+    $
+      Psi_(j,chi) : pi^(-1)(W) --> chi(W) times CC^k
+    $
+    be two such charts. On the overlap, their transition map is
+    $
+      Psi_(i,psi) compose Psi_(j,chi)^(-1)
+      :
+      chi(V inter W) times CC^k
+      -->
+      psi(V inter W) times CC^k.
+    $
+    For $y = chi(x)$ and $v in CC^k$, it is given by
+    $
+      (y,v)
+      |->
+      lr(
+        psi compose chi^(-1)(y),
+        g_(i j)(chi^(-1)(y)) v
+      ).
+    $
+    The first component is holomorphic because $X$ is a complex manifold. The
+    second component is holomorphic because $g_(i j)$ is holomorphic and matrix
+    multiplication
+    $
+      op("GL")_k (CC) times CC^k --> CC^k
+    $
+    is holomorphic. Hence all chart transitions are holomorphic.
+
+    Therefore the charts $Psi_(i,psi)$ form a compatible holomorphic atlas on
+    $E$. Let $Sigma_E$ be its maximal compatible extension. Then $Sigma_E$ makes
+    $E$ a complex manifold.
+
+    By construction, for each $i in I$, the map
+    $
+      phi_i : pi^(-1)(U_i) -->^(tilde) U_i times CC^k
+    $
+    is locally expressed, with respect to the charts just constructed and the
+    product holomorphic charts on $U_i times CC^k$, as the identity map. Hence
+    every $phi_i$ is biholomorphic.
+
+  Finally, we prove uniqueness. Suppose $Sigma_E'$ is another maximal
+  compatible holomorphic atlas on $E$ making every $phi_i$ biholomorphic. Then,
+  for every holomorphic chart $(V,psi)$ of $X$ with $V subset.eq U_i$, the map
+  $
+    (psi times id_(CC^k)) compose phi_i
+  $
+  is a holomorphic chart with respect to $Sigma_E'$. Thus $Sigma_E'$ contains
+  all charts $Psi_(i,psi)$ constructed above. Since $Sigma_E$ is the maximal
+  compatible holomorphic atlas generated by these charts, maximality gives
+  $
+    Sigma_E' = Sigma_E.
+  $
+
+  Hence the maximal compatible holomorphic atlas making all $phi_i$
+  biholomorphic is unique.
 ]
 
 #definition[Holomorphic Sections of a Holomorphic Vector Bundle][
   Let $p:E->X$ be a holomorphic vector bundle over a complex manifold $X$ and $U subset.eq X$ be an open subset. A section $sigma : U -> E$ is called #strong[holomorphic] if it is a holomorphic map.
-]
+]<holomorphic-section-of-holomorphic-vector-bundle>
 
 #definition[Complexified Tangent Space][
   Let $M$ be a complex manifold of complex dimension $n$. Define $T_p^RR M$ as the tangent space of the underlying smooth manifold. The #strong[complexified tangent space] at $p in M$ is defined as the $CC$-vector space
   $
-    T_p^CC M:=T_p^RR M times.circle_RR CC
+    T_p^CC M:=T_p^RR M times.o_RR CC
   $
 ]
 If $(U, (z^j))$ is a holomorphic chart at $p$, then $(U, (x^j,y^j))$ is a smooth chart at $p$, where $x^j = op("Re") z^j$ and $y^j = op("Im") z^j$. Then $T_p M$ as a $2n$-dimensional $CC$-vector space has a $CC$-basis
@@ -107,7 +351,7 @@ $
 $
 Define
 $
-  partial / (partial z^j) & := frac(1, 2) (frac(partial, partial x^j) - i lr(frac(partial, partial y^j)) ),\
+            partial / (partial z^j) & := frac(1, 2) (frac(partial, partial x^j) - i lr(frac(partial, partial y^j)) ), \
   partial / (partial overline(z)^j) & := frac(1, 2) (frac(partial, partial x^j) + i lr(frac(partial, partial y^j)) ).
 $
 Then it is easy to check that
@@ -133,7 +377,7 @@ $
 
 We have the following direct sum decomposition
 $
-  T_p^CC M = T_p^(1,0)M plus.circle T_p^(0,1)M,
+  T_p^CC M = T_p^(1,0)M plus.o T_p^(0,1)M,
 $
 where $T^(1,0)_p M$ is the $i$-eigenspace of $T_p^CC M$ and $T^(0,1)_p M$ is the $-i$-eigenspace of $T_p^CC M$.
 
@@ -148,26 +392,26 @@ where $T^(1,0)_p M$ is the $i$-eigenspace of $T_p^CC M$ and $T^(0,1)_p M$ is the
   The #strong[holomorphic tangent bundle] of a complex manifold $M$ is the holomorphic vector bundle
   $ T^(1,0) M := union.sq.big_(p in M) T_p^(1,0) M. $
   The #strong[anti-holomorphic tangent bundle] is the holomorphic vector bundle $ T^(0,1) M := union.sq.big_(p in M) T_p^(0,1) M. $
-]
+]<holomorphic-tangent-bundle>
 
 We have the following direct sum decomposition
 $
-  T^CC M = T^(1,0)M plus.circle T^(0,1)M,
+  T^CC M = T^(1,0)M plus.o T^(0,1)M,
 $
-where $T^(1,0)M$ is the $i$-eigenbundle of $T^CC  M$ and $T^(0,1)M$ is the $-i$-eigenbundle of $T^CC  M$.
+where $T^(1,0)M$ is the $i$-eigenbundle of $T^CC M$ and $T^(0,1)M$ is the $-i$-eigenbundle of $T^CC M$.
 
 #proposition[Holomorphic Tangent Space is Holomorphic Vector Bundle][
   Let $M$ be a complex manifold. The holomorphic tangent bundle $T^(1,0)M$ is a holomorphic vector bundle over $M$, with the projection map
   $
-    p: T^(1,0)M &--> M\
-    (x, v) &arrow.bar.long x.
+    p: T^(1,0)M & --> M \
+         (x, v) & arrow.bar.long x.
   $
 ]
 #proof[
   Let $lr((U, phi))$ be a holomorphic chart on $M$. Then the local trivialization map
   $
-    phi_* : p^(-1)(U) &--> U times CC^n\
-    (x, v) &arrow.bar.long (p(x), phi lr((x)))
+    phi_* : p^(-1)(U) & --> U times CC^n \
+               (x, v) & arrow.bar.long (p(x), phi lr((x)))
   $
   is a biholomorphism.
 ]
@@ -186,7 +430,7 @@ $
 $
 Define
 $
-  dif z^j & := dif x^j + i dif y^j,\
+            dif z^j & := dif x^j + i dif y^j, \
   dif overline(z)^j & := dif x^j - i dif y^j.
 $
 Then it is easy to check that
@@ -208,7 +452,7 @@ $
 
 We have the following direct sum decomposition
 $
-  T_p^(*CC)M = T_p^(*1,0)M plus.circle T_p^(*0,1)M.
+  T_p^(*CC)M = T_p^(*1,0)M plus.o T_p^(*0,1)M.
 $
 
 #definition[Holomorphic Cotangent Bundle][
@@ -220,77 +464,90 @@ $
   $
     T^(*0,1)M:=union.sq.big_(p in M) T_p^(*0,1)M.
   $
-]
+]<holomorphic-cotangent-bundle>
 
 We have the following direct sum decomposition
 $
-  T^(*CC)M = T^(*1,0)M plus.circle T^(*0,1)M.
+  T^(*CC)M = T^(*1,0)M plus.o T^(*0,1)M.
 $
 === Complex Differential Forms <complex-differential-forms>
 
 #definition[Complex Differential Form][
   A #strong[complex differential form of total degree $k$] on a complex manifold $M$ is a smooth section of the holomorphic vector bundle $and^k T^*M$. The space of all complex differential $k$-forms on $M$ is denoted by
   $
-    cal(E)^k (M) := Gamma lr((and^k T^(*CC)M)).
+    cal(E)^k (M) := Gamma lr((and^k T^(*CC)M)),
   $
+  where $cal(E)^0 (M) = C^(oo) (M;CC)$ is the space of all smooth complex-valued functions on $M$.
   And the space of all complex differential forms on $M$ is defined as the following graded algebra
   $
-    cal(E) (M) := plus.circle.big_(k = 0)^n cal(E)^k (M).
+    cal(E) (M) := plus.o.big_(k = 0)^n cal(E)^k (M).
   $
 ]
+
+Given a multi-index $alpha = (alpha_1 , alpha_2 , dots.h.c , alpha_p) in {1,2,dots.c,n}^p$, define
+$
+  dif z^alpha:=dif z^(alpha_1) and dif z^(alpha_2) and dots.h.c and dif z^(alpha_p)
+$
+and
+$
+  dim(alpha) = p.
+$
+
 
 #definition[Bigraded Structure on $cal(E)(M)$][
   Suppose $M$ is a complex manifold of complex dimension $n$. Define the space of #strong[$(1,0)$-forms] on $M$ as
   $
-    Omega^(1,0) (M) := Gamma lr((T^(*1,0)M)).
+    Omega^(1,0) (M) := Gamma lr((T^(*1,0)M))={sum_(j=1)^n f_j dif z^j mid(|) f_j in cal(E)^0 (M)},
   $
   and the space of #strong[$(0,1)$-forms] on $M$ as
   $
-    Omega^(0,1) (M) := Gamma lr((T^(*0,1)M)).
+    Omega^(0,1) (M) := Gamma lr((T^(*0,1)M))={sum_(j=1)^n g_j dif macron(z)^j mid(|) g_j in cal(E)^0 (M)}.
   $
   Now define the space of #strong[$(p,q)$-forms] on $M$ as
   $
-    Omega^(p,q) (M) := (and^p Omega^(1,0) (M)) and.big (and^q Omega^(0,1) (M)).
+    Omega^(p,q) (M) := (and^p Omega^(1,0) (M)) and.big (and^q Omega^(0,1) (M))={sum_(dim(I) = p \, dim(J) = q) f_(I J) dif z^I and dif macron(z)^J mid(|) f_(I J) in cal(E)^0 (M)},
   $
   Then we have the following direct sum decomposition
   $
-    cal(E)^k (M) = plus.circle.big_(p+q=k) Omega^(p,q) (M)=Omega^(k,0) (M) plus.circle Omega^(k-1,1) (M) plus.circle dots.h.c plus.circle Omega^(0,k) (M),
+    cal(E)^k (M) = plus.o.big_(p+q=k) Omega^(p,q) (M)=Omega^(k,0) (M) plus.o Omega^(k-1,1) (M) plus.o dots.h.c plus.o Omega^(0,k) (M),
   $
   which induces a bigraded structure on $cal(E)(M)$
   $
-    cal(E) (M) = plus.circle.big_(p,q) Omega^(p,q) (M).
+    cal(E) (M) = plus.o.big_(p,q) Omega^(p,q) (M).
   $
 
 ]
 
 #definition[Holomorphic $k$-Form][
-  A #strong[holomorphic $k$-form] on a complex manifold $M$ is a holomorphic section of the complex vector bundle $and^k T^(*1,0)M$. Or equivalently, a holomorphic $k$-form on $M$ is smooth section in $Omega^(k,0) (M)$ which is also holomorphic.
+  A #strong[holomorphic $k$-form] on a complex manifold $M$ is a #link(<holomorphic-section-of-holomorphic-vector-bundle>)[holomorphic section] of the complex vector bundle $and^k T^(*1,0)M$. Or equivalently, a holomorphic $k$-form on $M$ is a smooth section in $Omega^(k,0) (M)$ which is also holomorphic.
 ]
 
+
+
 #definition[Dolbeault Operators][
-  Let $M$ be a complex manifold of complex dimension $n$. Let
+  Let $M$ be a complex manifold of complex dimension $n$. For each $k >= 0$, let
   $
-    d^((k)) : cal(E)^k (M) arrow.r cal(E)^(k+1) (M)
+    d^((k)) : cal(E)^k (M) --> cal(E)^(k+1) (M)
   $
-  be the exterior derivative and
+  be the exterior derivative. For each pair of nonnegative integers $(p,q)$ with $p + q = k$, let
   $
-    pi^(p,q) : cal(E)^k (M) arrow.r Omega^(p,q) (M)
+    pi^(p,q) : cal(E)^k (M) --> Omega^(p,q) (M)
   $
   be the natural projection. Suppose
   $
-    omega = sum_(lr(|I|) = p \, lr(|J|) = q) med f_(I J) thin d z^I and d macron(z)^J in Omega^(p , q)(M)
+    omega = sum_(dim(I) = p \, dim(J) = q) med f_(I J) dif z^I and dif macron(z)^J in Omega^(p , q)(M)
   $
-  is a $(p,q)$-form on $M$, where $I ,J in ZZ_(g>=0)^n$ are multi-indices.
+  is a $(p,q)$-form on $M$, where $I in {1,dots.c,n}^p,J in {1,dots.c,n}^q$ are multi-indices.
 
   Define the #strong[Dolbeault operators] as $partial^(p,q)= pi^(p+1,q) compose d^((p+q))$
   $
     partial^(p,q): Omega^(p,q) (M) &--> Omega^(p+1,q) (M)\
-    omega & arrow.bar.long sum_(j=1)^n frac(partial f_(I J), partial z^j) thin d z^j and omega = sum_(lr(|I|=p) \, lr(|J|=q)) sum_(j=1)^n frac(partial f_(I J), partial z^j) thin d z^j and d z^I and d macron(z)^J,
+    omega & arrow.bar.long sum_(j=1)^n frac(partial f_(I J), partial z^j) dif z^j and omega = sum_(dim(I) = p \, dim(J) = q) sum_(j=1)^n frac(partial f_(I J), partial z^j) dif z^j and dif z^I and dif macron(z)^J,
   $
   and $macron(partial)^(p,q)= pi^(p,q+1) compose d^((p+q))$
   $
     macron(partial)^(p,q): Omega^(p,q) (M) &--> Omega^(p,q+1) (M)\
-    omega & arrow.bar.long sum_(j=1)^n frac(partial f_(I J), partial macron(z)^j) d macron(z)^j and omega = sum_(lr(|I|=p) \, lr(|J|=q)) sum_(j=1)^n frac(partial f_(I J), partial macron(z)^j) d macron(z)^j and d z^I and d macron(z)^J.
+    omega & arrow.bar.long sum_(j=1)^n frac(partial f_(I J), partial macron(z)^j) dif macron(z)^j and omega = sum_(dim(I) = p \, dim(J) = q) sum_(j=1)^n frac(partial f_(I J), partial macron(z)^j) dif macron(z)^j and dif z^I and dif macron(z)^J.
   $
 
 
@@ -324,8 +581,8 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 ]
 #example[Riemann Sphere][
   The #strong[Riemann sphere] is the one-point compactification of $bb(C)$, denoted by $hatCC = bb(C) union { oo }$. It is
-  a Riemann surface with the following two charts: $   & U_1 = bb(C) , quad phi_1 lr((z))= z\
-    & U_2 = hatCC - { 0 } , quad phi_2 lr((z)) = cases(delim: "{", 1 \/ z & upright("if ") z eq.not oo, 0 & upright("if ") z = oo) $
+  a Riemann surface with the following two charts: $ & U_1 = bb(C) , quad phi_1 lr((z))= z\
+  & U_2 = hatCC - { 0 } , quad phi_2 lr((z)) = cases(delim: "{", 1 \/ z & upright("if ") z eq.not oo, 0 & upright("if ") z = oo) $
 
   $hatCC$ is smoothly homeomorphic to the sphere $S^2$ through the stereographic projection
   $
@@ -390,8 +647,8 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 
 #example[Complex Projective Line][
   The #strong[complex projective line] $bb(P)^1 lr((bb(C)))$ is the set of all complex lines through the origin in $bb(C)^2$.
-  It is a Riemann surface with the following two charts: $   & V_1 = lr({lr([z_0 : z_1]) mid(|) z_0 eq.not 0}) , quad psi_1 lr((z_0 , z_1)) = z_1 \/ z_0\
-    & V_2 = lr({lr([z_0 : z_1]) mid(|) z_1 eq.not 0}) , quad psi_2 lr((z_0 , z_1)) = z_0 \/ z_1 $
+  It is a Riemann surface with the following two charts: $ & V_1 = lr({lr([z_0 : z_1]) mid(|) z_0 eq.not 0}) , quad psi_1 lr((z_0 , z_1)) = z_1 \/ z_0 \
+  & V_2 = lr({lr([z_0 : z_1]) mid(|) z_1 eq.not 0}) , quad psi_2 lr((z_0 , z_1)) = z_0 \/ z_1 $
 ]
 #proposition[$hatCC$ is isomorphic to $bb(P)^1 lr((bb(C)))$][
   The map $f : hatCC arrow.r bb(P)^1 lr((bb(C)))$ $ f lr((x)) = cases(delim: "{", lr([1 : x]) & upright("if ") x eq.not oo, lr([0 : 1]) & upright("if ") x = oo) $ is
@@ -409,13 +666,13 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 #proposition[$DD$ is isomorphic to $HH$][
   The map
   $
-    f: DD &--> HH \
-    z &arrow.long.bar (z+i) / (i z+1)
+    f: DD & --> HH \
+        z & arrow.long.bar (z+i) / (i z+1)
   $
   is a biholomorphism and has the inverse
   $
-    f^(- 1): HH &--> DD \
-    w &arrow.long.bar (i w+1) / (w+i)
+    f^(- 1): HH & --> DD \
+              w & arrow.long.bar (i w+1) / (w+i)
   $
 ]
 
@@ -429,15 +686,15 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   - If $P_alpha = lr((x_alpha , y_alpha)) in accent(S, circle)$ satisfies $y_alpha eq.not 0$, there exists $epsilon.alt_alpha > 0$ such
     that for any $k in { 1 , 2 , dots.h.c , 2 g + 1 }$, $ lr((a_k , 0)) in.not B_(accent(S, circle)) lr((P_alpha , epsilon.alt_alpha)) = lr(
       {lr((x , y)) in accent(S, circle) thin mid(|) thin lr(|x - x_alpha|)^2 + lr(|y - y_alpha|)^2 < epsilon.alt_alpha^2}
-    ) $ Let $U_alpha = B_(accent(S, circle)) lr((P_alpha , epsilon.alt_alpha))$ and we can check that $ phi_alpha : U_alpha & --> bb(C)\
-    lr((x , y))         & arrow.r.long.bar x . $ is holomorphic and has inverse $ phi_alpha^(- 1) lr((x)) = lr((x , sqrt(product_(k = 1)^(2 g + 1) lr((x - a_k))) #h(0em))) , $ where
+    ) $ Let $U_alpha = B_(accent(S, circle)) lr((P_alpha , epsilon.alt_alpha))$ and we can check that $ phi_alpha : U_alpha & --> bb(C) \
+            lr((x , y)) & arrow.r.long.bar x . $ is holomorphic and has inverse $ phi_alpha^(- 1) lr((x)) = lr((x , sqrt(product_(k = 1)^(2 g + 1) lr((x - a_k))) #h(0em))) , $ where
     the branch of the square root is chosen so that its value at $x_alpha$ is $y_alpha$ instead of $- y_alpha$.
 
   - If $lr((a_j , 0)) in accent(S, circle)$ for some integer $j in lr([1 , 2 g + 1])$, there exists $epsilon.alt_j > 0$ such
     that $ a_k in.not B_(bb(C)) lr((a_j , epsilon.alt_j^2)) = lr({x in bb(C) thin mid(|) thin lr(|x - a_j|) < epsilon.alt_j^2}) , quad forall k eq.not j , $ which
     implies for all $z in B_(bb(C)) lr((0 , epsilon.alt_j)) = lr({x in bb(C) thin mid(|) thin lr(|x|) < epsilon.alt_j})$, $ lr(|z^2 + a_j - a_k|) gt.eq lr(|a_j - a_k|) - lr(|z^2|) > epsilon.alt_j^2 - epsilon.alt_j^2 = 0 , quad forall k eq.not j . $ Let $V_j = B_(bb(C)) lr((0 , epsilon.alt_j))$ and
-    we can check that $ psi_j : V_j & --> accent(S, circle)\
-    z           & arrow.r.long.bar lr((a_j + z^2 , z sqrt(product_(k eq.not j) lr((z^2 + a_j - a_k))))) $ is holomorphic
+    we can check that $ psi_j : V_j & --> accent(S, circle) \
+              z & arrow.r.long.bar lr((a_j + z^2 , z sqrt(product_(k eq.not j) lr((z^2 + a_j - a_k))))) $ is holomorphic
     with any choice of the branch of the square root. Given $z_1 , z_2 in V_j$, if $psi_j lr((z_1)) = psi_j lr((z_2))$, then $a_j + z_1^2 = a_j + z_2^2$,
     which implies $z_1 = z_2$. Hence $psi_j$ is injective and is a biholomorphism onto its image. So we can take
     $ (U_j, phi_j) = (psi_j lr((V_j)), psi_j^(- 1)) $
@@ -736,8 +993,8 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 #proposition[Order is a Valuation][
   Let $X$ be a Riemann surface and $f$ is meromorphic at $p in X$. Then the order of $f$ at $p$
   $
-    op("ord")_p : cal(M)_(X , p) & --> bb(Z) union { oo }\
-    f & arrow.r.long.bar op("ord")_p lr((f))
+    op("ord")_p : cal(M)_(X , p) & --> bb(Z) union { oo } \
+                               f & arrow.r.long.bar op("ord")_p lr((f))
   $
   is a valuation on $cal(M)_(X , p)$. That is, for any $f , g in cal(M)_(X , p)$,
   we have
@@ -755,7 +1012,6 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
     k_x & upright("if ") f upright(" has a zero of multiplicity ") k_x upright(" at ") x,
     - k_x & upright("if ") f upright(" has a pole of multiplicity ") k_x upright(" at ") x,
     oo & upright("if ") f equiv 0,
-
   ) $
 ]
 
@@ -767,9 +1023,9 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 
 #definition[Holomorphic Differential Forms][
   Let $X$ be a Riemann surface. A #strong[differential form of degree $k$] on $X$ is a section of the $k$-th exterior power of
-  the holomorphic cotangent bundle $T^(*1,0)X:=(T^(1,0) X)^*$. The space of all differential forms of degree $k$ on $X$ is denoted by
+  the #link(<holomorphic-cotangent-bundle>)[ holomorphic cotangent bundle] $T^(*1,0)X:=(T^(1,0) X)^*$. The space of all differential forms of degree $k$ on $X$ is denoted by
   $
-    Omega^(k,0)_X = Gamma(X,  and^k (T^(*1,0)X)).
+    Omega^(k,0)_X = Gamma(X, and^k (T^(*1,0)X)).
   $
 ]
 
@@ -786,8 +1042,8 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   $
   for some holomorphic function $f$ on $U$. More explicitly, $omega$ is a map
   $
-    omega: U &--> T^(*1,0) X \
-    p & arrow.bar.long f(z(p)) dif z.
+    omega: U & --> T^(*1,0) X \
+           p & arrow.bar.long f(z(p)) dif z.
   $
 
 
@@ -827,29 +1083,33 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 == Divisor <divisor>
 #definition[Divisor Group][
   Let $X$ be a Riemann surface. The #strong[divisor group] of $X$ is the free abelian group generated by the points of $X$,
-  denoted by $ op("Div") lr((X)) = ZZ^(plus.circle X)$. An element of $op("Div") lr((X))$ is called a #strong[divisor] on $X$.
+  denoted by $op("Div") lr((X)) = ZZ^(plus.o X)$. An element of $op("Div") lr((X))$ is called a #strong[divisor] on $X$.
   A divisor $D$ on $X$ can be written as $ D = sum_(x in X) n_x x. $
 ]
 #definition[Degree of a Divisor][
   Let $X$ be a Riemann surface. The degree homomorphism is defined as
   $
-    deg : op("Div") lr((X)) & --> bb(Z)\
-    D = sum_(x in X) n_x x & arrow.r.long.bar sum_(x in X) n_x .
+    deg : op("Div") lr((X)) & --> bb(Z) \
+     D = sum_(x in X) n_x x & arrow.r.long.bar sum_(x in X) n_x .
   $
   It can be defined by the universal property of free abelian Group
 
-  #commutative_diagram($
-    op("Div") lr((X)) edge(deg, "-->") & ZZ \
-    X edge("u", iota, ->, #left) edge("ur", c_1, ->, #right)
-  $)
+  #commutative_diagram(
+    $
+                            op("Div") lr((X)) edge(deg, "-->") & ZZ \
+      X edge("u", iota, ->, #left) edge("ur", c_1, ->, #right)
+    $,
+  )
 
   where $c_1 : x |-> 1$ is a constant mapping. $deg (D)$ is called the #strong[degree] of $D$. The kernel of $deg$ is
   denoted by
   $"Div"^0 (X)$ and called the #strong[divisor group of degree zero];. So we have the exact sequence
 
-  #commutative_diagram($
-    0 edge(->) & op("Div")^0 lr((X)) edge(->) & op("Div") lr((X)) edge(deg, ->) & bb(Z) edge(->) & 0
-  $)
+  #commutative_diagram(
+    $
+      0 edge(->) & op("Div")^0 lr((X)) edge(->) & op("Div") lr((X)) edge(deg, ->) & bb(Z) edge(->) & 0
+    $,
+  )
 ]
 
 
@@ -859,8 +1119,8 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   Let $X$ be a Riemann surface and $f$ be a nonzero meromorphic function on $X$. We have the following abelian group
   homomorphism:
   $
-    op("div") : cal(M) lr((X))_(!0) & --> op("Div") lr((X))\
-    f & arrow.long.bar sum_(x in X) "ord"_x lr((f)) x .
+    op("div") : cal(M) lr((X))_(!0) & --> op("Div") lr((X)) \
+                                  f & arrow.long.bar sum_(x in X) "ord"_x lr((f)) x .
   $
   The #strong[divisor of $f$] defined as $op("div") (f)$. Any divisor of this form is called a #strong[principal divisor] on $X$.
   The group of principal divisors on $X$ is denoted by $op("PDiv") lr((X))= op("div")lr((cal(M) lr((X))_(!0)))$.
@@ -881,16 +1141,20 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   Let $X$ be a Riemann surface. The #strong[Picard group] of $X$ is defined as $ op("Pic") lr((X)) = op("Div") lr((X)) \/ op("PDiv") lr((X)) . $
   And we have the exact sequence
 
-  #commutative_diagram($
-    cal(M) lr((X))_(!0) edge(op("div"), ->) & op("Div") lr((X)) edge(->) & op("Pic") lr((X)) edge(->) & 0
-  $)
+  #commutative_diagram(
+    $
+      cal(M) lr((X))_(!0) edge(op("div"), ->) & op("Div") lr((X)) edge(->) & op("Pic") lr((X)) edge(->) & 0
+    $,
+  )
 
   For compact Riemann surfaces $X$, the #strong[restricted Picard group] of $X$ is defined as $ op("Pic")^0 lr((X)) = op("Div")^0 lr((X)) \/ op("PDiv") lr((X)) . $
   And we have the exact sequence
 
-  #commutative_diagram($
-    1 edge(->)& CC^* edge(->) &cal(M) lr((X))_(!0) edge(op("div"), ->) & op("Div")^0 lr((X)) edge(->) & op("Pic")^0 lr((X)) edge(->) & 0
-  $)
+  #commutative_diagram(
+    $
+      1 edge(->)& CC^* edge(->) &cal(M) lr((X))_(!0) edge(op("div"), ->) & op("Div")^0 lr((X)) edge(->) & op("Pic")^0 lr((X)) edge(->) & 0
+    $,
+  )
 ]
 
 
@@ -924,11 +1188,10 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
   +
   $
     ell lr((D)) cases(
-    "= 0" & " if " & deg D < 0,
-    gt.eq 1 - g + deg D & " if " & 0 lt.eq deg D lt.eq 2 g - 2,
-    = 1 - g + deg D & " if " & deg D gt.eq 2 g - 1,
-
-  )
+      "= 0" & " if " & deg D < 0,
+      gt.eq 1 - g + deg D & " if " & 0 lt.eq deg D lt.eq 2 g - 2,
+      = 1 - g + deg D & " if " & deg D gt.eq 2 g - 1,
+    )
   $
 ]
 #proof[
@@ -960,13 +1223,13 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
 #definition[Möbius Transformations][
   A #strong[Möbius transformation] is a map of the form
   $
-    T:hatCC &--> hatCC\
-    z &arrow.long.bar frac(a z + b, c z + d) ,\
+    T:hatCC & --> hatCC \
+          z & arrow.long.bar frac(a z + b, c z + d) , \
   $
-  which corresponds to a projective matrix $T=mat(a, b;c, d) in upright(P G L)_2 lr((bb(C))) tilde.equiv upright(P S L)_2 lr((bb(C))) tilde.equiv upright( S L)_2 lr((bb(C)))\/(plus.minus I)$.
+  which corresponds to a projective matrix $T=mat(a, b; c, d) in upright(P G L)_2 lr((bb(C))) tilde.equiv upright(P S L)_2 lr((bb(C))) tilde.equiv upright(S L)_2 lr((bb(C)))\/(plus.minus I)$.
 ]
 #remark[
-  Here we abuse the notation and use $T$ to denote both the Möbius transformation $z arrow.bar frac(a z + b, c z + d)$ and the corresponding matrix $mat(a, b;c, d) in op("PSL")_2(lr(bb(C)))$.
+  Here we abuse the notation and use $T$ to denote both the Möbius transformation $z arrow.bar frac(a z + b, c z + d)$ and the corresponding matrix $mat(a, b; c, d) in op("PSL")_2(lr(bb(C)))$.
 ]
 
 We can use any matrix in $op("GL")_2(lr(bb(C)))$ to represent a Möbius transformation, since $op("GL")_2(lr(bb(C)))$ acts
@@ -990,7 +1253,7 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
   Automorphism of $bb(P)^1 lr((bb(C)))$
 ][
   The automorphism group of $bb(P)^1 lr((bb(C)))$ is given by $ op("Aut") lr((bb(P)^1 lr((bb(C))))) = lr(
-    {vec(Z_0, Z_1) arrow.r.bar mat(a, b;c, d;gap: #1em) vec(Z_0, Z_1) thin mid(|) thin a , b , c , d in bb(C) , a d - b c = 1}
+    {vec(Z_0, Z_1) arrow.r.bar mat(a, b; c, d; gap: #1em) vec(Z_0, Z_1) thin mid(|) thin a , b , c , d in bb(C) , a d - b c = 1}
   ) tilde.equiv upright(P S L)_2 lr((bb(C))) . $
 ]
 
@@ -1019,15 +1282,15 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
     c z^2+(d-a) z-b=0.
   $
 
-  + If $T=mat(1, b;0, 1)in op("PGL")_2(lr(bb(C)))$ where $b in CC^*$, then $T$ has a single fixed point $z=oo$.
+  + If $T=mat(1, b; 0, 1)in op("PGL")_2(lr(bb(C)))$ where $b in CC^*$, then $T$ has a single fixed point $z=oo$.
 
-  + If $T=mat(a, b;0, d)in op("PGL")_2(lr(bb(C)))$ where $a ,d in CC^*$ and $a eq.not d$, then $T$ has a two fixed point $z_1=b/(d-a)$ and $z_2=oo$.
+  + If $T=mat(a, b; 0, d)in op("PGL")_2(lr(bb(C)))$ where $a ,d in CC^*$ and $a eq.not d$, then $T$ has a two fixed point $z_1=b/(d-a)$ and $z_2=oo$.
 
   + If $c eq.not 0$, then the equation has two solutions
   $
     z_(1,2) = frac(a-d plus.minus sqrt((d-a)^2+4 b c), 2 c).
   $
-  If $(d - a)^2 +4b c = 0 $, then $z_1 = z_2$ and $T$ has a single fixed point. Otherwise, $T$ has two fixed points.
+  If $(d - a)^2 +4b c = 0$, then $z_1 = z_2$ and $T$ has a single fixed point. Otherwise, $T$ has two fixed points.
 ]
 
 #definition[Generalized Circle][
@@ -1040,7 +1303,7 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
 
 #proposition[][
   Suppose a generalized circle is defined by
-  $ c z overline(z) + alpha z + overline(alpha) overline(z) + d=0$.
+  $c z overline(z) + alpha z + overline(alpha) overline(z) + d=0$.
 
   + If $c=0$, then the generalized circle is a line.
 
@@ -1080,7 +1343,7 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
 ]
 
 #definition[Cross Ratio][
-  Let $z_0 , z_1 , z_2 , z_3 in hatCC $ be four distinct points. The #strong[cross ratio] of $z_0 , z_1 , z_2 , z_3$ is
+  Let $z_0 , z_1 , z_2 , z_3 in hatCC$ be four distinct points. The #strong[cross ratio] of $z_0 , z_1 , z_2 , z_3$ is
   defined as
   $ [z_0 , z_1 , z_2 , z_3] = ((z_0 - z_2)(z_1 - z_3)) / ((z_0 - z_3)(z_1 - z_2)) . $
 
@@ -1238,15 +1501,17 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
 
   + #strong[elliptic] if it is conjugate to $z |-> mu z$ with $|mu|=1$ and $mu eq.not 1$;
 
-  + #strong[hyperbolic] if it is conjugate to $z |-> mu z$ with $ mu in bb(R)^*-{1,-1}$;
+  + #strong[hyperbolic] if it is conjugate to $z |-> mu z$ with $mu in bb(R)^*-{1,-1}$;
 
   + #strong[loxodromic] if it is conjugate to $z |-> mu z$ with $mu in.not bb(R)^*$ and $|mu| eq.not 1$;
 
   Suppose a Möbius transformation $f(z)=(a z+b)/(c z + d)$ has fixed points $z_1$ and $z_2$, the multiplier $mu$ can be calculated as
   follows:
   $
-    mu_i = cases(f^prime (z_i)=display((a d - b c)/(c z_i + d)^2) & upright(" if ") z_i eq.not oo, \
-    limits(lim)_(z arrow.r oo) display(frac(1, f^prime (z)))=display(d/a )& upright(" if ") z_i = oo)
+    mu_i = cases(
+      f^prime (z_i)=display((a d - b c)/(c z_i + d)^2) & upright(" if ") z_i eq.not oo,
+      limits(lim)_(z arrow.r oo) display(frac(1, f^prime (z)))=display(d/a) & upright(" if ") z_i = oo
+    )
   $
 
 ]
@@ -1263,16 +1528,16 @@ Let $T in op("PSL")_2(CC)-{plus.minus I}$ and $sigma = op("Tr")(T)^2$. Then we h
   [
     $mu_(1,2) = e^(plus.minus i theta)$,\ $theta in (0, 2 pi)$
   ],
-  $ mat(e^(i theta \/2), 0;0, e^(-i theta \/2)) $,
+  $ mat(e^(i theta \/2), 0; 0, e^(-i theta \/2)) $,
   $ z |-> e^(i theta) z $,
 
-  [Parabolic], $sigma = 4$, $mu = 1$, $ mat(1, b;0, 1) $, $ z |-> z + b $,
+  [Parabolic], $sigma = 4$, $mu = 1$, $ mat(1, b; 0, 1) $, $ z |-> z + b $,
   [Hyperbolic],
   $sigma gt 4$,
   [
     $mu_(1,2) = rho^(plus.minus 1)$,\ $rho in RR^* - {1}$
   ],
-  $ mat(sqrt(rho), 0;0, 1\/sqrt(rho)) $,
+  $ mat(sqrt(rho), 0; 0, 1\/sqrt(rho)) $,
   $ z |->rho z $,
 
   [Loxodromic],
@@ -1280,7 +1545,7 @@ Let $T in op("PSL")_2(CC)-{plus.minus I}$ and $sigma = op("Tr")(T)^2$. Then we h
   [
     $mu_(1,2) = rho^(plus.minus 1) e^(plus.minus i theta)$,\ $rho in RR^*-{1}$,\ $theta in (0, pi) union (pi, 2 pi)$
   ],
-  $ mat(sqrt(rho)e^(i theta \/2), 0;0, 1\/lr((sqrt(rho)e^(i theta \/2)))) $,
+  $ mat(sqrt(rho)e^(i theta \/2), 0; 0, 1\/lr((sqrt(rho)e^(i theta \/2)))) $,
   $ z |-> rho e^(i theta) z $,
 )
 
@@ -1289,9 +1554,9 @@ Let $T in op("PSL")_2(CC)-{plus.minus I}$ and $sigma = op("Tr")(T)^2$. Then we h
   A nonidentity Möbius transformation $T in op("PSL")_2 (CC)$ has finite order if and only if it is elliptic and conjugate to $z |-> e^(i theta) z$ where $theta/(2 pi) in (0,1) inter QQ$.
 ]
 #proof[
-  Suppose $T in op("PSL")_2(CC)-{plus.minus I}$ has finite order. First, we assert $T$ is not parabolic. If $T$ is parabolic, since $T$ is conjugate to $z |-> z+1$, $z |-> z+1$ must have finite order, which is a contradiction. Let $M=mat(a,b;c,d) in op("SL")_2(CC)$ be a lift of $T$. Then we have $M^n=plus.minus I$ for some $n >= 2$, which implies any eigenvalue $lambda$ of $M$ satisfies $lambda^n=plus.minus 1$. Therefore, $lambda$ is a root of unity. Suppose the $z_1 in CC$ is a fixed point of $T$, then we have
+  Suppose $T in op("PSL")_2(CC)-{plus.minus I}$ has finite order. First, we assert $T$ is not parabolic. If $T$ is parabolic, since $T$ is conjugate to $z |-> z+1$, $z |-> z+1$ must have finite order, which is a contradiction. Let $M=mat(a, b; c, d) in op("SL")_2(CC)$ be a lift of $T$. Then we have $M^n=plus.minus I$ for some $n >= 2$, which implies any eigenvalue $lambda$ of $M$ satisfies $lambda^n=plus.minus 1$. Therefore, $lambda$ is a root of unity. Suppose the $z_1 in CC$ is a fixed point of $T$, then we have
   $
-    T(z_1)=(a z_1+b) / (c z_1 +d)=z_1 ==> mat(a, b;c, d) mat(z_1;1) = mat(a z_1 + b;c z_1 + d) = (c z_1 + d) mat(z_1;1),
+    T(z_1)=(a z_1+b) / (c z_1 +d)=z_1 ==> mat(a, b; c, d) mat(z_1; 1) = mat(a z_1 + b; c z_1 + d) = (c z_1 + d) mat(z_1; 1),
   $
   Hence $c z_1 + d$ is an eigenvalue of $M$. Note that the multiplier of $T$ is
   $
@@ -1310,8 +1575,8 @@ Let $T in op("PSL")_2(CC)-{plus.minus I}$ and $sigma = op("Tr")(T)^2$. Then we h
 #proposition[Fixed Points of $op("PSL")_2 lr((bb(R))) acts hat(CC)$][
   Let $op("PSL")_2 lr((bb(R)))$ acts on $hat(CC)$ by Möbius transformations. Or equivalently, $op("PSL")_2 lr((bb(R)))$ acts on $upright(bold(P))_(CC)^1$ by matrix multiplication
   $
-    op("PSL")_2 lr((bb(R))) times upright(bold(P))_(CC)^1 &--> upright(bold(P))_(CC)^1 \
-    (mat(a, b;c, d), mat(z;dot dot ;w)) &arrow.bar.long mat(a z + b w;dot dot;c z + d w)
+    op("PSL")_2 lr((bb(R))) times upright(bold(P))_(CC)^1 & --> upright(bold(P))_(CC)^1 \
+                    (mat(a, b; c, d), mat(z; dot dot; w)) & arrow.bar.long mat(a z + b w; dot dot; c z + d w)
   $
   Then the fixed points of $T in op("PSL")_2 lr((bb(R)))-{plus.minus I}$ can be classified as follows:
 
@@ -1323,7 +1588,7 @@ Let $T in op("PSL")_2(CC)-{plus.minus I}$ and $sigma = op("Tr")(T)^2$. Then we h
 
 ]
 #proof[
-  $mat(z;dot dot;w) in upright(bold(P))_(CC)^1$ is a fixed point of $mat(a, b;c, d) in op("PSL")_2 lr((bb(R)))$ if and only if $mat(z;w) in CC^2$ is a eigenvector of $T=mat(a, b;c, d) in op("SL")_2 lr((bb(R)))$. Since the characteristic polynomial of $T$ is
+  $mat(z; dot dot; w) in upright(bold(P))_(CC)^1$ is a fixed point of $mat(a, b; c, d) in op("PSL")_2 lr((bb(R)))$ if and only if $mat(z; w) in CC^2$ is a eigenvector of $T=mat(a, b; c, d) in op("SL")_2 lr((bb(R)))$. Since the characteristic polynomial of $T$ is
   $
     det(lambda I- T)=lambda^2 - op("Tr")(T) lambda + 1,
   $
@@ -1352,23 +1617,23 @@ Let $T in op("PSL")_2(RR)-{plus.minus I}$ and $sigma = op("Tr")(T)^2$. Then we h
   [Elliptic],
   $sigma<4$,
   [$
-      z_1=tau in HH\
-      z_2=overline(tau) in -HH
-    $],
+    z_1=tau in HH\
+    z_2=overline(tau) in -HH
+  $],
   [
     $mu_(1,2) = e^(plus.minus i theta)$,\ $theta in (0, 2 pi)$
   ],
-  $ mat(cos theta/2, -sin theta/2;sin theta/2, cos theta/2) $,
+  $ mat(cos theta/2, -sin theta/2; sin theta/2, cos theta/2) $,
   $ z |-> (z cos theta / 2-sin theta / 2) / (z sin theta / 2 + cos theta / 2) $,
 
-  [Parabolic], $sigma = 4$, $ z_1=z_2 \ in RR union.sq {oo} $, $mu = 1$, $ mat(1, b;0, 1) $, $ z |-> z + b $,
+  [Parabolic], $sigma = 4$, $ z_1=z_2 \ in RR union.sq {oo} $, $mu = 1$, $ mat(1, b; 0, 1) $, $ z |-> z + b $,
   [Hyperbolic],
   $sigma gt 4$,
   $ z_1eq.not z_2 \ in RR union.sq {oo} $,
   [
     $mu_(1,2) = rho^(plus.minus 1)$,\ $rho in RR^*-{1}$
   ],
-  $ mat(sqrt(rho), 0;0, 1\/sqrt(rho)) $,
+  $ mat(sqrt(rho), 0; 0, 1\/sqrt(rho)) $,
   $ z |->rho z $,
 )
 
@@ -1377,16 +1642,16 @@ Before we prove this result, we should first see how $op("SL")_2(RR)$ can be uni
 #lemma[Iwasawa Decomposition of $op("SL")_2(RR)$][
   Any $M in op("SL")_2 lr((bb(R)))$ can be uniquely written as
   $
-    M = K A N= mat(cos phi, -sin phi;sin phi, cos phi) mat(lambda, 0;0, lambda^(-1)) mat(1, x;0, 1)
+    M = K A N= mat(cos phi, -sin phi; sin phi, cos phi) mat(lambda, 0; 0, lambda^(-1)) mat(1, x; 0, 1)
   $
 
   When we consider $op("SL")_2 lr((bb(R))) acts HH$
 
-  + $K =mat(cos phi, -sin phi;sin phi, cos phi) in op("SO")_2(RR)$ means hyperbolic rotations around $i$, where $2 phi in [0,2pi )$ is the rotation angle,
+  + $K =mat(cos phi, -sin phi; sin phi, cos phi) in op("SO")_2(RR)$ means hyperbolic rotations around $i$, where $2 phi in [0,2pi )$ is the rotation angle,
 
-  + $A=mat(lambda, 0;0, lambda^(-1))$ is positive diagonal matrix, where $lambda in RR^+$ means scaling by $lambda^2$,
+  + $A=mat(lambda, 0; 0, lambda^(-1))$ is positive diagonal matrix, where $lambda in RR^+$ means scaling by $lambda^2$,
 
-  + $N=mat(1, x;0, 1)$ is an unitriangular matrix, where $x in RR$ is the translation.
+  + $N=mat(1, x; 0, 1)$ is an unitriangular matrix, where $x in RR$ is the translation.
 ]
 
 
@@ -1401,12 +1666,12 @@ Before we prove this result, we should first see how $op("SL")_2(RR)$ can be uni
 #proof[
   It is clear that the map
   $
-    op("PSL")_2 lr((bb(R))) times bb(H) &--> bb(H)\
-    (mat(a, b;c, d), z) &arrow.bar.long frac(a z + b, c z + d)
+    op("PSL")_2 lr((bb(R))) times bb(H) & --> bb(H) \
+                   (mat(a, b; c, d), z) & arrow.bar.long frac(a z + b, c z + d)
   $
   is smooth. To show that the action is transitive, note that for any $z=x+i y in bb(H)$, there exists
   $
-    T=mat(1,x;0,1) mat(sqrt(y),0;0,1/sqrt(y)) = mat(sqrt(y),x/sqrt(y);0,1/sqrt(y)) in op("PSL")_2 lr((bb(R))),
+    T=mat(1, x; 0, 1) mat(sqrt(y), 0; 0, 1/sqrt(y)) = mat(sqrt(y), x/sqrt(y); 0, 1/sqrt(y)) in op("PSL")_2 lr((bb(R))),
   $
   such that $T(i)=z$.
 ]
@@ -1416,12 +1681,12 @@ Before we prove this result, we should first see how $op("SL")_2(RR)$ can be uni
 #proposition[Stabilizer of $i$ in $op("PSL")_2 lr((bb(R)))$][
   Let $op("PSL")_2 lr((bb(R)))$ acts on $bb(H)$ by Möbius transformations. Then the stabilizer of $i$ is given by
   $
-    op("Stab")_(op("PSL")_2 lr((bb(R))))( i ) = lr({mat(cos phi, -sin phi;sin phi, cos phi) thin mid(|) thin phi in bb(R)}) = op("SO")_2(RR).
+    op("Stab")_(op("PSL")_2 lr((bb(R))))( i ) = lr({mat(cos phi, -sin phi; sin phi, cos phi) thin mid(|) thin phi in bb(R)}) = op("SO")_2(RR).
   $
   And we have differential homeomorphism between smooth manifolds
   $
-    op("PSL")_2 lr((bb(R))) \/ op("SO")_2(RR) & -->^tilde bb(H)\
-    T op("SO")_2(RR) &arrow.bar.long T(i).
+    op("PSL")_2 lr((bb(R))) \/ op("SO")_2(RR) & -->^tilde bb(H) \
+                             T op("SO")_2(RR) & arrow.bar.long T(i).
   $
 ]
 #proof[
@@ -1435,7 +1700,7 @@ Before we prove this result, we should first see how $op("SL")_2(RR)$ can be uni
   $
   By comparing the real and imaginary parts, we have $b=-c$ and $a=d$, which implies $a^2+d^2=1$. Therefore, $T$ can be written as
   $
-    T = mat(cos phi, -sin phi;sin phi, cos phi)
+    T = mat(cos phi, -sin phi; sin phi, cos phi)
   $
   for some $phi in bb(R)$.
 ]
@@ -1445,12 +1710,12 @@ Before we prove this result, we should first see how $op("SL")_2(RR)$ can be uni
 ][
   - Any $(x:y)in upright(bold(P))^1_RR$ can be written as #h(1fr)
     $
-      mat(x;dot dot;y)=T(oo)=mat(x,b;y,d) mat(1;dot dot;0)
+      mat(x; dot dot; y)=T(oo)=mat(x, b; y, d) mat(1; dot dot; 0)
     $
-    for some $T= mat(x,b;y,d) in op("PSL")_2 lr((bb(R)))$. Therefore, $op("PSL")_2 lr((bb(R)))$ acts transitively on $upright(bold(P))^1_RR$.
+    for some $T= mat(x, b; y, d) in op("PSL")_2 lr((bb(R)))$. Therefore, $op("PSL")_2 lr((bb(R)))$ acts transitively on $upright(bold(P))^1_RR$.
   - The stabilizer of $oo$ in $op("PSL")_2 lr((bb(R)))$ is given by
     $
-      op("Stab")_(op("PSL")_2 lr((bb(R))))(oo) = lr({mat(a ,b;0, d) thin mid(|) thin a,b,d in bb(R)}).
+      op("Stab")_(op("PSL")_2 lr((bb(R))))(oo) = lr({mat(a, b; 0, d) thin mid(|) thin a,b,d in bb(R)}).
     $
     As a result, we have
     $
@@ -1491,18 +1756,18 @@ $op("SL")_2(ZZ)$ is a Fuchsian group.
   The automorphism group of $bb(D)$ is given by
   $
     op("Aut") lr((bb(D))) & = lr(
-    {z arrow.r.bar e^(i theta) frac(z - alpha, 1 - overline(alpha) z) thin mid(|) thin alpha in bb(C) ,thick lr(|alpha|) < 1 ,thick theta in bb(R)}
-  )\
+      {z arrow.r.bar e^(i theta) frac(z - alpha, 1 - overline(alpha) z) thin mid(|) thin alpha in bb(C) ,thick lr(|alpha|) < 1 ,thick theta in bb(R)}
+    )\
     & = lr({z arrow.r.bar frac(a z + b, overline(b) z + overline(a)) thin mid(|) thin a, b in bb(C) , thick lr(|a|)^2 - lr(|b|)^2 = 1}) \
-    &tilde.equiv { mat(a,b;overline(b),overline(a)) thin mid(|) thin a, b in bb(C) , thick lr(|a|)^2 - lr(|b|)^2 = 1 } \/ lr({ plus.minus I }) \
+    &tilde.equiv { mat(a, b; overline(b), overline(a)) thin mid(|) thin a, b in bb(C) , thick lr(|a|)^2 - lr(|b|)^2 = 1 } \/ lr({ plus.minus I }) \
     &=op("SU")(1,1)\/ lr({ plus.minus I }) = upright(P U)(1,1).
   $
 ]
 #proof[
   Since
   $
-    f: DD &--> HH \
-    z &arrow.long.bar (z+i) / (i z+1)
+    f: DD & --> HH \
+        z & arrow.long.bar (z+i) / (i z+1)
   $
   is a biholomorphic map, we have
   $
@@ -1547,8 +1812,8 @@ A *lattice* in $RR^m$ is a discrete subgroup of $RR^m$.
 ]
 
 #proposition[][
-  Two bases $B_1, B_2 in RR^(m times n) $ of a lattice $Lambda$ are equivalent if and only $B_2 = B_1 M$ where $M in op("GL")_n (ZZ)$.
-]
+  Two bases $B_1, B_2 in RR^(m times n)$ of a lattice $Lambda$ are equivalent if and only if $B_2 = B_1 M$ where $M in op("GL")_n (ZZ)$.
+]<change-basis-of-lattice>
 #proof[
   First assume that $op("Lat") lr((B))=op("Lat") lr((B^prime))$. Then for each of the $n$ columns $b_i$ of $B_2 , b_i in op("Lat")(B_1)$. This implies that
   there exists an integer matrix $U in bb(Z)^(n times n)$ for which $B_2 = B_1 U$. Similarly, there exists a $V in bb(Z)^(n times n)$ such that $B_1 = B_2 V$. Hence $B_2 = B_1 U = B_2 V U$, and we get
@@ -1560,35 +1825,161 @@ A *lattice* in $RR^m$ is a discrete subgroup of $RR^m$.
   $
     det (B_2 zws^top B_2) = (det (V U))^2 det (B_2 zws^top B_2),
   $
-  which implies $det (U)det (V)  = plus.minus 1$. Since $V , U in bb(Z)^(n times n)$, we get $V , U in op("GL")_n (ZZ)$.
+  which implies $det (U)det (V) = plus.minus 1$. Since $V , U in bb(Z)^(n times n)$, we get $V , U in op("GL")_n (ZZ)$.
 
-  For the other direction, assume that $B_2 = B_1 M$ for some unimodular matrix $M in op("GL")_n (ZZ)$. Then we have $op("Lat") (B_2) subset.eq op("Lat")  (B_1)$. In
-  addition, $B_1 = B_2 M^(- 1)$, we similarly get that $op("Lat")(B_1) subset.eq op("Lat") (B_2)$. So we can conclude that $op("Lat")  (B_1) = op("Lat") (B_2)$ as required.
+  For the other direction, assume that $B_2 = B_1 M$ for some unimodular matrix $M in op("GL")_n (ZZ)$. Then we have $op("Lat") (B_2) subset.eq op("Lat") (B_1)$. In
+  addition, $B_1 = B_2 M^(- 1)$, we similarly get that $op("Lat")(B_1) subset.eq op("Lat") (B_2)$. So we can conclude that $op("Lat") (B_1) = op("Lat") (B_2)$ as required.
 ]
 
 #definition[Complex Lattice][
-  A *complex lattice* is a rank-2 discrete subgroup of $bb(C)$, written as $Lambda = w_1 bb(Z) xor w_2 bb(Z)$ where $w_1$ and $w_2$ are linearly independent over $bb(R)$.
+  A *complex lattice* is a rank-2 discrete subgroup of $bb(C)$, written as $Lambda = w_1 bb(Z) xor w_2 bb(Z)$ where $w_1$ and $w_2$ are linearly independent over $bb(R)$. The set of all complex lattices is denoted by $clat$.
 ]
 
-We can always assume that $tau = w_2 \/ w_1 in bb(H)$ because if this is not the case, we can simply replace $w_2$ with $-w_2$.
+
+#definition[Framed Complex Lattice][
+  A *framed complex lattice* is a pair $(Lambda, (w_1, w_2))$, where $Lambda$ is a complex lattice and $(w_1, w_2)$ is an ordered $ZZ$-basis of $Lambda$. The set of all framed complex lattices is denoted by
+  $
+    framedclat :={(Lambda, (w_1, w_2)) mid(|) Lambda in clat " and" (w_1, w_2) "is an ordered" ZZ"-basis of" Lambda }.
+  $
+]
+
+#remark[
+  There is a canonical bijection between $framedclat$ and the set of ordered $RR$-basis $bb(C)$
+  $
+                            framedclat & -->^(tilde)
+                                         {(w_1, w_2) in CC^2 mid(|) (w_1 , w_2) "is an ordered" RR"-basis of" CC} \
+                  (Lambda, (w_1, w_2)) & mapsto.long (w_1, w_2) \
+    (w_1 ZZ plus.o w_2 ZZ, (w_1, w_2)) & mapsfrom (w_1, w_2).
+  $
+  Denote the set of all $RR$-linear isomorphisms $f: RR^2 -> CC$ by
+  $
+    op("Iso")_(Vect(RR))(RR^2, CC) := {f: RR^2 -> CC mid(|) f "is an" RR"-linear isomorphism"}.
+  $
+  Then there is also a canonical bijection between $op("Iso")_(Vect(RR))(RR^2, CC)$ and the set of ordered $RR$-basis $bb(C)$
+  $
+    {(w_1, w_2) in CC^2 mid(|) (w_1 , w_2) "is an ordered" RR"-basis of" CC} & -->^(tilde) op("Iso")_(Vect(RR))(RR^2, CC) \
+    (w_1, w_2) & mapsto.long(vec(x, y) mapsto.long x w_1 + y w_2) \
+    (f(e_1), f(e_2)) & mapsfrom f.
+  $
+  where $e_1 = vec(1, 0)$ and $e_2 = vec(0, 1)$.
+  Therefore, we can identify a framed complex lattice $(Lambda, (w_1, w_2))$ with an $RR$-linear isomorphism through the following bijection
+  $
+                    framedclat & -->^(tilde) op("Iso")_(Vect(RR))(RR^2, CC) \
+          (Lambda, (w_1, w_2)) & mapsto.long(vec(x, y) mapsto.long x w_1 + y w_2) \
+    (f(ZZ^2),(f(e_1), f(e_2))) & mapsfrom f.
+  $
+  If we assume that $w_1= a + c i$ and $w_2 = b + d i$, then
+  $
+      f: RR^2 & --> CC \
+    vec(x, y) & arrow.long.bar x w_1 + y w_2,
+  $
+  has the following matrix representation
+  $
+    (f(e_1) , f(e_2))= (1 , i) mat(a, b; c, d).
+  $
+]
+
+#definition[Orientation of Basis of Complex Lattice][
+  Let $Lambda = w_1 ZZ xor w_2 ZZ$ be a complex lattice with an ordered basis $(w_1, w_2)$.
+
+  - If $tau = w_1 \/ w_2 in bb(H)$, we say $(w_1, w_2)$ is *negatively oriented* , and $(Lambda, (w_1, w_2))$ is a *negatively oriented framed complex lattice*. The set of all negatively oriented framed complex lattices is denoted by $negframedclat$.
+
+  - If $tau = w_1 \/ w_2 in -bb(H)$, we say $(w_1, w_2)$ is *positively oriented* , and $(Lambda, (w_1, w_2))$ is a *positively oriented framed complex lattice*. The set of all positively oriented framed complex lattices is denoted by $posframedclat$.
+]
+#remark[
+  Given that $w_1= a + c i$ and $w_2 = b + d i$, we know $(w_1 ZZ xor w_2 ZZ, (w_1, w_2))$ can be identified with the $RR$-linear isomorphism
+  $
+      f: RR^2 & --> CC \
+    vec(x, y) & arrow.long.bar x w_1 + y w_2,
+  $
+  which has the following matrix representation
+  $
+    (f(e_1) , f(e_2))= (1 , i) mat(a, b; c, d).
+  $
+  Note that
+  $
+    op("Im")tau = - (a d - b c) / (b^2 + d^2) = - det(f) / abs(w_2)^2 .
+  $
+  We see $(w_1, w_2)$ is positively oriented if and only if $det(f) > 0$ and negatively oriented if and only if $det(f) < 0$. Thus, by restricting the bijection $framedclat ->^(tilde) op("Iso")_(Vect(RR))(RR^2, CC)$ to $negframedclat$, we get the following bijections
+  $
+    negframedclat & -->^(tilde) {f in op("Iso")_(Vect(RR))(RR^2, CC) mid(|) det(f) < 0}.
+  $
+]
+
+// We can always assume that $tau = w_1 \/ w_2 in bb(H)$ because if this is not the case, we can simply replace $w_2$ with $-w_2$.
+
 
 #corollary[][
-  Consider two complex lattices $Lambda = w_1 bb(Z) xor w_2 bb(Z)$ and $Lambda^prime = w_1^prime bb(Z) xor w_2^prime bb(Z)$. Then $Lambda = Lambda^prime$ if and only if
+  Consider two complex lattices
+  $Lambda = w_1 ZZ xor w_2 ZZ$
+  and
+  $Lambda^prime = w_1^prime ZZ xor w_2^prime ZZ$.
+  Then $Lambda = Lambda^prime$ if and only if there exists
   $
-    vec(w_1^', w_2^') = mat(a,b;c,d) vec(w_1^', w_2^')quad "for" M=mat(a,b;c,d) in op("GL")_2 (ZZ).
+    M = mat(a, b; c, d) in op("GL")_2(ZZ)
   $
+  such that
+  $
+    vec(w_1^prime, w_2^prime)
+    =
+    M vec(w_1, w_2).
+  $
+]<equivalent-lattice-basis-criterion>
+
+#proof[
+  Identify $bb(C)$ with $bb(R)^2$. Under this identification, the complex
+  lattice $Lambda = w_1 ZZ xor w_2 ZZ$
+  is the real lattice generated by the basis matrix
+  $
+    B = [w_1 thin w_2] in bb(R)^(2 times 2),
+  $
+  and similarly $Lambda^prime$ is generated by
+  $
+    B^prime = [w_1^prime thin w_2^prime].
+  $
+  By @change-basis-of-lattice,
+  $
+    Lambda = Lambda^prime <==> op("Lat")(B) = op("Lat")(B^prime) <==> exists U in op("GL")_2(ZZ) "such that" B^prime = B U .
+  $
+  Writing
+  $
+    U = mat(a, c; b, d),
+  $
+  this says
+  $
+    [w_1^prime thin w_2^prime]
+    =
+    [w_1 thin w_2] mat(a, c; b, d).
+  $
+  Taking transpose gives
+  $
+    vec(w_1^prime, w_2^prime)
+    =
+    mat(a, b; c, d) vec(w_1, w_2).
+  $
+  Since $U in op("GL")_2(ZZ)$ if and only if $U^top in op("GL")_2(ZZ)$, the result follows.
 ]
+
+
+// Consider two complex lattices $Lambda = w_1 bb(Z) xor w_2 bb(Z)$ and $Lambda^prime = w_1^prime bb(Z) xor w_2^prime bb(Z)$, both equipped with bases such that $tau = w_1 \/ w_2 in bb(H)$ and $tau^prime = w_1^prime \/ w_2^prime in bb(H)$. Then $Lambda = Lambda^prime$ if and only if
+//   $
+//     vec(w_1^prime, w_2^prime) = mat(a, b; c, d) vec(w_1, w_2) quad "for" M=mat(a, b; c, d) in op("SL")_2 (ZZ).
+//   $
+//   Under this change of basis, the corresponding lattice parameters are related by the fractional linear transformation:
+//   $
+//     tau^prime = (a tau + b) \/ (c tau + d).
+//   $
 
 #proposition[Holomorphic Maps between Complex Tori][
   Suppose $Lambda_1, Lambda_2$ are two complex lattices.
-  A map $f:bb(C) \/ Lambda_1 --> bb(C) \/ Lambda_2$ is holomorphic if and only if there exists $a , b in bb(C)$ such that $a Lambda_1 subset.eq Lambda_2$ and
+  A map $f:bb(C) \/ Lambda_1 -> bb(C) \/ Lambda_2$ is holomorphic if and only if there exists $a , b in bb(C)$ such that $a Lambda_1 subset.eq Lambda_2$ and
   $
     f(z+ Lambda_1) = a z + b + Lambda_2 .
   $
-]
+]<holomorphic-maps-between-complex-tori>
 
 #proof[
-  Suppose $f:bb(C) \/ Lambda_1 --> bb(C) \/ Lambda_2$ is a holomorphic map. Since $pi_2 : bb(C) --> bb(C) \/ Lambda_2$ is a covering map, there exists a unique continuous map $tilde(f) : bb(C) --> bb(C) $ such that $pi_2 circle.tiny tilde(f) = f circle.tiny pi_1$, that is, the following diagram commutes.
+  Suppose $f:bb(C) \/ Lambda_1 -> bb(C) \/ Lambda_2$ is a holomorphic map. Since $pi_2 : bb(C) -> bb(C) \/ Lambda_2$ is a covering map, there exists a unique continuous map $tilde(f) : bb(C) -> bb(C)$ such that $pi_2 circle.tiny tilde(f) = f circle.tiny pi_1$, that is, the following diagram commutes.
 
 
   #square_cd(
@@ -1623,82 +2014,461 @@ We can always assume that $tau = w_2 \/ w_1 in bb(H)$ because if this is not the
 
   Conversely, if $a Lambda_1 subset.eq Lambda_2$ and $f$ is given by $z |-> a z + b + Lambda_2$, then $f$ can be lifted to a holomorphic map
   $
-    tilde(f):bb(C) &--> bb(C)\
-    z &arrow.long.bar a z + b
+    tilde(f):bb(C) & --> bb(C) \
+                 z & arrow.long.bar a z + b
   $
   The holomorphicity of $f$ follows from the fact that $pi_1$ is a local homeomorphism.
 ]
 
 #corollary[][
-  Suppose $Lambda_1, Lambda_2$ are two complex lattices. A holomorphic map $f:bb(C) \/ Lambda_1 --> bb(C) \/ Lambda_2$ is biholomorphic if and only if there exists $a in bb(C)$ such that $a Lambda_1 = Lambda_2$ and
+  Suppose $Lambda_1, Lambda_2$ are two complex lattices. A holomorphic map $f:bb(C) \/ Lambda_1 -> bb(C) \/ Lambda_2$ is biholomorphic if and only if there exists $a,b in bb(C)$ such that $a Lambda_1 = Lambda_2$ and
   $
     f(z+ Lambda_1) = a z + b + Lambda_2 .
   $
-]
+]<biholomorphic-maps-between-complex-tori>
 #proof[
-  If $f:bb(C) \/ Lambda_1 -> bb(C) \/ Lambda_2$ is a biholomorphism, then there exists $a, b, c, d in bb(C)$ such that $a Lambda_1 subset.eq Lambda_2$, $c Lambda_2 subset.eq Lambda_1$ and
+  According to @holomorphic-maps-between-complex-tori, if $f:bb(C) \/ Lambda_1 -> bb(C) \/ Lambda_2$ is a biholomorphism, then there exists $a, b, c, d in bb(C)$ such that $a Lambda_1 subset.eq Lambda_2$, $c Lambda_2 subset.eq Lambda_1$ and
   $
-    f^(-1) circle.tiny f(z+ Lambda_1) = c(a z + b) + d + Lambda_1 = z + Lambda_1,quad "for all" z in bb(C),
+    f^(-1) circle.tiny f(z+ Lambda_1) = c(a z + b) + d + Lambda_1 = z + Lambda_1,quad "for all" z in bb(C).
   $
-  which means $h(z)=(c a -1)z +c b - d in Lambda_1$ for all $z in bb(C)$. Hence $h$ is constant and $c = a^(-1)$. For any $lambda in Lambda_2$, there exists $mu in Lambda_1$ such that
-  $
-    a^(-1) lambda =mu <==> lambda = a mu in a Lambda_1,
-  $
-  which implies $Lambda_2  subset.eq a Lambda_1 $. Therefore, $a Lambda_1 = Lambda_2$.
+  That means $(c a -1)z +c b - d in Lambda_1$ for all $z in bb(C)$. If $X$ is connected and $Y$ is discrete, then any continuous map from $X$ to $Y$ is constant. Hence $h(z):=(c a -1)z +c b - d$ is constant and $c = a^(-1)$. Since $c Lambda_2=a^(-1) Lambda_2 subset.eq Lambda_1$, we have $Lambda_2 subset.eq a Lambda_1$. Combined with $a Lambda_1 subset.eq Lambda_2$, we get $a Lambda_1 = Lambda_2$.
 
   Conversely, if $a Lambda_1 = Lambda_2$, then we have $a^(-1)Lambda_2=Lambda_1$, which implies that
   $
-    g:bb(C) \/ Lambda_2 &--> bb(C) \/ Lambda_1\
-    z + Lambda_2 &arrow.long.bar a^(-1)(z - b) + Lambda_1
+    g:bb(C) \/ Lambda_2 & --> bb(C) \/ Lambda_1 \
+           z + Lambda_2 & arrow.long.bar a^(-1)(z - b) + Lambda_1
   $
   is a well-defined holomorphic map. Then we can check that $g circle.tiny f = id$ and $f circle.tiny g = id$, which implies that $f$ is a biholomorphism.
 ]
+#proposition[
+][
+  Suppose $Lambda_1, Lambda_2$ are two complex lattices such that $a Lambda_1 subset.eq Lambda_2$, which guarantees that for any $b in bb(C)$,
+  $
+    f : bb(C) \/ Lambda_1 & --> bb(C) \/ Lambda_2 \
+             z + Lambda_1 & arrow.r.long a z + b+Lambda_2
+  $
+  is a holomorphic map. We have the following properties of $f$:
 
-Complex torus $bb(C) \/ Lambda$, as a quotient group of $bb(C)$, has a abelian group structure compatible with its holomorphic structure. Next we always regard complex tori as objects in the category of complex Lie groups and holomorphic homomorphisms.
+  + If $a = 0$, then $f$ is constant.
+
+  + If $a eq.not 0$, then $f$ is a finite covering map. Its degree is
+    $
+      deg(f) = [Lambda_2 : a Lambda_1].
+    $
+    Equivalently, if $B_1$ and $B_2$ are real basis matrices of
+    $Lambda_1$ and $Lambda_2$, then
+    $
+      deg(f)
+      =
+      [Lambda_2 : a Lambda_1]
+      =
+      abs(det(a B_1)) / abs(det(B_2)).
+    $
+]
+
+Complex torus $bb(C) \/ Lambda$, as a quotient group of $bb(C)$, has a abelian group structure compatible with its holomorphic structure. Next we always regard complex tori as objects in the category $CLieGrp$ whose objects are complex Lie groups and whose morphisms are holomorphic group homomorphisms.
 
 #lemma[][
-  Suppose $Lambda_1, Lambda_2$ are two complex lattices. We know
+  Suppose $Lambda_1, Lambda_2$ are two complex lattices such that $a Lambda_1 subset.eq Lambda_2$, which guarantees that for any $b in bb(C)$,
   $
-    f : bb(C) \/ Lambda_1 &arrow.r.long bb(C) \/ Lambda_2\
-    z + Lambda &arrow.r.long.bar a z + b + Lambda_2
+    f : bb(C) \/ Lambda_1 & arrow.r.long bb(C) \/ Lambda_2 \
+             z + Lambda_1 & arrow.r.long.bar a z + b + Lambda_2
   $
-  is a holomorphic map if $a Lambda_1 subset.eq Lambda_2$. The following are equivalent:
+  is a holomorphic map. We have the following equivalent conditions:
 
   + $f$ is a group homomorphism,
 
   + $b in Lambda_2$, so $f (z + Lambda_1) = a z + Lambda_2$,
 
-  + $f(0) = 0$.
+  + $f(0+ Lambda_1) = 0 + Lambda_2$.
+]<equivalent-conditions-for-holomorphic-group-homomorphisms-between-complex-tori>
+#proof[
+  - (i) $==>$ (ii). Suppose $f$ is a group homomorphism.    Then we have
+    $
+      f(0 + Lambda_1) = b + Lambda_2 = 0 + Lambda_2,
+    $
+    which implies that $b in Lambda_2$.
+
+  - (ii) $==>$ (iii). Take $z=0$.
+
+  - (iii) $==>$ (i). Suppose $f(0+ Lambda_1) = 0 + Lambda_2$. Then we have $b in Lambda_2$. Write $f(z + Lambda_1) = a z + Lambda_2$. It is straightforward to check that $f$ is a group homomorphism: for any $z_1, z_2 in bb(C)$, we have
+    $
+      f((z_1 + Lambda_1) + (z_2 + Lambda_1)) & = f((z_1 + z_2) + Lambda_1) \
+                                             & = a(z_1 + z_2) + Lambda_2 \
+                                             & =(a z_1 + a z_2) + Lambda_2 \
+                                             & = (a z_1 + Lambda_2) + (a z_2 + Lambda_2) \
+                                             & = f(z_1 + Lambda_1) + f(z_2 + Lambda_1).
+    $
 
 ]
 
 #proposition[Holomorphic Homomorphisms between Complex Tori][
-  Suppose $Lambda_1, Lambda_2$ are two complex lattices.
-  A map $f:bb(C) \/ Lambda_1 --> bb(C) \/ Lambda_2$ is a holomorphic homomorphism if and only if there exists $a in bb(C)$ such that $a Lambda_1 subset.eq Lambda_2$ and
+  Let $Lambda_1$ and $Lambda_2$ be two complex lattices. Then we have the following isomorphism of abelian groups:
   $
-    f(z+ Lambda_1) = a z + Lambda_2 .
+    Phi:{a in CC | a Lambda_1 subset.eq Lambda_2} & -->^(tilde) op("Hom")_(CLieGrp)(bb(C) \/ Lambda_1, bb(C) \/ Lambda_2) \
+                                                a & arrow.long.bar (z + Lambda_1 mapsto a z + Lambda_2).
   $
-  A map $f:bb(C) \/ Lambda_1 --> bb(C) \/ Lambda_2$ is an isomorphism if and only if there exists $a in bb(C)$ such that $a Lambda_1 = Lambda_2$ and
+  And if we restrict $Phi$ to the subset of $a in CC$ such that $a Lambda_1 = Lambda_2$, we get the following bijection of sets:
   $
-    f(z+ Lambda_1) = a z + Lambda_2 .
+    {a in CC^times | a Lambda_1 = Lambda_2} & -->^(tilde) op("Iso")_(CLieGrp)(bb(C) \/ Lambda_1, bb(C) \/ Lambda_2) \
+                                          a & arrow.long.bar (z + Lambda_1 mapsto a z + Lambda_2).
   $
+  This means that a holomorphic homomorphism
+  $
+    f : bb(C) \/ Lambda_1 & arrow.r.long bb(C) \/ Lambda_2 \
+             z + Lambda_1 & arrow.r.long.bar a z + Lambda_2
+  $
+  is an isomorphism if and only if $a Lambda_1 = Lambda_2$.
+]<holomorphic-homomorphisms-between-complex-tori>
+#proof[
+  By @holomorphic-maps-between-complex-tori and @equivalent-conditions-for-holomorphic-group-homomorphisms-between-complex-tori, the map is well-defined. It is straightforward to check that the map is a group homomorphism. Since
+  $
+    ker(Phi) = {a in CC | a Lambda_1 subset.eq Lambda_2, a z in Lambda_2 "for all" z in CC} = {0},
+  $
+  the map is injective. By @holomorphic-maps-between-complex-tori, for any holomorphic homomorphism $f:z + Lambda_1 mapsto a z + Lambda_2$, we have $a Lambda_1 subset.eq Lambda_2$, which implies that the map is surjective as well. Therefore, the map is an isomorphism of abelian groups. The second statement follows from @biholomorphic-maps-between-complex-tori.
 ]
 
 #definition[Isogeny between Complex Tori][
   A nonzero holomorphic homomorphism between two complex tori is called an #strong[isogeny].
 ]
 
+#definition[Dual Isogeny][
+  Let
+  $
+    phi : bb(C) \/ Lambda_1 & --> bb(C) \/ Lambda_2 \
+               z + Lambda_1 & mapsto.long a z + Lambda_2
+  $
+  where $a in CC^times$ and $a Lambda_1 subset.eq Lambda_2$. Let
+  $
+    n = deg(phi) = [Lambda_2 : a Lambda_1].
+  $
+  Since the finite group $Lambda_2 \/ a Lambda_1$ has order $n$, it is killed by $n$. Hence
+  $
+    n Lambda_2 subset.eq a Lambda_1==> n/a Lambda_2 subset.eq Lambda_1.
+  $
+
+  The #strong[dual isogeny] of $phi$ is defined to be the holomorphic homomorphism
+  $
+    hat(phi) : bb(C) \/ Lambda_2 & --> bb(C) \/ Lambda_1 \
+                    w + Lambda_2 & mapsto.long n/a w + Lambda_1.
+  $
+]
+
 #example[Multiply-by-$N$ Map is an Isogeny][
-  Let $N$ be a postive integer. The map
+  Let $N$ be an integer. The map
   $
-    [N]:bb(C) \/ Lambda &--> bb(C) \/ Lambda \
-    z + Lambda &arrow.long.bar n z + Lambda
+    [N]:bb(C) \/ Lambda & --> bb(C) \/ Lambda \
+             z + Lambda & arrow.long.bar N z + Lambda
   $
-  is called the #strong[multiply-by-$N$ map]. Since $N Lambda subset.eq Lambda$, we see $[N]$ is an isogeny. Let $E$ denote the complex torus $bb(C) \/ Lambda$. The kernel of $[N]$ is denoted by
+  is called the #strong[multiply-by-$N$ map]. Since $N Lambda subset.eq Lambda$, we see $[N]$ is an isogeny. The kernel of $[N]$ is denoted by
   $
-    E[N] = ker [N] = {z + Lambda in bb(C) \/ Lambda | N z in Lambda} = (N^(-1) Lambda) \/ Lambda tilde.equiv ( ZZ \/ N ZZ )^(2),
+    ker [N] = {z + Lambda in bb(C) \/ Lambda | N z in Lambda} tilde.equiv ( ZZ \/ N ZZ )^(2),
   $
   where the isomorphism is given by
+  $
+    (ZZ \/ N ZZ)^(2) & -->^(tilde) ker [N] \
+           vec(x, y) & arrow.long.bar vec(display(x/ N) w_1, display(y/ N) w_2, gap: #1em) + Lambda.
+  $
+  When $N > 0$, the kernel $ker[N]$ is a finite subgroup of $bb(C) \/ Lambda$ of order $N^2$, called the $N$-torsion group of $bb(C) \/ Lambda$ and denoted by
+  $
+    (bb(C) \/ Lambda)[N]=ker[N]=(N^(-1) Lambda) \/ Lambda.
+  $
+
+  For any isogeny $phi : bb(C) \/ Lambda_1 -> bb(C) \/ Lambda_2$ of degree $n$, we have
+  $
+    hat(phi) compose phi = [n] "and" phi compose hat(phi) = [n].
+  $
+  Since
+  $
+    deg([N]) = [Lambda : N Lambda] = N^2,
+  $
+  The dual isogeny of $[N]$ is itself,
+  $
+    hat(med[N]med) = [N].
+  $
+
 ]
 
 
+
+#definition[Endomorphism Ring of Complex Torus][
+  The set of all holomorphic endomorphisms of a complex torus $bb(C) \/ Lambda$ forms a commutative ring under pointwise addition and composition, called the #strong[endomorphism ring] of $bb(C) \/ Lambda$ and denoted by
+  $
+    op("End")_(CLieGrp)(bb(C) \/ Lambda) = lr({phi : bb(C) \/ Lambda -> bb(C)\/ Lambda, z + Lambda mapsto a z + Lambda | a in CC, a Lambda subset.eq Lambda}) tilde.equiv {a in CC | a Lambda subset.eq Lambda}
+  $
+  where the isomorphism is given by @holomorphic-homomorphisms-between-complex-tori.
+]
+
+
+
+#remark[
+  It is clear that $ZZ subset.eq {a in CC | a Lambda subset.eq Lambda}$, which implies
+  $
+    {[N] mid(|) N in ZZ} subset.eq op("End")(bb(C) \/ Lambda).
+  $
+  In general, the endomorphism ring of a complex torus can be larger than $ZZ$. For example, if $Lambda = i bb(Z) xor ZZ$, then we have $i Lambda = Lambda$, which implies that $i in op("End")(bb(C) \/ Lambda)$. In fact we can show that $op("End")(bb(C) \/ Lambda) = ZZ[i]$ in this case.
+]
+
+
+#proposition[Complex Tori up to Scaling of Lattices][
+  Let $cal(L) := { Lambda subset.eq CC | Lambda "is a complex lattice" }$.
+  The group $CC^times$ acts on $cal(L)$ by
+  $
+    a dot Lambda := a Lambda.
+  $
+  Then the map
+  $
+    cal(L) & -->^(tilde) { CC \/ Lambda : Lambda in cal(L) } \
+    Lambda & arrow.long.bar CC \/ Lambda
+  $
+  induces a bijection
+  $
+    CC^times backslash cal(L) & -->^(tilde)
+                                { CC \/ Lambda : Lambda in cal(L) } \/ tilde.equiv \
+              CC^times Lambda & mapsto.long [CC \/ Lambda]_(tilde.equiv).
+  $
+]
+#proof[
+  First observe that the action of $CC^times$ on $cal(L)$ is well-defined.
+  Indeed, if
+  $
+    Lambda = omega_1 ZZ xor omega_2 ZZ
+  $
+  is a complex lattice and $a in CC^times$, then
+  $
+    a Lambda = a omega_1 ZZ xor a omega_2 ZZ
+  $
+  is again a complex lattice, because multiplication by $a$ is an
+  $RR$-linear automorphism of $CC$. Let
+  $
+    T := { CC \/ Lambda : Lambda in cal(L) } \/ tilde.equiv
+  $
+  be the set of isomorphism classes of complex tori, and define
+  $
+    F : cal(L) -> T, quad
+    Lambda arrow.long.bar [CC \/ Lambda]_(tilde.equiv).
+  $
+
+  We use the following standard group-theoretic fact: if a group $G$ acts on a
+  set $X$ and a map $F : X -> S$ satisfies
+  $
+    F(x) = F(y)
+    quad <==> quad
+    "there exists" g in G "such that" y = g x,
+  $
+  then $F$ induces a bijection
+  $
+    G backslash X -> F(X), quad
+    G x arrow.long.bar F(x).
+  $
+
+  Therefore it is enough to prove that for any
+  $Lambda_1, Lambda_2 in cal(L)$,
+  $
+    [CC \/ Lambda_1] = [CC \/ Lambda_2]
+    quad <==> quad
+    "there exists" a in CC^times "such that" Lambda_2 = a Lambda_1.
+  $
+  Suppose first that $Lambda_2 = a Lambda_1$ for some $a in CC^times$. Then by @holomorphic-homomorphisms-between-complex-tori, the map
+  $
+    f : bb(C) \/ Lambda_1 & arrow.r.long bb(C) \/ Lambda_2 \
+             z + Lambda_1 & arrow.r.long.bar a z + Lambda_2
+  $
+  is a holomorphic isomorphism and we have
+  $
+    [CC \/ Lambda_1]_(tilde.equiv) = [CC \/ Lambda_2]_(tilde.equiv).
+  $
+  Conversely, suppose $[CC \/ Lambda_1]_(tilde.equiv) = [CC \/ Lambda_2]_(tilde.equiv)$. Then there exists an isomorphism of complex Lie groups
+  $
+    f : CC \/ Lambda_1 -> CC \/ Lambda_2.
+  $
+  By @holomorphic-homomorphisms-between-complex-tori, there exists $a in CC^times$ such that $a Lambda_1 = Lambda_2$ and $f$ is given by
+  $
+    f: z + Lambda_1 arrow.long.bar a z + Lambda_2.
+  $
+  This completes the proof.
+]
+
+#example[
+  $CC^times times GL_2(RR)^+ acts negframedclat$
+][
+  Recall that we have the following bijections
+  $
+    negframedclat & tilde.equiv {(w_1, w_2) in CC^2 mid(|) w_1 "and" w_2 "are" RR"-linearly independent",med w_1/w_2 in HH} \
+                  & tilde.equiv {f in op("Iso")_(Vect(RR))(RR^2, CC) mid(|) det(f) < 0},
+  $
+  We can describe the left action of $CC^times times GL_2(RR)^+$ on $negframedclat$ in two equivalent ways:
+
+  - The group $CC^times times GL_2(RR)^+$ left acts on ${f in op("Iso")_(Vect(RR))(RR^2, CC) mid(|) det(f) < 0}$ by
+    $
+      (lambda, gamma) dot f = lambda f circle.tiny gamma^top.
+    $
+    It is straightforward to check that this action is well-defined and satisfies the group action axioms
+    $
+      (lambda_1, gamma_1) dot ((lambda_2, gamma_2) dot f) &=
+      (lambda_1, gamma_1) dot (lambda_2 f circle.tiny gamma_2^top)\
+      & = lambda_1 (lambda_2 f circle.tiny gamma_2^top) compose gamma_1^top \
+      &= lambda_1 lambda_2 f circle.tiny (gamma_1 compose gamma_2)^top \
+      &= (lambda_1 lambda_2, gamma_1 gamma_2) dot f\
+      &=((lambda_1, gamma_1) dot (lambda_2, gamma_2)) dot f
+    $
+
+  - The group $CC^times times GL_2(RR)^+$ left acts on $negframedclat$ by
+    $
+      (lambda, mat(a, b; c, d)) dot vec(w_1, w_2) = lambda mat(a, b; c, d)vec(w_1, w_2) =vec(lambda (a w_1 + b w_2), lambda (c w_1 + d w_2)).
+    $
+]<action-of-CC-times-GL2RR-on-negframedclat>
+
+
+
+#lemma[
+  Use the notation in @action-of-CC-times-GL2RR-on-negframedclat. $SL_2(ZZ) subset.eq GL_2(ZZ)^+$ acts on $negframedclat$ by
+  $
+    gamma dot vec(w_1, w_2) = gamma vec(w_1, w_2).
+  $
+  +
+    Let $Lambda in clat$ be a complex lattice and $(w_1, w_2)$, $(w_1^prime, w_2^prime)$ be two negatively oriented bases of $Lambda$. Then there exists a unique matrix $gamma in op("SL")_2(ZZ)$ such that
+    $
+      vec(w_1^prime, w_2^prime) = gamma vec(w_1, w_2).
+    $
+  + We have the following bijection
+    $
+      SL_2(ZZ) \\ negframedclat & -->^(tilde) clat \
+         SL_2(ZZ) vec(w_1, w_2) & mapsto.long w_1 ZZ plus.o w_2 ZZ.
+    $
+
+  + We have the following bijection
+    $
+      CC^times \\ negframedclat & -->^(tilde) HH \
+         CC^times vec(w_1, w_2) & mapsto.long w_1 / w_2 \
+           CC^times vec(tau, 1) & mapsfrom tau.
+    $
+
+  + We have the following bijection
+    $
+      SL_2(ZZ)\\HH & -->^(tilde) CC^times (CC^times times SL_2(ZZ)) \\ negframedclat & -->^(tilde)& CC^times \\ clat \
+      SL_2(ZZ) tau & mapsto.long (CC^times times SL_2(ZZ)) vec(tau, 1) &mapsto.long & CC^times (tau ZZ plus.o ZZ).
+    $
+]
+#proof[
+  + By @equivalent-lattice-basis-criterion, we know that there exists a matrix $gamma = mat(a, b; c, d) in op("GL")_2(ZZ)$ such that
+    $
+      vec(w_1^prime, w_2^prime) = gamma vec(w_1, w_2).
+    $
+    Since both $(w_1, w_2)$ and $(w_1^prime, w_2^prime)$ are negatively oriented, this change of basis preserves orientation. Hence $det gamma > 0$. But $gamma in op("GL")_2(ZZ)$, so $det gamma = plus.minus 1$. Therefore $det gamma = 1$, which implies $gamma in op("SL")_2(ZZ)$.
+
+    The uniqueness of $gamma$ follows from the fact that $(w_1, w_2)$ is a $ZZ$-basis of $Lambda$: each of $w_1^prime$ and $w_2^prime$ has a unique expression as a $ZZ$-linear combination of $w_1,w_2$.
+
+  + First, we claim that the map
+    $
+      Phi : op("SL")_2(ZZ) \\ negframedclat & --> clat \
+               op("SL")_2(ZZ) vec(w_1, w_2) & mapsto.long w_1 ZZ plus.o w_2 ZZ
+    $
+    is well-defined. Indeed, suppose
+    $
+      vec(u_1, u_2) = gamma vec(w_1, w_2)
+    $
+    for some $gamma = mat(a, b; c, d) in op("SL")_2(ZZ)$.
+    Then
+    $
+      u_1 = a w_1 + b w_2,
+      quad
+      u_2 = c w_1 + d w_2,
+    $
+    so
+    $
+      u_1 ZZ plus.o u_2 ZZ subset.eq w_1 ZZ plus.o w_2 ZZ.
+    $
+    Since $gamma^(-1) in op("SL")_2(ZZ)$ as well, the same argument applied to
+    $
+      vec(w_1, w_2) = gamma^(-1) vec(u_1, u_2),
+    $
+    which gives the reverse inclusion
+    $
+      w_1 ZZ plus.o w_2 ZZ subset.eq u_1 ZZ plus.o u_2 ZZ.
+    $
+    Therefore
+    $
+      u_1 ZZ plus.o u_2 ZZ = w_1 ZZ plus.o w_2 ZZ.
+    $
+    Hence $Phi$ is independent of the choice of representative of the orbit.
+
+    Next, we show that $Phi$ is surjective. Let $Lambda in clat$. Choose any ordered
+    $ZZ$-basis $(v_1,v_2)$ of $Lambda$. If $(v_1,v_2)$ is negatively oriented,
+    we are done. If it is positively oriented, then $(v_2,v_1)$ is negatively oriented. Thus every complex lattice admits a negatively oriented basis, and
+    therefore lies in the image of $Phi$.
+
+    Finally, we show that $Phi$ is injective. Suppose
+    $
+      Phi(op("SL")_2(ZZ) vec(w_1, w_2))
+      =
+      Phi(op("SL")_2(ZZ) vec(w_1^prime, w_2^prime)).
+    $
+    Then we have
+    $
+      w_1 ZZ plus.o w_2 ZZ = w_1^prime ZZ plus.o w_2^prime ZZ,
+    $
+    that is, $(w_1,w_2)$ and $(w_1^prime,w_2^prime)$ are two negatively oriented
+    bases of the same complex lattice. By the first part of the lemma, there
+    exists $gamma in op("SL")_2(ZZ)$ such that
+    $
+      vec(w_1^prime, w_2^prime) = gamma vec(w_1, w_2).
+    $
+    Thus the two framed lattices lie in the same $op("SL")_2(ZZ)$-orbit.
+    Hence $Phi$ is injective. So we conclude that $Phi$ is a bijection.
+
+  + First, we claim that the map
+    $
+      Psi : CC^times \\ negframedclat & --> HH \
+               CC^times vec(w_1, w_2) & mapsto.long w_1 / w_2
+    $
+    is well-defined. Indeed, if
+    $
+      vec(u_1, u_2) = lambda vec(w_1, w_2)
+    $
+    for some $lambda in CC^times$, then $u_1 / u_2 = w_1 / w_2$. Hence $Psi$ is independent of the choice of representative of the orbit.
+
+    Now, define
+    $
+      Theta: HH & -->^(tilde) CC^times \\ negframedclat \
+            tau & mapsto.long CC^times vec(tau, 1).
+    $
+    Since $tau / 1 in HH$, we see $(tau, 1)$ is a negatively oriented basis of a complex lattice and the map is well-defined. It is straightforward to check that $Psi circle.tiny Theta = id$ and $Theta circle.tiny Psi = id$, which implies that $Psi$ is a bijection.
+
+  + First, note that $(CC^times times SL_2(ZZ))\/CC^times tilde.equiv SL_2(ZZ)$. By (iii) we have
+    $
+      (CC^times times SL_2(ZZ)) \\ negframedclat tilde.equiv ((CC^times times SL_2(ZZ))\/CC^times ) \\ (CC^times \\ negframedclat) tilde.equiv SL_2(ZZ) \\ HH.
+    $
+    Note $(CC^times times SL_2(ZZ))\/SL_2(ZZ) tilde.equiv CC^times$. By (ii) we have
+    $
+      (CC^times times SL_2(ZZ)) \\ negframedclat tilde.equiv ((CC^times times SL_2(ZZ))\/SL_2(ZZ)) \\ (SL_2(ZZ) \\ negframedclat) tilde.equiv CC^times \\ clat.
+    $
+
+
+    Tracing through the bijections gives the desired result.
+]
+
+
+
+// #proposition[Classification of Complex Tori up to Isomorphism][
+//   Let $cal(T)$ be the set of isomorphism classes of complex tori. Then there is a natural bijection between $cal(T)$ and the orbit space $op("SL")_2(bb(Z)) \\ bb(H)$, i.e.,
+//   $
+//     cal(T) tilde.equiv op("SL")_2(bb(Z)) \\ bb(H) .
+//   $
+// ]
+
+// #proof[
+//   By the corollary of holomorphic maps (which we will prove shortly), two complex tori $bb(C)\/Lambda_1$ and $bb(C)\/Lambda_2$ are biholomorphic (isomorphic) if and only if their corresponding lattices are homothetic, meaning $Lambda_2 = a Lambda_1$ for some $a in bb(C)^times$.
+
+//   Given any complex lattice $Lambda = w_1 bb(Z) xor w_2 bb(Z)$ with a positively oriented basis such that $tau = w_2 \/ w_1 in bb(H)$, we can multiply the lattice by the complex scalar $w_1^(-1)$. This yields a homothetic lattice:
+//   $
+//     Lambda_tau = w_1^(-1) Lambda = bb(Z) xor tau bb(Z).
+//   $
+//   Thus, every complex torus is isomorphic to $bb(C)\/Lambda_tau$ for some $tau in bb(H)$.
+
+//   Furthermore, two such lattices $Lambda_tau$ and $Lambda_(tau^prime)$ are homothetic if and only if their generating bases are related by a change of basis matrix $M = mat(a, b; c, d) in op("GL")_2(bb(Z))$. To preserve the positive orientation (i.e., keeping both $tau, tau^prime in bb(H)$), we must restrict to matrices with positive determinant, hence $M in op("SL")_2(bb(Z))$. Under this change of basis, the parameter $tau$ transforms via fractional linear transformation:
+//   $
+//     tau^prime = (a tau + b) \/ (c tau + d).
+//   $
+//   Therefore, the isomorphism classes of complex tori are exactly parameterized by the quotient space of $bb(H)$ under the action of the modular group $op("SL")_2(bb(Z))$.
+// ]
