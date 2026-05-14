@@ -9,7 +9,6 @@
 // Overwrite the default definition
 #let hatCC = $hat(CC, size: #1.00001em)$
 
-#let mapsfrom = $arrow.l.bar.long$
 #let clat = math.op($cal(L)$)  // the set of all complex lattices
 #let framedclat = math.op($clat^(zws^(display(corner.l.b)))$)
 
@@ -17,23 +16,15 @@
 
 #let posframedclat = math.op($clat^(zws^(display(corner.l.b)))_(+)$)
 
-// define commutative diagram
-#let commutative_diagram(math_content) = align(center)[
-  #diagram(label-size: 0.8em, math_content)
-  #v(1em, weak: true)
-]
 
 
-= Basic Concepts <basic-concepts>
-
-
-== Complex Manifold <complex-manifold>
-=== Complex Structure <holomorphic-atlas>
+= Complex Manifolds <complex-manifold>
+== Complex Structure <holomorphic-atlas>
 
 #definition[Holomorphic Chart][
   A #strong[holomorphic chart] on a topological manifold $X$ is a homeomorphism $phi : U arrow.r V subset.eq bb(C)^n$ where $U$ is
   an open subset of $X$, denoted by $lr((U , phi))$.
-]
+]<holomorphic-chart>
 We say that a chart $lr((U , phi))$ for a Riemann surface $X$ is #strong[centered at $x$] if $phi lr((x)) = 0$.
 
 #definition[Compatible Holomorphic Atlas][
@@ -54,6 +45,7 @@ We say that a chart $lr((U , phi))$ for a Riemann surface $X$ is #strong[centere
 ]
 #remark[
   If we say $X$ is a complex manifold with compatible atlas $Sigma = lr({lr((U_i , phi_i))})$, what we mean is that $X$ is a complex manifold with the maximal compatible atlas $overline(Sigma)$ that contains $Sigma$.
+
 ]
 #definition[Holomorphic Map][
   A map $f : X arrow.r Y$ between two complex manifolds is #strong[holomorphic at $x in X$] if there exists a holomorphic
@@ -65,15 +57,366 @@ We say $f$ is #strong[holomorphic] if it is holomorphic at every point of $X$.
   A holomorphic map $f : X arrow.r Y$ is called an #strong[biholomorphism] or (#strong[isomorphism]) if $f$ is bijective.
   In this case, $f^(- 1)$ is also holomorphic and we say $X$ and $Y$ are #strong[biholomorphic] or (#strong[isomorphic]).
 ]
+
+== Almost Complex Structure
+
 #definition[Linear Complex Structure][
   A #strong[linear complex structure] on a $bb(R)$-vector space $V$ is a $bb(R)$-linear transformation $J : V arrow.r V$ such
   that $J^2 = - upright(i d)_V$.
 ]
-#definition[Almost Complex Structure][
-  Let $M$ be a smooth manifold. An almost complex structure on $M$ is a smooth $lr((1 , 1))$-tensor field $J in Gamma lr((T^(lr((1 , 1))) M))$.
+#remark[
+  Given a commutative ring $R$ and a unital $R$-algebra $A$, a $R$-linear representation of $A$ on an $R$-module $M$ is a unital $R$-algebra homomorphism
+  $
+    rho : A --> op("End")_(Mod(R)) (M).
+  $
+  A linear complex structure on a $bb(R)$-vector space $V$ is precisely a $bb(R)$-linear representation of the $bb(R)$-algebra $bb(C)$ on $V$.
+
+  Given a linear complex structure $J$ on a $bb(R)$-vector space $V$, we can define a $bb(R)$-linear representation of $bb(C)$ on $V$ as follows
+  $
+    rho : CC & --> op("End")_(Vect(RR)) (V) \
+     a + i b & mapsto.long a id_V + b J
+  $
+  And we can check that $rho$ is indeed a unital $bb(R)$-algebra homomorphism
+  $
+    rho((a + i b)(c + i d)) & = rho((a c - b d) + i(a d + b c)) \
+                            & = (a c - b d) id_V + (a d + b c) J \
+                            & = (a id_V + b J) compose (c id_V + d J) \
+                            & = rho(a + i b) compose rho(c + i d).
+  $
+
+  Conversely, given a $bb(R)$-linear representation $rho : bb(C) -> op("End")_(Vect(RR)) (V)$, we can define a linear complex structure on $V$ by setting $J := rho(i)$. Then we can check that
+  $
+    J^2 = rho(i)^2 = rho(i^2) = rho(-1) = - id_V.
+  $
+]
+Indeed, the follow objects can be identified with each other:
++ A $CC$-linear space structure on a $bb(R)$-vector space $V$ extending the original $bb(R)$-vector space structure on $V$.
+
++ A ring homomorphism $rho : CC -> op("End")_(Ab) (V)$ such that the following diagram commutes
+  #commutative_diagram({
+    node((0, 0), $CC$)
+    node((2, 0), $op("End")_(Ab) (V)$)
+    node((1, 1), $RR$)
+    edge((0, 0), (2, 0), $rho$, label-side: left, "->")
+    edge((1, 1), (0, 0), $subset.eq$, label-side: left, "->")
+    edge((1, 1), (2, 0), label-side: right, "->")
+  })
+
++ A unital $R$-algebra homomorphism $rho : CC ->op("End")_(Vect(RR)) (V)$.
+
++ A linear complex structure $J : V -> V$ on $V$.
+
+So this naturally leads to the following definition.
+
+#definition[Complex Vector Space Structure Induced by a Linear Complex Structure][
+  Let $V$ be a $bb(R)$-vector space and let $J : V arrow.r V$ be a linear complex structure on $V$. Then we can define a $bb(C)$-vector space structure on $V$ as follows
+  $
+    (a + i b) dot v := a v + b J v, quad
+    forall a, b in bb(R), v in V.
+  $
+  We call this the #strong[complex vector space structure induced by $J$] on $V$. And we denote the resulting $bb(C)$-vector space by $V_J$.
+]
+#remark[
+  We need to check that the above definition indeed gives a $CC$-vector space structure on $V$. Since $V$ is already an $RR$-vector space, the additive abelian group structure on $V$ is already given.
+  Let
+  $
+    lambda = a + i b,
+    quad
+    mu = c + i d,
+  $
+  with $a,b,c,d in RR$, and let $v,w in V$.
+
+  + scalar multiplication is additive in the scalar:
+    $
+      ((lambda + mu) dot v)
+      =
+      ((a+c) + i(b+d)) dot v
+      =
+      (a+c)v + (b+d)J v
+    $
+    $
+      =
+      a v + c v + b J v + d J v
+      =
+      (a v + b J v) + (c v + d J v)
+      =
+      lambda dot v + mu dot v.
+    $
+
+  + scalar multiplication is additive in the vector:
+    $
+        & lambda dot (v+w)
+          =
+          a(v+w) + b J(v+w)
+          =
+          a v + a w + b J v + b J w \
+      = & (a v + b J v) + (a w + b J w)
+          =
+          lambda dot v + lambda dot w.
+    $
+
+  + scalar multiplication is associative:
+    $
+      lambda dot (mu dot v) & =
+                              (a+i b) dot (c v + d J v) \
+                            & =
+                              a(c v+d J v) + b J(c v+d J v) \
+                            & =a(c v+d J v) +b (c J v + d J^2 v) \
+                            & = a(c v+d J v) +b (c J v - d v) \
+                            & = (a c - b d) v + (a d + b c) J v \
+                            & =((a c-b d) + i(a d+b c)) dot v \
+                            & =((a+i b)(c+i d)) dot v \
+                            & =(lambda mu) dot v
+    $
+
+
+  + the scalar $1 in CC$ acts as the identity:
+    $
+      1 dot v
+      =
+      (1 + i 0) dot v
+      =
+      1v + 0 J v
+      =
+      v.
+    $
 ]
 
-=== Complexified Tangent Bundle <complex-tangent-bundle>
+#proposition[
+  Suppose $V$ is a $n$-dimensional $bb(R)$-vector space with $n in ZZ_(>=0)$.
+
+  + If $V$ admits a linear complex structure, then $n$ is even and we have $dim_CC V_J = n/2$.
+
+  + If $n$ is even, then $V$ admits a linear complex structure.
+]
+
+#definition[Complexification of a Real Vector Space][
+  Let $V$ be a $RR$-vector space. The *complexification* of $V$ is the $CC$-vector space
+  $
+    V^CC := V times.o_RR CC.
+  $
+]
+#remark[
+  Since we have the $RR$-linear isomorphism
+  $
+       V^CC = V times.o_RR CC & -->^(tilde) V plus.o V \
+          v times.o (a + i b) & mapsto.long ( a v, b v) \
+    x times.o 1 + y times.o i & mapsfrom (x, y)
+  $
+  we can identify $V^CC$ with $V plus.o V$. And we can express the any element in $V^CC$ uniquely in the form
+  $
+    v times.o 1 + w times.o i
+  $
+  with $v,w in V$.
+]
+
+If $V$ is a $RR$-vector space equipped with a linear complex structure $J$. $J$ can be extended to a $CC$-linear transformation on $V^CC$ by defining
+$
+  J^CC := J times.o_RR id_CC : V^CC & --> V^CC, \
+                   v times.o lambda & mapsto.long J v times.o lambda.
+$
+The eigenvalues of $J^CC$ are $i$ and $-i$. So we have the eigenspace decomposition
+$
+  V^CC = V^+ plus.o V^-,
+$
+where
+$
+  V^+ := ker(J^CC - i id_(V^CC)) = {v times.o 1 - J v times.o i in V^CC mid(|) v in V}
+$
+is the eigenspace of $J^CC$ corresponding to the eigenvalue $i$, and
+$
+  V^- := ker(J^CC + i id_(V^CC))= {v times.o 1 + J v times.o i in V^CC mid(|) v in V}
+$
+is the eigenspace of $J^CC$ corresponding to the eigenvalue $-i$.
+
+
+
+
+
+#proposition[
+  Let $V$ be an $bb(R)$-vector space with a linear complex structure $J: V -> V$. Then the $CC$-vector space $V_J$ is isomorphic to the eigenspace $V^+$ via the map
+  $
+    Phi^+ : V_J & -->^(tilde) V^+, \
+              v & mapsto.long v times.o 1 - J v times.o i.
+  $
+]
+
+#proof[
+  + Well-definedness. We check that $Phi^+(v)$ really lies in $V^+$. We compute
+    $
+      J^bb(C)(v times.o 1 - J v times.o i) & = J v times.o 1 - J^2 v times.o i \
+                                           & = J v times.o 1 + v times.o i \
+                                           & = i (v times.o 1 - J v times.o i).
+    $
+    This means $Phi^+(v) =v times.o 1 - J v times.o i in V^+$.
+
+  + $bb(C)$-linearity. We show that $Phi^+$ is $bb(C)$-linear. Since $Phi^+$ is clearly $bb(R)$-linear, it is enough to check compatibility with multiplication by $i$.
+    $
+      Phi^+(i dot v) = Phi^+(J v) =
+      J v times.o 1 - J^2 v times.o i =
+      J v times.o 1 + v times.o i = i(v times.o 1 - J v times.o i) = i Phi^+(v).
+    $
+
+  + Injectivity. If there exists $v in V$ such that $Phi^+(v)=0$, then
+    $
+      v times.o 1 - J v times.o i = 0 ==> v times.o 1 = J v times.o i.
+    $
+    Through the $RR$-linear isomorphism
+    $
+      V^CC = V times.o_RR CC & -->^(tilde) V plus.o V \
+         v times.o (a + i b) & mapsto.long ( a v, b v)
+    $
+    we have
+    $
+      (v, 0)=(0 ,J v)
+    $
+    in $V plus.o V$. Hence $v=0$.
+    Thus $ker Phi^+ = {0}$ and accordingly $Phi^+$ is injective.
+
+  + Surjectivity. Suppose $v times.o 1 + w times.o i$ is an element in $V^+$ with $v, w in V$. Then we have
+    $
+      J^CC (v times.o 1 + w times.o i)=J v times.o 1 + J w times.o i=i (v times.o 1 + w times.o i) ,
+    $
+    which implies
+    $
+      (J v + w) times.o 1 + (J w - v) times.o i = 0.
+    $
+    Through the $RR$-linear isomorphism, we have $J v + w = 0$ and $J w - v = 0$. Hence $w = -J v$. We can check
+    $
+      Phi^+(v) = v times.o 1 - J v times.o i = v times.o 1 + w times.o i.
+    $
+    This shows $Phi^+$ is surjective.
+
+  Thus $Phi^+ : V_J -> V^+$ is a $bb(C)$-linear isomorphism.
+]
+
+#definition[Complex Linear Map between Real Vector Spaces with Linear Complex Structures][
+  Let $V, W$ be $bb(R)$-vector spaces equipped with linear complex structures $J_V : V -> V$ and $J_W : W -> W$. A $bb(R)$-linear map $f : V -> W$ is called #strong[complex-linear] if the following diagram commutes #h(1fr)
+  #commutative_diagram({
+    node((0, 0), $V$)
+    node((1, 0), $V$)
+    node((0, 1), $W$)
+    node((1, 1), $W$)
+    edge((0, 0), (1, 0), $J_V$, label-side: left, "->")
+    edge((0, 1), (1, 1), $J_W$, label-side: right, "->")
+    edge((0, 0), (0, 1), $f$, label-side: right, "->")
+    edge((1, 0), (1, 1), $f$, label-side: left, "->")
+  })
+  namely
+  $
+    f compose J_V = J_W compose f.
+  $
+]
+
+#definition[Almost Complex Structure][
+  Let $M$ be a smooth manifold. An almost complex structure on $M$ is a smooth bundle endomorphism
+  $
+    J : T M --> T M
+  $
+  such that
+  $
+    J^2 = - id_(T M).
+  $
+]
+#remark[
+  Equivalently, an almost complex structure on $M$ is a smooth $lr((1 , 1))$-tensor field $J in Gamma lr((T^(lr((1 , 1))) M))$ such that
+  $
+    J^2 = - upright(i d)_(T M).
+  $
+]
+
+#example[Standard Almost Complex Structure][
+  The smooth manifold $CC^n$ has a smooth atlas given by a single chart
+  $
+    phi: CC^n --> RR^(2 n), \
+    (x^1 + i y^1, ..., x^n + i y^n) mapsto.long (x^1, y^1, ..., x^n, y^n).
+  $
+  For any $p in CC^n$, the natural basis of tangent space $(T CC^n)_p$ under the chart $(CC^n, phi)$ is
+  $
+    evaluated(frac(partial, partial x^1))_p, evaluated(frac(partial, partial y^1))_p, dots.c, evaluated(frac(partial, partial x^n))_p, evaluated(frac(partial, partial y^n))_p,
+  $
+  which can expressed explicitly as follows
+  $
+    evaluated(frac(partial(dot.c compose phi^(-1)), partial x^1))_(phi(p)), evaluated(frac(partial(dot.c compose phi^(-1)), partial y^1))_(phi(p)), dots.c, evaluated(frac(partial(dot.c compose phi^(-1)), partial x^n))_(phi(p)), evaluated(frac(partial(dot.c compose phi^(-1)), partial y^n))_(phi(p)).
+  $
+
+
+  Then $CC^n$ has an almost complex structure $J_(op("std")): T CC^n -> T CC^n$ given by
+  $
+    J_(op("std")) (p,evaluated(frac(partial, partial x^j))_p) = evaluated(frac(partial, partial y^j))_p,
+    quad
+    J_(op("std")) (p,evaluated(frac(partial, partial y^j))_p) = - evaluated(frac(partial, partial x^j))_p.
+  $
+  Under the natural basis of $T CC^n$, the matrix representation of $J_(op("std"))$ is
+  $
+    M_(J_(op("std"))) = mat(
+      0, 1, 0, 0, dots.c, 0, 0;
+      -1, 0, 0, 0, dots.c, 0, 0;
+      0, 0, 0, 1, dots.c, 0, 0;
+      0, 0, -1, 0, dots.c, 0, 0;
+      dots.v, dots.v, dots.v, dots.v, , dots.v, dots.v;
+      0, 0, 0, 0, dots.c, 0, 1;
+      0, 0, 0, 0, dots.c, -1, 0
+    )
+  $
+  It is straightforward to check that $M_(J_(op("std")))^2 = - I_(2 n)$, so $J_(op("std"))^2 = - id_(T CC^n)$. We call $J_(op("std"))$ the #strong[standard almost complex structure] on $CC^n$.
+]<standard-almost-complex-structure>
+
+
+#proposition[
+  Holomorphic Maps Have Complex-Linear Real Differentials
+][
+  Let
+  $Omega subset.eq CC^n$ be an open subset and let
+  $ Phi : Omega arrow.r CC^m $ be a holomorphic map. Regard $Omega$ and
+  $CC^m$ as real smooth manifolds. Let
+  $ J_n : T^(RR) CC^n arrow.r T^(RR) CC^n\,#h(2em) J_m : T^(RR) CC^m arrow.r T^(RR) CC^m $
+  be the #link(<standard-almost-complex-structure>)[standard almost complex structures]. Then,
+  for every $a in Omega$,
+  $ upright(d) Phi_a compose (J_n)zwj_a = (J_m)zwj_(Phi(a)) compose upright(d) Phi_a . $
+  Equivalently, the real differential
+  $ upright(d) Phi_a : T_a^(RR) CC^n arrow.r T_(Phi\(a\))^(RR) CC^m $
+  is complex linear.
+]
+
+
+Let $X$ be a complex manifold. As a smooth manifold, the tangent space of $X$ at $p$ is denoted by $T^RR_p X$. If $lr((U , bold(z)))$ is a holomorphic chart around $p$. Define the $j$-th projection map
+$
+  op("pr")_j : CC^n --> CC, \
+  (z^1, ..., z^n) mapsto.long z^j.
+$
+and $z^j:=op("pr")_j compose bold(z)$. Then the coordinate functions of $bold(z)$ are denoted by
+$
+  x^j := op("Re")(z^j), quad y^j := op("Im")(z^j).
+$
+And the natural basis of $T^RR_p X$ under the chart $lr((U , bold(z)))$ is denoted by
+$
+  evaluated(frac(partial, partial x^1))_p, evaluated(frac(partial, partial y^1))_p, dots.c med, evaluated(frac(partial, partial x^n))_p, evaluated(frac(partial, partial y^n))_p.
+$
+
+#definition[Induced Almost Complex Structure][
+  Let $X$ be a complex manifold. For each $p in X$, fix a holomorphic chart $lr((U ,upright(bold(z))))$ around $p$, we can define a linear complex structure $J_p^((upright(bold(z))))$ on the tangent space $T_p^RR X$ as follows
+  $
+        J_p^((upright(bold(z)))) : T_p^RR X & --> T_p^RR X \
+    evaluated(frac(partial, partial x^j))_p & mapsto.long evaluated(frac(partial, partial y^j))_p \
+    evaluated(frac(partial, partial y^j))_p & mapsto.long - (evaluated(frac(partial, partial x^j))_p).
+  $
+  Indeed, we can prove that the definition of $J_p^((upright(bold(z))))$ does not depend on the choice of the holomorphic chart $(U , upright(bold(z))))$ around $p$. Hence, we can simply denote it by $J_p$. By varying $p$, we get a smooth bundle endomorphism
+  $
+    J : T^RR X & --> T^RR X \
+        (p, v) & mapsto.long (p, J_p v)
+  $
+  which satisfies $J^2 = - id_(T^RR X)$. Hence $J$ is an almost complex structure on the smooth manifold $X$. We call $J$ the #strong[almost complex structure induced by the complex manifold structure] on $X$.
+]
+#remark[
+  If $(U, upright(bold(z)))$ and $(V, upright(bold(w)))$ are two holomorphic charts around $p$, we need to check that $J_p^((upright(bold(z))))=J_p^((upright(bold(w))))$ coincide. Let
+  $
+    Phi:= upright(bold(w)) compose upright(bold(z))^(-1) : upright(bold(z))(U inter V) --> upright(bold(w))(U inter V)
+  $
+  be the transition map.
+]
+
+== Complex Vector Bundle
 
 #definition[Local Trivializing Atlas][
   Let $X, E$ be topological spaces, and let $pi : E -> X$ be a continuous surjection. Suppose that for each $x in X$, the fiber $pi^(-1)(x)$ is equipped with a $CC$-vector space structure.
@@ -114,7 +457,7 @@ We say $f$ is #strong[holomorphic] if it is holomorphic at every point of $X$.
 
   + a continuous surjection
     $
-      pi : E -> X
+      pi : E --> X
     $
 
   + for each $x in X$, a $CC$-vector space structure on the fiber $pi^(-1)(x)$
@@ -151,7 +494,9 @@ We say $f$ is #strong[holomorphic] if it is holomorphic at every point of $X$.
   $
   It preserves the base coordinate and restricts
   on each slice ${x} times CC^k$ to the $CC$-linear automorphism
-  $id_{x} times g_(i j)(x): {x} times CC^k -> {x} times CC^k$.
+  $
+    id_{x} times g_(i j)(x): {x} times CC^k -> {x} times CC^k.
+  $
 ]<transition-functions-of-complex-vector-bundle>
 #remark[
   Note $pi^(-1)(U_i inter U_j)=pi^(-1)(U_i) inter pi^(-1)(U_j)$. For any $x in U_i inter U_j$ and $v in CC^k$, we see $pi(phi_i^(-1)(x,v))=op("pr")_1(x,v)=x in U_i inter U_j$, which implies $phi_i^(-1)(x,v) in pi^(-1)(U_i inter U_j)subset.eq pi^(-1)(U_j)$. So the composition $phi_j ∘ phi_i^(-1)$ is well-defined on $(U_i inter U_j) times CC^k$.
@@ -187,20 +532,7 @@ We say $f$ is #strong[holomorphic] if it is holomorphic at every point of $X$.
 
   Such maps $phi_alpha$ are called #strong[holomorphic local trivializations].
 ]
-// #definition[Holomorphic Vector Bundle][
-//   A complex vector bundle $p:E->X$ is called a #strong[holomorphic vector bundle] if $X$ is a complex manifold and the local trivialization maps
-//   $ phi_alpha : p^(-1)(U_alpha) & --> U_alpha times CC^k $ are biholomorphic maps.
-// ]
-// #remark[
-//   This definition is equivalent to requiring that all the transition maps
-//   $
-//     t_(alpha, beta) : U_alpha inter U_beta & --> op("GL")_k (CC)
-//   $
-//   are holomorphic.
 
-//   If not specified, the topological space $E$ is always regarded to be a complex manifold with the holomorphic atlas ${(U_alpha , phi_alpha)}$.
-// ]
-//
 #proposition[Holomorphic Vector Bundle Criterion by Transition Functions][
   Let $X$ be a complex manifold, and let $pi : E -> X$
   be a complex vector bundle of rank $k$. Suppose ${(U_i, phi_i)}zwj_(i in I)$ is a local trivializing atlas for $pi : E -> X$. Then the following are equivalent:
@@ -336,8 +668,316 @@ We say $f$ is #strong[holomorphic] if it is holomorphic at every point of $X$.
 ]
 
 #definition[Holomorphic Sections of a Holomorphic Vector Bundle][
-  Let $p:E->X$ be a holomorphic vector bundle over a complex manifold $X$ and $U subset.eq X$ be an open subset. A section $sigma : U -> E$ is called #strong[holomorphic] if it is a holomorphic map.
+  Let $pi:E->X$ be a holomorphic vector bundle over a complex manifold $X$ and $U subset.eq X$ be an open subset. A section $sigma : U -> E$ is called #strong[holomorphic] if it is a holomorphic map.
 ]<holomorphic-section-of-holomorphic-vector-bundle>
+
+#definition[Sheaf of Holomorphic Sections of a Holomorphic Vector Bundle][
+  Let $pi : E -> X$ be a holomorphic vector bundle over a complex manifold $X$.
+  The #strong[sheaf of holomorphic sections] of $pi$ is the sheaf
+  $
+    cal(E)= Gamma_("hol")(-, E)
+  $
+  on $X$ defined as follows
+
+  #functor_diagram(
+    F: $cal(E)$,
+    C: $sans("Open")_X^(op("op"))$,
+    D: $Ab$,
+    g: $iota^(op("op"))$,
+    X: $V$,
+    Y: $U$,
+    Fg: $res(V, U)$,
+    FX: $cal(E)(V):=
+    { sigma : V -> E "holomorphic" mid(|)
+      pi compose sigma = id_V
+    }$,
+    FY: $cal(E)(U):={ sigma : U -> E "holomorphic" mid(|)
+      pi compose sigma = id_U
+    }$,
+  )
+  If $U subset.eq V$ are open subsets of $X$, the restriction map is given by
+  $
+    res(V, U) : cal(E)(V) & --> cal(E)(U), \
+                    sigma & mapsto.long sigma|_U.
+  $
+  For each open subset $U subset.eq X$, we can define the $cal(O)_X (U)$-module structure on $cal(E)(U)$ as follows
+  $
+    cal(O)_X (U) times cal(E)(U) & --> cal(E)(U) \
+                      (f, sigma) & mapsto.long f sigma,
+  $
+  where $f sigma$ is the section defined by
+  $
+    (f sigma)(x) := f(x) sigma(x), quad forall x in U.
+  $
+  This makes $cal(E)$ a sheaf of $cal(O)_X$-modules.
+]<sheaf-of-holomorphic-sections-of-holomorphic-vector-bundle>
+
+
+#definition[Group Action on Complex Manifold by Biholomorphisms][
+  Let $G$ be a group and $X$ be a complex manifold. A #strong[group action of $G$ on $X$ by biholomorphisms] is a group homomorphism
+  $
+    rho : G --> op("Aut")_(CMan)(X)
+  $
+  from $G$ to the group of biholomorphisms of $X$. In other words, for each $g in G$, the map
+  $
+    rho(g) : X & --> X \
+             x & mapsto.long g dot x :=rho(g)(x)
+  $
+  is a biholomorphism.
+]
+
+#proposition[Quotients by Hausdorff Even Biholomorphic Actions][
+  Let $G$ be a discrete group acting by biholomorphisms on a complex manifold
+  $X$. Let
+  $
+    pi : X --> G backslash X
+  $
+  be the quotient map. Suppose that the action is Hausdorff even. Then:
+
+  + There is a unique complex manifold structure on $G backslash X$ such that
+    $pi : X -> G backslash X$ is locally biholomorphic.
+
+  + If $Y$ is a complex manifold and $F : X -> Y$ is a holomorphic map which is
+    $G$-invariant, i.e.
+    $
+      F(g dot x) = F(x),
+      quad forall g in G, x in X,
+    $
+    then there exists a unique holomorphic map
+    $
+      overline(F) : G backslash X -> Y
+    $
+    such that the following diagram commutes
+    #commutative_diagram({
+      node((0, 0), $X$)
+      node((1, 0), $Y$)
+      node((0, 1), $G\\X$)
+      edge((0, 0), (1, 0), $F$, label-side: left, "->")
+      edge((0, 0), (0, 1), $pi$, label-side: right, "->")
+      edge((0, 1), (1, 0), $overline(F)$, label-side: right, "-->")
+    })
+]<quotients-by-Hausdorff-even-biholomorphic-actions>
+#proof[
+  Let $n = dim_(CC) X$.
+
+  + #strong[Topology part.]
+
+    // Since every element of $G$ acts by a biholomorphism, every element of $G$ acts
+    // by a homeomorphism of $X$.
+
+    First, we know the quotient map $pi: X -> G \\ X$ is a covering map. Now we show that $G \\ X$, with its quotient topology, is a topological manifold. Since covering maps are local homeomorphisms and local homeomorphisms preserve local topological properties, $G \\ X$ is also locally Euclidean of dimension $2 n$. The action is Hausdorff even implies $G \\ X$ is Hausdorff. Since covering maps are open maps, and open maps preserve second-countability, $G \\ X$ is second-countable.Therefore, $G \\ X$ is a topological manifold of real dimension $2n$.
+
+    #strong[
+      #set par(first-line-indent: 0pt)
+      Holomorphic atlas part.
+    ]
+
+    We now construct a holomorphic atlas on $G backslash X$. For each $G x in G \\ X$, there exists an open neighborhood $U_1$ of $x$ in $X$ such that $evaluated(pi)_(U_1) : U_1 -> pi(U_1)$ is a homeomorphism. Also, there exists an open neighborhood $U_2$ of $x$ in $X$ such that $phi: U_2 -> CC^n$ is a holomorphic chart. Let $U = U_1 inter U_2$. Then
+    $
+      overline(phi)_U:=phi|_U compose (evaluated(pi)_(U))^(-1) : pi(U) --> CC^n
+    $
+    is a holomorphic chart on $G \\ X$ around $G x$. For each $G x in G \\ X$, we can choose such a chart, and let $Sigma$ be the collection of all such charts. We claim that $Sigma$ is a compatible holomorphic atlas on $G backslash X$.
+
+    We check that the charts in $Sigma$ are holomorphically compatible. Let
+    $
+      (pi(U), overline(phi)_U)
+      quad "and" quad
+      (pi(V), overline(phi)_V)
+    $
+    be two charts in $Sigma$ such that $pi(U) inter pi(V) != emptyset$. The transition map is
+    $
+      overline(phi)_U circle.stroked.tiny overline(phi)_V^(-1)
+      :
+      overline(phi)_V (pi(U) inter pi(V))
+      -->
+      overline(phi)_U (pi(U) inter pi(V)).
+    $
+
+    We claim that the domain is covered by the open subsets ${phi_V (V inter g^(-1)U) : g in G}$ and we have
+    $
+      overline(phi)_V (pi(U) inter pi(V))
+      =
+      union.big_(g in G) phi_V (V inter g^(-1)U).
+    $
+    Indeed, because $g$ acts by biholomorphisms, $g^(-1)U$ is open in $X$. Thus, $V inter g^(-1)U$ is open in $V$. Since $phi_V$ is a homeomorphism, $phi_V (V inter g^(-1)U)$ is an open subset of $CC^n$. And we can verify that these open subsets cover the domain as follows.
+
+    - $phi_V (V inter g^(-1)U) subset.eq overline(phi)_V (pi(U) inter pi(V))$. For any $v in V inter g^(-1)U$, we have $g v in U$, so $pi(v)=pi(g v) in pi(U) inter pi(V)$. Hence
+      $
+        phi_V (v) = overline(phi)_V (pi(v)) in overline(phi)_V (pi(U) inter pi(V)).
+      $
+
+    - $overline(phi)_V (pi(U) inter pi(V)) subset.eq union_(g in G) phi_V (V inter g^(-1)U)$. If $pi(v) in pi(U) inter pi(V)$ with $v in V$, then there exists $u in U$ such that $pi(u)=pi(v)$. Hence $u=g v$ for some $g in G$, which implies
+      $
+        v in V inter g^(-1)U.
+      $
+      Hence
+      $
+        overline(phi)_V (pi(v)) = phi_V (v) in phi_V (V inter g^(-1)U).
+      $
+
+    Now, we evaluate the transition map on this specific open subset $phi_V (V inter g^(-1)U)$. For any $v in V inter g^(-1)U$, we have $g v in U$, and
+    $
+      (overline(phi)_U compose overline(phi)_V^(-1)) (phi_V (v))
+      =
+      overline(phi)_U compose evaluated(pi)_V compose (evaluated(phi)_V)^(-1) compose phi_V (v)
+      =
+      overline(phi)_U (pi(v))
+      =
+      overline(phi)_U (pi(g v))
+      =
+      phi_U (g v).
+    $
+    So by restricting the transition map to $phi_V (V inter g^(-1)U)$, we have
+    $
+      overline(phi)_U circle.stroked.tiny overline(phi)_V^(-1)
+      =
+      phi_U circle.stroked.tiny alpha_g circle.stroked.tiny phi_V^(-1),
+    $
+    where $alpha_g : X -> X$ is a biholomorphism. By definition of biholomorphism, $phi_U circle.stroked.tiny alpha_g circle.stroked.tiny phi_V^(-1)$ is holomorphic. Thus all transition maps between charts in $Sigma$ are holomorphic, and $Sigma$ is a compatible holomorphic atlas on $G backslash X$. Let $overline(Sigma)$ be its maximal compatible holomorphic extension. With this maximal atlas, $G backslash X$ becomes a complex manifold.
+
+    Moreover, $pi : X -> G backslash X$ is locally biholomorphic. Indeed, for a chart $(U, phi)$ of $X$ and the corresponding chart $(pi(U), overline(phi)_U)$ of $G backslash X$ in $Sigma$, the map has the following local expression
+    $
+      overline(phi)_U circle.stroked.tiny pi circle.stroked.tiny phi^(-1)
+      =phi|_U compose (evaluated(pi)_(U))^(-1) compose pi compose phi^(-1)=
+      id_(phi(U)).
+    $
+    Hence $pi$ is locally biholomorphic.
+
+    #strong[#set par(first-line-indent: 0pt)
+      Uniqueness of the maximal compatible holomorphic atlas.
+    ]
+
+    Suppose $Tau$ is another maximal compatible holomorphic atlas on the same
+    quotient topology of $G backslash X$ such that
+    $
+      pi : X -> (G backslash X, Tau)
+    $
+    is locally biholomorphic.
+
+    Let $(pi(U), overline(phi)_U)$ be a chart in $Sigma$. Since $pi$ is locally
+    biholomorphic with respect to $Tau$, and since
+    $
+      pi_U : U -> pi(U)
+    $
+    is a homeomorphism, the map $pi_U$ is biholomorphic with respect to $Tau$.
+    Indeed, holomorphicity of $pi_U$ is local because $pi$ is locally
+    biholomorphic, and holomorphicity of $pi_U^(-1)$ follows locally from the
+    local inverse branches of $pi$.
+
+    Hence
+    $
+      overline(phi)_U
+      =
+      phi circle.stroked.tiny pi_U^(-1)
+    $
+    is a holomorphic chart with respect to $Tau$. Therefore $Tau$ contains every
+    chart in $Sigma$. Since a compatible holomorphic atlas has a unique maximal
+    compatible extension, it follows that
+    $
+      Tau = overline(Sigma).
+    $
+    Thus the complex manifold structure on $G backslash X$ for which $pi$ is
+    locally biholomorphic is unique.
+
+  + By universal property of the quotient topology, there exists a unique continuous map
+    $
+      overline(F) : G backslash X & --> Y \
+                              G x & mapsto.long F(x)
+    $
+    such that $overline(F) circle.stroked.tiny pi = F$.
+    We show that $overline(F)$ is holomorphic. Let $G x in G backslash X$. Choose a holomorphic chart
+    $(U, phi)$ around $x$. Then
+    $
+      pi_U : U -> pi(U)
+    $
+    is biholomorphic. On the open neighborhood $pi(U)$ of $G x$, we have
+    $
+      overline(F)|_(pi(U))
+      =
+      F|_U circle.stroked.tiny pi_U^(-1).
+    $
+    Since $F|_U$ is holomorphic and $pi_U^(-1)$ is holomorphic, the restriction
+    $
+      overline(F)|_(pi(U))
+    $
+    is holomorphic. Hence $overline(F)$ is holomorphic. The uniqueness as a holomorphic map follows from uniqueness as a continuous map.
+]
+
+== Complexified Tangent Bundle
+
+#definition[Complexification of Smooth Real Vector Bundle][
+  Let $X$ be a smooth manifold, and let $E -> X$ be a smooth real vector bundle. The #strong[complexification] of $E$ is the smooth complex vector bundle
+  $
+    E times.o_RR CC
+  $
+  over $X$, whose fiber at $x in X$ is the complex vector space
+  $
+    (E times.o_RR CC)zwj_x := E_x times.o_RR CC.
+  $
+]
+#remark[
+  Let ${U_i}$ be a smooth trivializing cover for the real vector bundle $E -> X$,
+  with real local trivializations
+  $
+    phi_i : E|_(U_i) -> U_i times RR^n.
+  $
+  On overlaps $U_i inter U_j$, the transition functions of $E$ are smooth maps
+  $
+    g_(i j) : U_i inter U_j -> GL_n (RR).
+  $
+  We regard each $g_(i j)(x)$ as a complex-linear map on $CC^n$ by extending
+  scalars from $RR$ to $CC$. Equivalently, we use the natural inclusion
+  $
+    GL_n (RR) subset GL_n (CC).
+  $
+
+  Define local trivializations of the complexified bundle by
+  $
+    phi_i^CC : (E times.o_RR CC)|_(U_i) -> U_i times CC^n
+  $
+  via
+  $
+    phi_i^CC (v times.o z) = (x, z phi_i(v)),
+  $
+  where $v in E_x$, and extend linearly over finite sums. On overlaps, the
+  transition functions are precisely
+  $
+    g_(i j)^CC : U_i inter U_j -> GL_n(CC),
+  $
+  where
+  $
+    g_(i j)^CC (x) = g_(i j)(x)
+  $
+  viewed as a complex matrix. Since the original $g_(i j)$ are smooth, the maps
+  $g_(i j)^CC$ are smooth complex-linear transition functions.
+
+  Hence these local trivializations define a unique smooth complex vector bundle
+  structure on $E times.o_RR CC -> X$. Its fiber at $x$ is
+  $
+    E_x times.o_RR CC,
+  $
+  and if $E$ has real rank $n$, then $E times.o_RR CC$ has complex rank $n$.
+]
+
+#definition[Complexified Tangent Bundle][
+  Let $M$ be a complex manifold. The #strong[complexified tangent bundle] of
+  $M$ is
+  $
+    T^CC M := T^RR M times.o_RR CC.
+  $
+  Its fiber at $p in M$ is
+  $
+    T_p^CC M = T_p^RR M times.o_RR CC.
+  $
+
+
+]
+
+Let $M$ be a complex manifold and $J: T^RR M -> T^RR M$ be almost complex structure induced by the complex structure of $M$. Then $J$ extends to an endomorphism of the complexified tangent bundle
+$
+  J_CC : T^CC M -> T^CC M.
+$
+
 
 #definition[Complexified Tangent Space][
   Let $M$ be a complex manifold of complex dimension $n$. Define $T_p^RR M$ as the tangent space of the underlying smooth manifold. The #strong[complexified tangent space] at $p in M$ is defined as the $CC$-vector space
@@ -400,23 +1040,116 @@ $
 $
 where $T^(1,0)M$ is the $i$-eigenbundle of $T^CC M$ and $T^(0,1)M$ is the $-i$-eigenbundle of $T^CC M$.
 
-#proposition[Holomorphic Tangent Space is Holomorphic Vector Bundle][
-  Let $M$ be a complex manifold. The holomorphic tangent bundle $T^(1,0)M$ is a holomorphic vector bundle over $M$, with the projection map
+
+#proposition[Holomorphic Tangent Bundle is a Holomorphic Vector Bundle][
+  Let $M$ be a complex manifold of complex dimension $n$. Then the
+  holomorphic tangent bundle
   $
     p: T^(1,0)M & --> M \
          (x, v) & arrow.bar.long x.
   $
-]
-#proof[
-  Let $lr((U, phi))$ be a holomorphic chart on $M$. Then the local trivialization map
-  $
-    phi_* : p^(-1)(U) & --> U times CC^n \
-               (x, v) & arrow.bar.long (p(x), phi lr((x)))
-  $
-  is a biholomorphism.
+  is a holomorphic vector bundle of rank $n$.
 ]
 
-=== Complexified Cotangent Bundle <complex-cotangent-bundle>
+#proof[
+  Let $(U, z)$ be a holomorphic chart on $M$, where
+  $
+    z = (z^1, dots, z^n) : U --> z(U) subset.eq CC^n .
+  $
+
+  For $x in U$, the differential of $z$ gives a $CC$-linear isomorphism
+  $
+    dif z_x : T_x^(1,0) M --> T_(z(x))^(1,0) CC^n tilde.equiv CC^n .
+  $
+  Hence we define
+  $
+    theta_z : p^(-1)(U) & --> U times CC^n \
+                 (x, v) & arrow.bar.long (x, dif z_x (v)).
+  $
+  Equivalently, if
+  $
+    v = sum_(i=1)^n a_i evaluated(frac(partial, partial z^i))_x ,
+  $
+  then
+  $
+    theta_z (x,v) = (x, (a_1, dots, a_n)).
+  $
+
+  The map $theta_z$ is a homeomorphism, with inverse
+  $
+             U times CC^n & --> p^(-1)(U) \
+    (x, (a_1, dots, a_n)) & arrow.bar.long
+                            (x, sum_(i=1)^n a_i evaluated(frac(partial, partial z^i))_x).
+  $
+  Moreover, it is fiberwise $CC$-linear, since for each $x in U$ its restriction
+  to the fiber is exactly the $CC$-linear isomorphism
+  $
+    dif z_x : T_x^(1,0) M --> CC^n .
+  $
+  Therefore the maps $theta_z$, as $(U,z)$ ranges over holomorphic charts of
+  $M$, form a local trivializing atlas of rank $n$ for
+  $
+    p : T^(1,0) M -> M .
+  $
+
+  It remains to check that the transition functions are holomorphic. Let
+  $(U,z)$ and $(V,w)$ be two holomorphic charts with
+  $
+    U inter V != emptyset .
+  $
+  On $U inter V$, the change of local trivialization is
+  $
+    theta_w compose theta_z^(-1)
+    : (U inter V) times CC^n & --> (U inter V) times CC^n \
+                      (x, a) & arrow.bar.long (x, g_(z w)(x) a),
+  $
+  For $(x,a) in (U inter V) times CC^n$, we have
+  $
+    theta_w compose theta_z^(-1)(x,a)
+    =
+    (x, dif w_x ((dif z_x)^(-1)(a))).
+  $
+  Thus
+  $
+    theta_w compose theta_z^(-1)(x,a)
+    =
+    (x, g_(z w)(x) a),
+  $
+  where
+  $
+    g_(z w)(x)
+    =
+    dif w_x compose (dif z_x)^(-1)
+    =
+    dif (w compose z^(-1))_(z(x)).
+  $
+  In coordinates, this matrix is the Jacobian matrix
+  $
+    g_(z w)(x)
+    =
+    (
+      frac(partial w^alpha, partial z^beta)(x)
+    )_(alpha,beta).
+  $
+  Since $w compose z^(-1)$ is holomorphic, all functions
+  $
+    frac(partial w^alpha, partial z^beta)
+  $
+  are holomorphic on $U inter V$. Hence
+  $
+    g_(z w) : U inter V --> op("GL")_n (CC)
+  $
+  is holomorphic.
+
+  By the holomorphic vector bundle criterion by transition functions, there is
+  a unique maximal compatible holomorphic atlas on $T^(1,0)M$ for which all
+  maps $theta_z$ are biholomorphic. With this complex manifold structure,
+  $
+    p : T^(1,0)M --> M
+  $
+  is therefore a holomorphic vector bundle of rank $n$.
+]
+== Complexified Cotangent Bundle <complex-cotangent-bundle>
 
 #definition[Complexified Cotangent Space][
   Let $M$ be a complex manifold of complex dimension $n$. The #strong[complexified cotangent space] at $p in M$ is defined as
@@ -470,15 +1203,46 @@ We have the following direct sum decomposition
 $
   T^(*CC)M = T^(*1,0)M plus.o T^(*0,1)M.
 $
-=== Complex Differential Forms <complex-differential-forms>
+
+== Complex Differential Forms <complex-differential-forms>
 
 #definition[Complex Differential Form][
-  A #strong[complex differential form of total degree $k$] on a complex manifold $M$ is a smooth section of the holomorphic vector bundle $and^k T^*M$. The space of all complex differential $k$-forms on $M$ is denoted by
+  Let $M$ be a complex manifold of complex dimension $n$ and $k >= 0$ be an integer. The smooth section functor of the holomorphic vector bundle $and^k T^(*CC)M-> M$ is the functor defined as follows
+
+  #functor_diagram(
+    F: $Gamma^oo (-,and^k T^(*CC)M)$,
+    C: $sans("Open")_M^(op("op"))$,
+    D: $Ab$,
+    g: $iota$,
+    X: $V$,
+    Y: $U$,
+    Fg: $iota^*$,
+    FX: $Gamma^oo (V,and^k T^(*CC)M)$,
+    FY: $Gamma^oo (U,and^k T^(*CC)M)$,
+    g_arrow: "<-",
+  )
+  $Gamma^oo (-,and^k T^(*CC)M)$ is a sheaf of $C^(oo) (-;CC)$-modules on $M$.
+
+  Denote $cal(E)^k_M :=Gamma^oo (-,and^k T^(*CC)M)$. For brevity, we write $cal(E)^k$ instead of $cal(E)^k_M$ when there is no ambiguity. Note that $cal(E)^0 (U) = C^(oo) (U;CC)$ is the space of all smooth complex-valued functions on $U$. We see that $cal(E)^0$ is a sheaf of $CC$-algebras
+  #functor_diagram(
+    F: $cal(E)^0$,
+    C: $sans("Open")_M^(op("op"))$,
+    D: $CAlg(CC)$,
+    g: $iota$,
+    X: $V$,
+    Y: $U$,
+    Fg: $iota^*$,
+    FX: $cal(E)^0 (V)= C^(oo) (V;CC)$,
+    FY: $cal(E)^0 (U) = C^(oo) (U;CC)$,
+    g_arrow: "<-",
+  )
+  and that $cal(E)^k$ is a sheaf of $cal(E)^0$-modules.
+
+  A #strong[complex differential form of total degree $k$] on a complex manifold $M$ is a smooth section of the the holomorphic vector bundle $and^k T^(*CC)M -> M$. The space of all complex differential $k$-forms on $M$ is
   $
-    cal(E)^k (M) := Gamma lr((and^k T^(*CC)M)),
+    cal(E)^k (M) = Gamma^oo lr((and^k T^(*CC)M)).
   $
-  where $cal(E)^0 (M) = C^(oo) (M;CC)$ is the space of all smooth complex-valued functions on $M$.
-  And the space of all complex differential forms on $M$ is defined as the following graded algebra
+  The space of all complex differential forms on $M$ is defined as the following graded $CC$-algebra
   $
     cal(E) (M) := plus.o.big_(k = 0)^n cal(E)^k (M).
   $
@@ -495,25 +1259,32 @@ $
 
 
 #definition[Bigraded Structure on $cal(E)(M)$][
-  Suppose $M$ is a complex manifold of complex dimension $n$. Define the space of #strong[$(1,0)$-forms] on $M$ as
+  Suppose $M$ is a complex manifold of complex dimension $n$. Define the sheaf
   $
-    Omega^(1,0) (M) := Gamma lr((T^(*1,0)M))={sum_(j=1)^n f_j dif z^j mid(|) f_j in cal(E)^0 (M)},
+    cal(E)_X^(p\,q) := Gamma^oo (- \, (and^p T_X^(*\(1\,0\))) times.o (and^q T_X^(*\(0\,1\))))
+  $
+
+
+
+  Define the space of #strong[$(1,0)$-forms] on $M$ as
+  $
+    cal(E)^(1,0) (M) := Gamma^oo lr((T^(*1,0)M))={sum_(j=1)^n f_j dif z^j mid(|) f_j in cal(E)^0 (M)},
   $
   and the space of #strong[$(0,1)$-forms] on $M$ as
   $
-    Omega^(0,1) (M) := Gamma lr((T^(*0,1)M))={sum_(j=1)^n g_j dif macron(z)^j mid(|) g_j in cal(E)^0 (M)}.
+    cal(E)^(0,1) (M) := Gamma^oo lr((T^(*0,1)M))={sum_(j=1)^n g_j dif macron(z)^j mid(|) g_j in cal(E)^0 (M)}.
   $
   Now define the space of #strong[$(p,q)$-forms] on $M$ as
   $
-    Omega^(p,q) (M) := (and^p Omega^(1,0) (M)) and.big (and^q Omega^(0,1) (M))={sum_(dim(I) = p \, dim(J) = q) f_(I J) dif z^I and dif macron(z)^J mid(|) f_(I J) in cal(E)^0 (M)},
+    cal(E)^(p,q) (M) := (and^p cal(E)^(1,0) (M)) times.o (and^q cal(E)^(0,1) (M))={sum_(dim(I) = p \, dim(J) = q) f_(I J) dif z^I and dif macron(z)^J mid(|) f_(I J) in cal(E)^0 (M)},
   $
   Then we have the following direct sum decomposition
   $
-    cal(E)^k (M) = plus.o.big_(p+q=k) Omega^(p,q) (M)=Omega^(k,0) (M) plus.o Omega^(k-1,1) (M) plus.o dots.h.c plus.o Omega^(0,k) (M),
+    cal(E)^k (M) = plus.o.big_(p+q=k) cal(E)^(p,q) (M)=cal(E)^(k,0) (M) plus.o cal(E)^(k-1,1) (M) plus.o dots.h.c plus.o cal(E)^(0,k) (M),
   $
   which induces a bigraded structure on $cal(E)(M)$
   $
-    cal(E) (M) = plus.o.big_(p,q) Omega^(p,q) (M).
+    cal(E) (M) = plus.o.big_(p,q) cal(E)^(p,q) (M).
   $
 
 ]
@@ -531,7 +1302,7 @@ $
   $
   be the exterior derivative. For each pair of nonnegative integers $(p,q)$ with $p + q = k$, let
   $
-    pi^(p,q) : cal(E)^k (M) --> Omega^(p,q) (M)
+    pi^(p,q) : cal(E)^k (M) --> cal(E)^(p,q) (M)
   $
   be the natural projection. Suppose
   $
@@ -541,12 +1312,12 @@ $
 
   Define the #strong[Dolbeault operators] as $partial^(p,q)= pi^(p+1,q) compose d^((p+q))$
   $
-    partial^(p,q): Omega^(p,q) (M) &--> Omega^(p+1,q) (M)\
+    partial^(p,q): cal(E)^(p,q) (M) &--> Omega^(p+1,q) (M)\
     omega & arrow.bar.long sum_(j=1)^n frac(partial f_(I J), partial z^j) dif z^j and omega = sum_(dim(I) = p \, dim(J) = q) sum_(j=1)^n frac(partial f_(I J), partial z^j) dif z^j and dif z^I and dif macron(z)^J,
   $
   and $macron(partial)^(p,q)= pi^(p,q+1) compose d^((p+q))$
   $
-    macron(partial)^(p,q): Omega^(p,q) (M) &--> Omega^(p,q+1) (M)\
+    macron(partial)^(p,q): cal(E)^(p,q) (M) &--> Omega^(p,q+1) (M)\
     omega & arrow.bar.long sum_(j=1)^n frac(partial f_(I J), partial macron(z)^j) dif macron(z)^j and omega = sum_(dim(I) = p \, dim(J) = q) sum_(j=1)^n frac(partial f_(I J), partial macron(z)^j) dif macron(z)^j and dif z^I and dif macron(z)^J.
   $
 
@@ -558,24 +1329,27 @@ $
 
   - $partial compose partial = macron(partial) compose macron(partial) = partial compose macron(partial) + macron(partial) compose partial = 0$
 
-  - $d|_(Omega^(p,q) (M)) = partial + macron(partial)$ .
+  - $d|_(cal(E)^(p,q) (M)) = partial + macron(partial)$ .
 ]
 
 #definition[Dolbeault Complex][
-  The #strong[Dolbeault complex] of a complex manifold $M$ is the bigraded complex $Omega^(bullet,bullet) (M)$ with the differential operator $partial$ and $macron(partial)$.
+  The #strong[Dolbeault complex] of a complex manifold $M$ is the bigraded complex $cal(E)^(bullet,bullet) (M)$ with the differential operator $partial$ and $macron(partial)$.
 ]
 
 
 
 
-== Riemann Surface <Riemann-surface>
+= Riemann Surfaces <Riemann-surface>
+
+== Basic Definitions and Examples
+
 #definition[Riemann Surface][
   A #strong[Riemann surface] is a connected complex manifold of dimension one.
 ]
 For manifolds, connectedness and path-connectedness are equivalent. So every Riemann surface is path-connected.
 
-#example[Complex Plane $bb(C)$][
-  $bb(C)$ is a Riemann surface with the atlas $lr({lr((bb(C) , upright("id")))})$. Any open subset $U subset.eq bb(C)$ is
+#example[Complex Plane $CC$][
+  $CC$ is a Riemann surface with the atlas $lr({lr((CC , upright("id")))})$. Any open subset $U subset.eq bb(C)$ is
   also a Riemann surface with the atlas $lr({lr((U , upright("id")))})$. Some interesting cases are the unit disc $bb(D) = { z in bb(C) : lr(|z|) < 1 }$,
   the upper half-plane $bb(H) = { z in bb(C) : "Im" z > 0 }$ and the punctured complex plane $bb(C)^(\*) = bb(C) - { 0 }$.
 ]
@@ -597,7 +1371,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
     length: 0.95cm,
     {
       import cetz.draw: *
-      scale(200%)
+      scale(180%)
       set-style(stroke: (paint: luma(40%), thickness: 1.2pt))
 
       let radius = 1.5
@@ -605,7 +1379,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
       let dash_stroke = (paint: rgb("#0fcdae"), dash: dash_pattern, cap: "round")
       let point_radius = 0.05
 
-      let h_line = line((-3.2, 0), (3.2, 0), stroke: navy + 2pt)
+      let h_line = line((-3.2, 0), (3.2, 0), stroke: navy + 1pt)
       let circ = circle((0, 0), radius: radius, stroke: rgb("#6bb3ff") + 2pt)
 
       let circle_point_style = (radius: point_radius, stroke: 0.9pt + luma(45%), fill: red.desaturate(10%))
@@ -641,8 +1415,8 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
       content((3, 0), anchor: "north", padding: .25, [$pi(P)$])
     },
   )
+  #v(1em, weak: true)
 ]
-
 
 
 #example[Complex Projective Line][
@@ -667,12 +1441,12 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   The map
   $
     f: DD & --> HH \
-        z & arrow.long.bar (z+i) / (i z+1)
+        z & mapsto.long (z+i) / (i z+1)
   $
   is a biholomorphism and has the inverse
   $
     f^(- 1): HH & --> DD \
-              w & arrow.long.bar (i w+1) / (w+i)
+              w & mapsto.long (i w+1) / (w+i)
   $
 ]
 
@@ -1032,7 +1806,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 #definition[Holomorphic 1-Forms][
   Let $X$ be a Riemann surface. A #strong[holomorphic 1-form] on $X$ is a holomorphic form of degree 1. The space of all holomorphic 1-forms on $X$ is denoted by
   $
-    Omega^(1,0)_X = Gamma(X, T^(*1,0) X).
+    cal(E)^(1,0)_X = Gamma(X, T^(*1,0) X).
   $
 ]
 #remark[
@@ -1077,7 +1851,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
 ]
 
 #theorem[$macron(partial)$-Poincaré Lemma][
-  Let $X$ be a Riemann surface and $omega in Omega^(0,1)_X$ be an anti-holomorphic 1-form on $X$. Then on some neighborhood of $p$, there exists a smooth function $f$ such that $omega=macron(partial) f$.
+  Let $X$ be a Riemann surface and $omega in cal(E)^(0,1)_X$ be an anti-holomorphic 1-form on $X$. Then on some neighborhood of $p$, there exists a smooth function $f$ such that $omega=macron(partial) f$.
 ]
 
 == Divisor <divisor>
@@ -1120,7 +1894,7 @@ For manifolds, connectedness and path-connectedness are equivalent. So every Rie
   homomorphism:
   $
     op("div") : cal(M) lr((X))_(!0) & --> op("Div") lr((X)) \
-                                  f & arrow.long.bar sum_(x in X) "ord"_x lr((f)) x .
+                                  f & mapsto.long sum_(x in X) "ord"_x lr((f)) x .
   $
   The #strong[divisor of $f$] defined as $op("div") (f)$. Any divisor of this form is called a #strong[principal divisor] on $X$.
   The group of principal divisors on $X$ is denoted by $op("PDiv") lr((X))= op("div")lr((cal(M) lr((X))_(!0)))$.
@@ -1224,7 +1998,7 @@ If $D_1 lt.eq D_2$, then $L lr((D_1)) subset.eq L lr((D_2))$ and $ell lr((D_1)) 
   A #strong[Möbius transformation] is a map of the form
   $
     T:hatCC & --> hatCC \
-          z & arrow.long.bar frac(a z + b, c z + d) , \
+          z & mapsto.long frac(a z + b, c z + d) , \
   $
   which corresponds to a projective matrix $T=mat(a, b; c, d) in upright(P G L)_2 lr((bb(C))) tilde.equiv upright(P S L)_2 lr((bb(C))) tilde.equiv upright(S L)_2 lr((bb(C)))\/(plus.minus I)$.
 ]
@@ -1298,7 +2072,7 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
   $
     {z in hatCC thin mid(|) thin c z overline(z) + alpha z + overline(alpha) overline(z) + d = 0}
   $
-  where $c , d in bb(R)$ and $alpha in bb(C)$.
+  where $c , d in RR$ and $alpha in bb(C)$.
 ]
 
 #proposition[][
@@ -1456,9 +2230,9 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
       },
     )
 
-    arc-through((5, 5.), (6, 5.3), (7, 5.), mark: (start: "straight"))
+    arc-through((5, 5.), (6, 5.3), (7, 5.), stroke: luma(40%), mark: (start: "straight"))
     content((6, 5.7), [$T$])
-    arc-through((5, -5.), (6, -5.3), (7, -5.), mark: (end: "straight"))
+    arc-through((5, -5.), (6, -5.3), (7, -5.), stroke: luma(40%), mark: (end: "straight"))
     content((6, -5.7), [$T^(-1)$])
   },
 )
@@ -1487,7 +2261,7 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
 
   + there exists a Möbius transformation $R$ such that $T = R circle.stroked.tiny S circle.stroked.tiny R^(- 1)$.
 
-  + conjugate if and only if $op("Tr") T = plus.minus op("Tr") S$.
+  + conjugate if and only if $Tr T = plus.minus Tr S$.
 ]
 #remark[
   The trace of a Möbius transformation is only well-defined up to sign.
@@ -1501,9 +2275,9 @@ complex projective line $bb(P)^1 lr((bb(C)))$. Therefore, they have the same aut
 
   + #strong[elliptic] if it is conjugate to $z |-> mu z$ with $|mu|=1$ and $mu eq.not 1$;
 
-  + #strong[hyperbolic] if it is conjugate to $z |-> mu z$ with $mu in bb(R)^*-{1,-1}$;
+  + #strong[hyperbolic] if it is conjugate to $z |-> mu z$ with $mu in RR^*-{1,-1}$;
 
-  + #strong[loxodromic] if it is conjugate to $z |-> mu z$ with $mu in.not bb(R)^*$ and $|mu| eq.not 1$;
+  + #strong[loxodromic] if it is conjugate to $z |-> mu z$ with $mu in.not RR^*$ and $|mu| eq.not 1$;
 
   Suppose a Möbius transformation $f(z)=(a z+b)/(c z + d)$ has fixed points $z_1$ and $z_2$, the multiplier $mu$ can be calculated as
   follows:
@@ -1572,23 +2346,23 @@ Let $T in op("PSL")_2(CC)-{plus.minus I}$ and $sigma = op("Tr")(T)^2$. Then we h
 
 
 
-#proposition[Fixed Points of $op("PSL")_2 lr((bb(R))) acts hat(CC)$][
-  Let $op("PSL")_2 lr((bb(R)))$ acts on $hat(CC)$ by Möbius transformations. Or equivalently, $op("PSL")_2 lr((bb(R)))$ acts on $upright(bold(P))_(CC)^1$ by matrix multiplication
+#proposition[Fixed Points of $op("PSL")_2 lr((RR)) acts hat(CC)$][
+  Let $op("PSL")_2 lr((RR))$ acts on $hat(CC)$ by Möbius transformations. Or equivalently, $op("PSL")_2 lr((RR))$ acts on $upright(bold(P))_(CC)^1$ by matrix multiplication
   $
-    op("PSL")_2 lr((bb(R))) times upright(bold(P))_(CC)^1 & --> upright(bold(P))_(CC)^1 \
-                    (mat(a, b; c, d), mat(z; dot dot; w)) & arrow.bar.long mat(a z + b w; dot dot; c z + d w)
+    op("PSL")_2 lr((RR)) times upright(bold(P))_(CC)^1 & --> upright(bold(P))_(CC)^1 \
+                 (mat(a, b; c, d), mat(z; dot dot; w)) & arrow.bar.long mat(a z + b w; dot dot; c z + d w)
   $
-  Then the fixed points of $T in op("PSL")_2 lr((bb(R)))-{plus.minus I}$ can be classified as follows:
+  Then the fixed points of $T in op("PSL")_2 lr((RR))-{plus.minus I}$ can be classified as follows:
 
-  + Elliptic: $op("Tr")(T)^2 lt 4$, fixed points are $z_1=tau in HH$ and $z_2=overline(tau) in -HH$.
+  + *Elliptic*: $op("Tr")(T)^2 lt 4$, fixed points are $z_1=tau in HH$ and $z_2=overline(tau) in -HH$.
 
-  + Parabolic: $op("Tr")(T)^2=4$, fixed points are $z_1=z_2 in RR union.sq {oo}$.
+  + *Parabolic*: $op("Tr")(T)^2=4$, fixed points are $z_1=z_2 in RR union.sq {oo}$.
 
-  + Hyperbolic: $op("Tr")(T)^2 gt 4$, fixed points are $z_1eq.not z_2 in RR union.sq {oo}$.
+  + *Hyperbolic*: $op("Tr")(T)^2 gt 4$, fixed points are $z_1eq.not z_2 in RR union.sq {oo}$.
 
 ]
 #proof[
-  $mat(z; dot dot; w) in upright(bold(P))_(CC)^1$ is a fixed point of $mat(a, b; c, d) in op("PSL")_2 lr((bb(R)))$ if and only if $mat(z; w) in CC^2$ is a eigenvector of $T=mat(a, b; c, d) in op("SL")_2 lr((bb(R)))$. Since the characteristic polynomial of $T$ is
+  $mat(z; dot dot; w) in upright(bold(P))_(CC)^1$ is a fixed point of $mat(a, b; c, d) in op("PSL")_2 lr((RR))$ if and only if $mat(z; w) in CC^2$ is a eigenvector of $T=mat(a, b; c, d) in op("SL")_2 lr((RR))$. Since the characteristic polynomial of $T$ is
   $
     det(lambda I- T)=lambda^2 - op("Tr")(T) lambda + 1,
   $
@@ -1640,12 +2414,12 @@ Let $T in op("PSL")_2(RR)-{plus.minus I}$ and $sigma = op("Tr")(T)^2$. Then we h
 Before we prove this result, we should first see how $op("SL")_2(RR)$ can be uniquely decomposed into 3 different types of transformations.
 
 #lemma[Iwasawa Decomposition of $op("SL")_2(RR)$][
-  Any $M in op("SL")_2 lr((bb(R)))$ can be uniquely written as
+  Any $M in op("SL")_2 lr((RR))$ can be uniquely written as
   $
     M = K A N= mat(cos phi, -sin phi; sin phi, cos phi) mat(lambda, 0; 0, lambda^(-1)) mat(1, x; 0, 1)
   $
 
-  When we consider $op("SL")_2 lr((bb(R))) acts HH$
+  When we consider $op("SL")_2 lr((RR)) acts HH$
 
   + $K =mat(cos phi, -sin phi; sin phi, cos phi) in op("SO")_2(RR)$ means hyperbolic rotations around $i$, where $2 phi in [0,2pi )$ is the rotation angle,
 
@@ -1659,7 +2433,7 @@ Before we prove this result, we should first see how $op("SL")_2(RR)$ can be uni
   Automorphism of $bb(H)$
 ][The automorphism group of $bb(H)$ is given by
   $
-    op("Aut") lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in bb(R) , a d - b c = 1}) tilde.equiv op("PSL")_2 lr((bb(R))) = op("SL")_2 lr((bb(R))) \/ { plus.minus I }.
+    op("Aut") lr((bb(H))) = lr({z arrow.r.bar frac(a z + b, c z + d) thin mid(|) thin a , b , c , d in RR , a d - b c = 1}) tilde.equiv op("PSL")_2 lr((RR)) = op("SL")_2 lr((RR)) \/ { plus.minus I }.
   $
   The action of $op("PSL")_2(RR)$ on $HH$ is smooth and transitive.
 ]<automorphism-of-upper-half-plane>
@@ -1767,7 +2541,7 @@ $op("SL")_2(ZZ)$ is a Fuchsian group.
   Since
   $
     f: DD & --> HH \
-        z & arrow.long.bar (z+i) / (i z+1)
+        z & mapsto.long (z+i) / (i z+1)
   $
   is a biholomorphic map, we have
   $
@@ -1835,6 +2609,113 @@ A *lattice* in $RR^m$ is a discrete subgroup of $RR^m$.
   A *complex lattice* is a rank-2 discrete subgroup of $bb(C)$, written as $Lambda = w_1 bb(Z) xor w_2 bb(Z)$ where $w_1$ and $w_2$ are linearly independent over $bb(R)$. The set of all complex lattices is denoted by $clat$.
 ]
 
+#example[Complex Torus][
+  Let $Lambda = w_1 bb(Z) xor w_2 bb(Z)$ be a complex lattice. By  @quotients-by-Hausdorff-even-biholomorphic-actions, we see that $bb(C) \/ Lambda$ can be given a structure of Riemann surface, which is called a *complex torus*.
+
+  We can also give an explicit construction of the holomorphic charts of $bb(C) \/ Lambda$. Let $pi: bb(C) -> bb(C) \/ Lambda$ be the quotient map. Define
+  $
+    r:=1 / 2 min_(lambda in Lambda - {0}) abs(lambda),quad D(a,r):={ z in CC mid(|) abs(z - a) < r },quad U:=pi(D(0,r)).
+  $
+  For any open subset $V$ of $CC$, we assert that
+  $
+    pi^(-1)(pi(V)) = union.big.sq_(lambda in Lambda) (V + lambda).
+  $
+  Indeed, if $z in pi^(-1)(pi(V))$, then $pi(z) in pi(V)$, which implies that there exists $v in V$ such that $pi(z)=pi(v)$. By the definition of quotient map, we have $z-v in Lambda$. Therefore, $z in V + lambda$ for some $lambda in Lambda$. Conversely, if $z in V + lambda$ for some $lambda in Lambda$, then we have $v:=z- lambda in V$. Since $pi(z)=pi(v)$ for some $v in V$, $z in pi^(-1)(pi(V))$ as required.
+
+  Thus we have
+  $
+    pi^(-1)(U) = union.big.sq_(lambda in Lambda) D(lambda, r),
+  $
+  which is open in $CC$. By the definition of quotient topology, $U$ is open in $bb(C) \/ Lambda$. It is easy to see $U$ is an open neighborhood of $pi(0)$ in $bb(C) \/ Lambda$. We can check that
+  $
+    pi|_(D(0,r)): D(0,r) & -->^tilde U \
+                       z & mapsto.long pi(z)
+  $
+  is a homeomorphism as follows.
+
+  - _Continuity_. $pi|_(D(0,r))$ is continous since $pi$ is continuous.
+
+  - _Injectivity_. If $pi(z_1)=pi(z_2)$ for some $z_1, z_2 in D(0,r)$, then $z_1-z_2 in Lambda$. Note that
+    $
+      abs(z_1-z_2) <= abs(z_1) + abs(z_2) < 2 r = min_(lambda in Lambda - {0}) abs(lambda) .
+    $
+    There must be $z_1-z_2=0$. Therefore, $z_1=z_2$ and $pi|_(D(0,r))$ is injective.
+
+  - _Surjectivity_. $pi|_(D(0,r))$ is surjective by the definition of $U$.
+
+  - _Open map_. It suffices to show that $pi: CC -> CC \/ Lambda$ is an open map. For any open subset $V$ of $CC$, we need to show that $pi(V)$ is open in $bb(C) \/ Lambda$. By the definition of quotient topology, we need to show that $pi^(-1)(pi(V))$ is open in $CC$, which is true since
+    $
+      pi^(-1)(pi(V)) = union.big.sq_(lambda in Lambda) (V + lambda)
+    $
+    is a union of open subsets of $CC$.
+
+  Let $phi_0:=(pi|_(D(0,r)))^(-1)$. Then $phi_0: U -> D(0,r) subset.eq CC$ is a #link(<holomorphic-chart>)[holomorphic chart] centered at $0+ Lambda in bb(C) \/ Lambda$. Consider the translation map
+  $
+    T_w: CC & --> CC \
+          z & mapsto.long z - w
+  $
+  which is a biholomorphic map for any $w in CC$. For any $w in CC$, we can define a holomorphic chart centered at $w + Lambda$ through the following composition
+
+
+  #context {
+    let left-labels = ([$phi_w :w + U$], [$z + Lambda$])
+    let right-labels = ([$D(0, r)$], [$phi_0(z - w + Lambda)$])
+
+    let max-width(labels) = calc.max(
+      ..labels.map(label => measure(label).width),
+    )
+
+    let left-width = max-width(left-labels)
+    let right-width = max-width(right-labels)
+
+    let left-node(body) = box(width: left-width, align(right, body))
+    let right-node(body) = box(width: right-width, align(left, body))
+
+    commutative_diagram(spacing: (10mm, 1mm), {
+      node((-1, 0), left-node(left-labels.at(0)))
+      node((0, 0), [$U$])
+      node((1, 0), right-node(right-labels.at(0)))
+
+      node((-1, 1), left-node(left-labels.at(1)))
+      node((0, 1), [$z - w + Lambda$])
+      node((1, 1), right-node(right-labels.at(1)))
+
+      edge((-1, 0), (0, 0), "->")
+      edge((0, 0), (1, 0), "->")
+      edge((-1, 1), (0, 1), "|->")
+      edge((0, 1), (1, 1), "->")
+    })
+  }
+  Finally, we check that the collection of charts $cal(A)= {phi_w: w + U -> D(0,r) subset.eq CC mid(|) w in CC}$ forms a holomorphic atlas on $bb(C) \/ Lambda$. Let $(w_1 + U, phi_(w_1))$ and $(w_2 + U, phi_(w_2))$ be two charts such that their intersection $W = (w_1 + U) inter (w_2 + U)$ is non-empty. We need to show that the transition map
+  $
+    phi_(w_2) circle.stroked.tiny phi_(w_1)^(-1): phi_(w_1)(W) & --> phi_(w_2)(W) \
+    z & mapsto.long phi_(w_2)(phi_(w_1)^(-1)(z)) = phi_(w_2)(z + w_1+ Lambda) = phi_0(z + w_1 - w_2 + Lambda)
+  $
+  is holomorphic. For any $z in phi_(w_1)(W)$, we have
+  $
+    phi_(w_1)^(-1)(z)= z + w_1 + Lambda in w_2 + U,
+  $
+  which implies that $z + w_1 - w_2 + Lambda in U$. Equivalently,
+  $
+    z + w_1 - w_2 in pi^(-1)(U) = union.big.sq_(lambda in Lambda) D(lambda, r).
+  $
+  So there exists a unique $lambda_z in Lambda$ such that $z + w_1 - w_2 in D(lambda_z, r)$.
+
+  For each $lambda in Lambda$, we define the following open subset of $phi_(w_1)(W)$
+  $
+    Omega_lambda := { z in phi_(w_1)(W) mid(|) z + w_1 - w_2 in D(lambda, r) }= phi_(w_1)(W) inter D(lambda + w_2 - w_1, r).
+  $
+  From the above argument, we see each $z in phi_(w_1)(W)$ belongs to some $Omega_lambda$. Therefore, we have
+  $
+    phi_(w_1)(W) = union.big_(lambda in Lambda) Omega_lambda.
+  $
+  It suffices to show that $phi_(w_2) circle.stroked.tiny phi_(w_1)^(-1)$ is holomorphic on each $Omega_lambda$. For any $z in Omega_lambda$, since $z + w_1 - w_2 - lambda in D(0, r)$, we have
+  $
+    phi_(w_2) circle.stroked.tiny phi_(w_1)^(-1)(z) = phi_0(z + w_1 - w_2 + Lambda) = z + w_1 - w_2 - lambda
+  $
+  which is a translation map and accordingly holomorphic. Therefore, $cal(A)$ is a holomorphic atlas on $bb(C) \/ Lambda$ as required. By checking that the Riemann surface structure on $bb(C) \/ Lambda$ makes the quotient map $pi: bb(C) -> bb(C) \/ Lambda$ locally holomorphic, we see this Riemann surface structure on $bb(C) \/ Lambda$ conincides with that given by @quotients-by-Hausdorff-even-biholomorphic-actions.
+
+]
 
 #definition[Framed Complex Lattice][
   A *framed complex lattice* is a pair $(Lambda, (w_1, w_2))$, where $Lambda$ is a complex lattice and $(w_1, w_2)$ is an ordered $ZZ$-basis of $Lambda$. The set of all framed complex lattices is denoted by
@@ -1871,7 +2752,7 @@ A *lattice* in $RR^m$ is a discrete subgroup of $RR^m$.
   If we assume that $w_1= a + c i$ and $w_2 = b + d i$, then
   $
       f: RR^2 & --> CC \
-    vec(x, y) & arrow.long.bar x w_1 + y w_2,
+    vec(x, y) & mapsto.long x w_1 + y w_2,
   $
   has the following matrix representation
   $
@@ -1890,7 +2771,7 @@ A *lattice* in $RR^m$ is a discrete subgroup of $RR^m$.
   Given that $w_1= a + c i$ and $w_2 = b + d i$, we know $(w_1 ZZ xor w_2 ZZ, (w_1, w_2))$ can be identified with the $RR$-linear isomorphism
   $
       f: RR^2 & --> CC \
-    vec(x, y) & arrow.long.bar x w_1 + y w_2,
+    vec(x, y) & mapsto.long x w_1 + y w_2,
   $
   which has the following matrix representation
   $
@@ -2015,7 +2896,7 @@ A *lattice* in $RR^m$ is a discrete subgroup of $RR^m$.
   Conversely, if $a Lambda_1 subset.eq Lambda_2$ and $f$ is given by $z |-> a z + b + Lambda_2$, then $f$ can be lifted to a holomorphic map
   $
     tilde(f):bb(C) & --> bb(C) \
-                 z & arrow.long.bar a z + b
+                 z & mapsto.long a z + b
   $
   The holomorphicity of $f$ follows from the fact that $pi_1$ is a local homeomorphism.
 ]
@@ -2036,7 +2917,7 @@ A *lattice* in $RR^m$ is a discrete subgroup of $RR^m$.
   Conversely, if $a Lambda_1 = Lambda_2$, then we have $a^(-1)Lambda_2=Lambda_1$, which implies that
   $
     g:bb(C) \/ Lambda_2 & --> bb(C) \/ Lambda_1 \
-           z + Lambda_2 & arrow.long.bar a^(-1)(z - b) + Lambda_1
+           z + Lambda_2 & mapsto.long a^(-1)(z - b) + Lambda_1
   $
   is a well-defined holomorphic map. Then we can check that $g circle.tiny f = id$ and $f circle.tiny g = id$, which implies that $f$ is a biholomorphism.
 ]
@@ -2106,12 +2987,12 @@ Complex torus $bb(C) \/ Lambda$, as a quotient group of $bb(C)$, has a abelian g
   Let $Lambda_1$ and $Lambda_2$ be two complex lattices. Then we have the following isomorphism of abelian groups:
   $
     Phi:{a in CC | a Lambda_1 subset.eq Lambda_2} & -->^(tilde) op("Hom")_(CLieGrp)(bb(C) \/ Lambda_1, bb(C) \/ Lambda_2) \
-                                                a & arrow.long.bar (z + Lambda_1 mapsto a z + Lambda_2).
+                                                a & mapsto.long (z + Lambda_1 mapsto a z + Lambda_2).
   $
   And if we restrict $Phi$ to the subset of $a in CC$ such that $a Lambda_1 = Lambda_2$, we get the following bijection of sets:
   $
     {a in CC^times | a Lambda_1 = Lambda_2} & -->^(tilde) op("Iso")_(CLieGrp)(bb(C) \/ Lambda_1, bb(C) \/ Lambda_2) \
-                                          a & arrow.long.bar (z + Lambda_1 mapsto a z + Lambda_2).
+                                          a & mapsto.long (z + Lambda_1 mapsto a z + Lambda_2).
   $
   This means that a holomorphic homomorphism
   $
@@ -2158,7 +3039,7 @@ Complex torus $bb(C) \/ Lambda$, as a quotient group of $bb(C)$, has a abelian g
   Let $N$ be an integer. The map
   $
     [N]:bb(C) \/ Lambda & --> bb(C) \/ Lambda \
-             z + Lambda & arrow.long.bar N z + Lambda
+             z + Lambda & mapsto.long N z + Lambda
   $
   is called the #strong[multiply-by-$N$ map]. Since $N Lambda subset.eq Lambda$, we see $[N]$ is an isogeny. The kernel of $[N]$ is denoted by
   $
@@ -2167,7 +3048,7 @@ Complex torus $bb(C) \/ Lambda$, as a quotient group of $bb(C)$, has a abelian g
   where the isomorphism is given by
   $
     (ZZ \/ N ZZ)^(2) & -->^(tilde) ker [N] \
-           vec(x, y) & arrow.long.bar vec(display(x/ N) w_1, display(y/ N) w_2, gap: #1em) + Lambda.
+           vec(x, y) & mapsto.long vec(display(x/ N) w_1, display(y/ N) w_2, gap: #1em) + Lambda.
   $
   When $N > 0$, the kernel $ker[N]$ is a finite subgroup of $bb(C) \/ Lambda$ of order $N^2$, called the $N$-torsion group of $bb(C) \/ Lambda$ and denoted by
   $
@@ -2219,7 +3100,7 @@ Complex torus $bb(C) \/ Lambda$, as a quotient group of $bb(C)$, has a abelian g
   Then the map
   $
     cal(L) & -->^(tilde) { CC \/ Lambda : Lambda in cal(L) } \
-    Lambda & arrow.long.bar CC \/ Lambda
+    Lambda & mapsto.long CC \/ Lambda
   $
   induces a bijection
   $
@@ -2246,7 +3127,7 @@ Complex torus $bb(C) \/ Lambda$, as a quotient group of $bb(C)$, has a abelian g
   be the set of isomorphism classes of complex tori, and define
   $
     F : cal(L) -> T, quad
-    Lambda arrow.long.bar [CC \/ Lambda]_(tilde.equiv).
+    Lambda mapsto.long [CC \/ Lambda]_(tilde.equiv).
   $
 
   We use the following standard group-theoretic fact: if a group $G$ acts on a
@@ -2259,7 +3140,7 @@ Complex torus $bb(C) \/ Lambda$, as a quotient group of $bb(C)$, has a abelian g
   then $F$ induces a bijection
   $
     G backslash X -> F(X), quad
-    G x arrow.long.bar F(x).
+    G x mapsto.long F(x).
   $
 
   Therefore it is enough to prove that for any
@@ -2284,7 +3165,7 @@ Complex torus $bb(C) \/ Lambda$, as a quotient group of $bb(C)$, has a abelian g
   $
   By @holomorphic-homomorphisms-between-complex-tori, there exists $a in CC^times$ such that $a Lambda_1 = Lambda_2$ and $f$ is given by
   $
-    f: z + Lambda_1 arrow.long.bar a z + Lambda_2.
+    f: z + Lambda_1 mapsto.long a z + Lambda_2.
   $
   This completes the proof.
 ]
